@@ -3,8 +3,36 @@ const emptyState = document.getElementById('empty-state');
 const preview = document.getElementById('preview');
 const placeholder = document.getElementById('placeholder');
 const refreshBtn = document.getElementById('refresh-btn');
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+const MOBILE_QUERY = '(max-width: 768px)';
 
 let activeFile = null;
+
+function openSidebar() {
+  sidebar.classList.add('open');
+  sidebarOverlay.classList.add('visible');
+  menuToggle.setAttribute('aria-expanded', 'true');
+}
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('visible');
+  menuToggle.setAttribute('aria-expanded', 'false');
+}
+
+function toggleSidebar() {
+  if (sidebar.classList.contains('open')) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+}
+
+menuToggle.addEventListener('click', toggleSidebar);
+sidebarOverlay.addEventListener('click', closeSidebar);
 
 async function fetchFileList() {
   const manifestResponse = await fetch('/files.json');
@@ -67,6 +95,10 @@ function openFile(name, url) {
   fileList.querySelectorAll('button').forEach((btn) => {
     btn.classList.toggle('active', btn.textContent === name);
   });
+
+  if (window.matchMedia(MOBILE_QUERY).matches) {
+    closeSidebar();
+  }
 }
 
 refreshBtn.addEventListener('click', loadFiles);
