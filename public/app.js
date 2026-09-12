@@ -6,9 +6,22 @@ const refreshBtn = document.getElementById('refresh-btn');
 
 let activeFile = null;
 
+async function fetchFileList() {
+  const apiResponse = await fetch('/api/files');
+  if (apiResponse.ok) {
+    return apiResponse.json();
+  }
+
+  const manifestResponse = await fetch('/files.json');
+  if (manifestResponse.ok) {
+    return manifestResponse.json();
+  }
+
+  return [];
+}
+
 async function loadFiles() {
-  const response = await fetch('/api/files');
-  const files = await response.json();
+  const files = await fetchFileList();
 
   fileList.innerHTML = '';
 

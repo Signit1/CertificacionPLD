@@ -5,11 +5,15 @@ A simple local app to preview HTML files with working JavaScript.
 ## Setup
 
 ```bash
-npm install express
+npm install
 npm start
 ```
 
 Then open [http://localhost:3000](http://localhost:3000).
+
+## Deploy to Vercel
+
+Push to GitHub and import the repo in Vercel. The build step copies HTML files from `html/` into `public/html/` and generates `public/files.json` so the file list works without the Express server.
 
 ## Usage
 

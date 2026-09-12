@@ -1,3 +1,5 @@
+require('./scripts/build');
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -12,6 +14,7 @@ if (!fs.existsSync(HTML_DIR)) {
 }
 
 app.use(express.static(PUBLIC_DIR));
+app.use('/html', express.static(path.join(PUBLIC_DIR, 'html')));
 app.use('/files', express.static(HTML_DIR));
 
 app.get('/api/files', (_req, res) => {
@@ -21,7 +24,7 @@ app.get('/api/files', (_req, res) => {
     .sort()
     .map((name) => ({
       name,
-      url: `/files/${encodeURIComponent(name)}`,
+      url: `/html/${encodeURIComponent(name)}`,
     }));
 
   res.json(files);
