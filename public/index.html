@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de estudio para Certificación PLD</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Material de estudio para Certificación PLD</h1>
+    <p class="subtitle">Por: Cindy Jiménez</p>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <h2>Material</h2>
+        <button id="refresh-btn" type="button" title="Refresh file list">↻</button>
+      </div>
+      <ul id="file-list"></ul>
+      <p id="empty-state" class="hidden">No HTML files found in the <code>html/</code> folder.</p>
+    </aside>
+
+    <section id="viewer">
+      <div id="placeholder">
+        <p>Select a file from the sidebar to preview it.</p>
+      </div>
+      <iframe id="preview" title="HTML preview" hidden></iframe>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

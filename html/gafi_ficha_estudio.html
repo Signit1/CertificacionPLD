@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ficha de estudio — Las 40 Recomendaciones del GAFI</title>
+<style>
+  :root{
+    --bg: #0c1420;
+    --bg-card: #121d2e;
+    --bg-card2: #0f1826;
+    --ink: #e7edf5;
+    --ink-dim: #93a5ba;
+    --line: #223247;
+    --A: #57c7d4; --B: #e2585a; --C: #f0a24a; --D: #5b8ef2; --E: #b47ee0; --F: #4fbf82; --G: #e3c548;
+    --amount: #ffd45e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Iowan Old Style","Georgia","Source Serif 4",serif; }
+  .ui{ font-family:"Inter","Segoe UI",system-ui,sans-serif; }
+
+  header{ padding: 30px 40px 18px 40px; border-bottom:1px solid var(--line); }
+  header h1{ margin:0 0 8px 0; font-size:27px; font-weight:600; }
+  header p{ margin:0; color:var(--ink-dim); font-family:"Inter",sans-serif; font-size:14px; max-width:820px; line-height:1.55; }
+
+  main{ max-width: 1180px; margin: 0 auto; padding: 28px 40px 60px 40px; }
+
+  /* ---- Cheat sheet de montos ---- */
+  .cheatsheet{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 34px;
+  }
+  .cheatsheet h2{
+    font-family:"Inter",sans-serif; font-size:14px; text-transform:uppercase;
+    letter-spacing:0.6px; color:var(--ink-dim); margin:0 0 14px 0; font-weight:700;
+  }
+  table.amounts{ width:100%; border-collapse:collapse; font-family:"Inter",sans-serif; font-size:13.5px; }
+  table.amounts th{
+    text-align:left; color:var(--ink-dim); font-weight:600; font-size:11.5px;
+    text-transform:uppercase; letter-spacing:0.3px; padding: 6px 10px; border-bottom:1px solid var(--line);
+  }
+  table.amounts td{ padding: 9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.amounts tr:last-child td{ border-bottom:none; }
+  .rec-tag{
+    display:inline-block; font-weight:700; font-size:11.5px; padding:2px 8px;
+    border-radius:999px; color:#0c1420; white-space:nowrap;
+  }
+  .amt{ color: var(--amount); font-weight:700; }
+
+  /* ---- Categorías ---- */
+  .category{ margin-bottom: 38px; }
+  .category-head{
+    display:flex; align-items:center; gap:12px; margin-bottom: 14px;
+  }
+  .cat-dot{ width:14px; height:14px; border-radius:4px; flex:none; }
+  .category-head h2{
+    font-family:"Inter",sans-serif; font-size:15.5px; font-weight:700; margin:0; letter-spacing:0.2px;
+  }
+  .category-head span.range{ color:var(--ink-dim); font-family:"Inter",sans-serif; font-size:12.5px; font-weight:500; }
+
+  .cards{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 820px){ .cards{ grid-template-columns: 1fr; } }
+
+  .card{
+    background: var(--bg-card2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--cat-color, var(--D));
+    border-radius: 8px;
+    padding: 13px 16px;
+  }
+  .card-top{ display:flex; align-items:baseline; gap:9px; margin-bottom:5px; }
+  .card-num{
+    font-family:"Inter",sans-serif; font-weight:800; font-size:13.5px;
+    color: var(--cat-color, var(--D));
+  }
+  .card-title{ font-size:15.5px; font-weight:600; line-height:1.25; }
+  .card-body{
+    font-family:"Inter",sans-serif; font-size:12.8px; color:var(--ink); line-height:1.5;
+  }
+  .badge{
+    display:inline-block; margin-top:7px; font-family:"Inter",sans-serif; font-size:11.5px;
+    font-weight:700; color:#0c1420; background:var(--amount); padding:2px 9px; border-radius:6px;
+  }
+
+  footer{ padding: 8px 40px 30px 40px; color:var(--ink-dim); font-family:"Inter",sans-serif; font-size:11.5px; line-height:1.5; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ficha de estudio — Las 40 Recomendaciones del GAFI</h1>
+  <p class="ui">Un resumen para memorizar número + nombre + lo esencial de cada Recomendación, incluyendo los montos y plazos de las Notas Interpretativas que suelen aparecer en examen. Basado en el documento «Las Recomendaciones del GAFI», versión de diciembre de 2025.</p>
+</header>
+
+<main>
+  <div class="cheatsheet">
+    <h2 class="ui">📌 Tabla rápida de montos y plazos (lo primero que hay que memorizar)</h2>
+    <table class="amounts">
+      <thead>
+        <tr><th>Recomendación</th><th>Umbral / plazo</th><th>¿Para qué aplica?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R10</span></td><td class="amt">USD/EUR 15,000</td><td>Umbral general de DDC para transacciones ocasionales (instituciones financieras).</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R11</span></td><td class="amt">5 años (mínimo)</td><td>Conservación de registros de transacciones y de DDC, desde el fin de la relación o la transacción.</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R15</span></td><td class="amt">USD/EUR 1,000</td><td>Umbral de DDC para Proveedores de Servicios de Activos Virtuales (PSAV) — más bajo que el general de la R10.</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R16</span></td><td class="amt">Hasta USD/EUR 1,000</td><td>Umbral mínimo opcional en transferencias electrónicas (nacionales o transfronterizas): por debajo de este monto basta información reducida del ordenante.</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R22 / R23</span></td><td class="amt">USD/EUR 3,000</td><td>Umbral de DDC para <b>casinos</b> (APNFD).</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">R22 / R23</span></td><td class="amt">USD/EUR 15,000</td><td>Umbral de DDC para <b>comerciantes de metales y piedras preciosas</b> (APNFD) en transacciones en efectivo.</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--F)">R32</span></td><td class="amt">USD/EUR 15,000</td><td>Umbral para exigir declaración de transporte físico transfronterizo de efectivo o instrumentos negociables al portador.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- A -->
+  <div class="category" style="--cat-color:var(--A)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--A)"></span>
+      <h2 class="ui">A · Políticas y Coordinación ALA/CFT</h2><span class="range">R1–R2</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R1</span><span class="card-title">Evaluación de riesgos y enfoque basado en riesgo (EBR)</span></div>
+        <div class="card-body">Los países deben identificar y entender sus riesgos LA/FT y FP, y aplicar medidas <b>proporcionales</b>: reforzadas si el riesgo es mayor, simplificadas si es menor. El riesgo de FP bajo esta Recomendación se limita únicamente a las Recs 1, 2, 7 y 15.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R2</span><span class="card-title">Cooperación y coordinación nacional</span></div>
+        <div class="card-body">Los países deben tener políticas ALA/CFT/CFP nacionales, revisadas periódicamente, y mecanismos de cooperación y coordinación entre autoridades competentes (ej. un comité o coordinador nacional).</div></div>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="category" style="--cat-color:var(--B)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--B)"></span>
+      <h2 class="ui">B · Lavado de Activos y Decomiso</h2><span class="range">R3–R4</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R3</span><span class="card-title">Delito de lavado de activos</span></div>
+        <div class="card-body">Tipificar el LA según las Convenciones de Viena y Palermo, aplicándolo a la más amplia gama de delitos determinantes; debe existir responsabilidad penal (o civil/administrativa) también para personas jurídicas.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R4</span><span class="card-title">Decomiso y medidas provisionales</span></div>
+        <div class="card-body">Adoptar medidas —incluido el decomiso sin condena— para confiscar bienes lavados, producto e instrumentos del delito, sin afectar los derechos de terceros de buena fe.</div></div>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="category" style="--cat-color:var(--C)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--C)"></span>
+      <h2 class="ui">C · Financiamiento del Terrorismo y de la Proliferación</h2><span class="range">R5–R8</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R5</span><span class="card-title">Delito de financiamiento del terrorismo</span></div>
+        <div class="card-body">Tipificar el FT conforme al Convenio de 1999: financiar a un terrorista o una organización terrorista, incluso sin vínculo a un acto terrorista específico.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R6</span><span class="card-title">Sanciones financieras dirigidas — terrorismo/FT</span></div>
+        <div class="card-body">Implementar sin demora las sanciones de las resoluciones del Consejo de Seguridad de la ONU (ej. 1267 y 1373): congelar activos y prohibir poner fondos a disposición de personas/entidades designadas.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R7</span><span class="card-title">Sanciones financieras dirigidas — proliferación</span></div>
+        <div class="card-body">Implementar sin demora las sanciones de la ONU relativas al financiamiento de la proliferación de armas de destrucción masiva. Es la Recomendación «ancla» del riesgo de FP en toda la metodología.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R8</span><span class="card-title">Organizaciones sin fines de lucro (OSFL)</span></div>
+        <div class="card-body">Revisar el sector y aplicar medidas <b>focalizadas y basadas en riesgo</b> solo a las OSFL identificadas como vulnerables al abuso por FT, sin dañar la actividad legítima del sector.</div></div>
+    </div>
+  </div>
+
+  <!-- D -->
+  <div class="category" style="--cat-color:var(--D)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--D)"></span>
+      <h2 class="ui">D · Medidas Preventivas</h2><span class="range">R9–R23 (la categoría más extensa)</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R9</span><span class="card-title">Leyes sobre el secreto de las instituciones financieras</span></div>
+        <div class="card-body">Las leyes de secreto o confidencialidad no deben impedir la implementación de las Recomendaciones del GAFI.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R10</span><span class="card-title">Debida diligencia del cliente (DDC)</span></div>
+        <div class="card-body">Identificar y verificar al cliente y al beneficiario final al iniciar la relación, en transacciones ocasionales sobre el umbral, ante sospecha de LA/FT o dudas sobre datos previos.</div>
+        <span class="badge">Umbral: USD/EUR 15,000</span></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R11</span><span class="card-title">Mantenimiento de registros</span></div>
+        <div class="card-body">Conservar registros de transacciones y de la información de DDC, suficientes para reconstruir cada operación.</div>
+        <span class="badge">Plazo: mínimo 5 años</span></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R12</span><span class="card-title">Personas expuestas políticamente (PEP)</span></div>
+        <div class="card-body">Medidas reforzadas siempre para PEP <b>extranjeras</b> (aprobación de alta gerencia, origen de fondos, monitoreo intensificado); para PEP locales o de organismos internacionales, según el riesgo.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R13</span><span class="card-title">Banca corresponsal</span></div>
+        <div class="card-body">DDC reforzada en relaciones corresponsales transfronterizas (entender el negocio del banco representado, aprobación de alta gerencia); prohibido operar con bancos pantalla.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R14</span><span class="card-title">Servicios de transferencia de dinero o valores (STDV)</span></div>
+        <div class="card-body">Los proveedores de STDV y sus agentes deben tener licencia o estar registrados, y sujetos a monitoreo efectivo.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R15</span><span class="card-title">Nuevas tecnologías</span></div>
+        <div class="card-body">Evaluar riesgos de nuevos productos/tecnologías (incluye activos virtuales) antes del lanzamiento. Los Proveedores de Servicios de Activos Virtuales (PSAV) deben tener licencia/registro y cumplir las Recs 10 a 21.</div>
+        <span class="badge">Umbral DDC PSAV: USD/EUR 1,000</span></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R16</span><span class="card-title">Transparencia de pagos</span></div>
+        <div class="card-body">Incluir información completa y precisa del ordenante y beneficiario en pagos/transferencias de valor. Los países pueden fijar un umbral mínimo bajo el cual basta información reducida.</div>
+        <span class="badge">Umbral opcional: hasta USD/EUR 1,000</span></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R17</span><span class="card-title">Dependencia en terceros</span></div>
+        <div class="card-body">Permite delegar ciertos elementos de la DDC en un tercero, pero la responsabilidad final sigue siendo de la institución que delega.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R18</span><span class="card-title">Controles internos y filiales y subsidiarias</span></div>
+        <div class="card-body">Programas ALA/CFT a nivel de todo el grupo financiero, con intercambio de información entre sucursales/filiales, incluidas las del extranjero.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R19</span><span class="card-title">Países de mayor riesgo</span></div>
+        <div class="card-body">Aplicar debida diligencia intensificada frente a países de mayor riesgo y, cuando el GAFI lo solicite, contramedidas.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R20</span><span class="card-title">Reporte de operaciones sospechosas (ROS)</span></div>
+        <div class="card-body">Reportar con prontitud a la UIF cuando se sospeche que los fondos provienen de actividad criminal o están vinculados al financiamiento del terrorismo.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R21</span><span class="card-title">Revelación (tipping-off) y confidencialidad</span></div>
+        <div class="card-body">Proteger legalmente a quien reporta de buena fe (aunque no conociera el delito subyacente) y prohibir revelar que se presentó un ROS.</div></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R22</span><span class="card-title">APNFD: debida diligencia del cliente</span></div>
+        <div class="card-body">Aplicar DDC/registro a casinos, agentes inmobiliarios, comerciantes de metales/piedras preciosas, abogados/notarios/contadores y proveedores de servicios societarios y fiduciarios, en las actividades específicas listadas.</div>
+        <span class="badge">Casinos: USD/EUR 3,000 · Metales/piedras preciosas: USD/EUR 15,000</span></div>
+
+      <div class="card"><div class="card-top"><span class="card-num">R23</span><span class="card-title">APNFD: otras medidas</span></div>
+        <div class="card-body">Exigir a abogados/contadores, comerciantes de metales/piedras preciosas y proveedores de servicios societarios reportar operaciones sospechosas en las actividades señaladas en la R22.</div></div>
+    </div>
+  </div>
+
+  <!-- E -->
+  <div class="category" style="--cat-color:var(--E)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--E)"></span>
+      <h2 class="ui">E · Transparencia y Beneficiario Final</h2><span class="range">R24–R25</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R24</span><span class="card-title">Transparencia y beneficiario final de personas jurídicas</span></div>
+        <div class="card-body">Asegurar información adecuada, precisa y actualizada sobre el beneficiario final de las personas jurídicas; prohibir la emisión de acciones al portador nuevas.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R25</span><span class="card-title">Transparencia y beneficiario final de otras estructuras jurídicas</span></div>
+        <div class="card-body">Lo mismo para fideicomisos y estructuras similares: información sobre fideicomitente (settlor), fiduciario (trustee) y beneficiario.</div></div>
+    </div>
+  </div>
+
+  <!-- F -->
+  <div class="category" style="--cat-color:var(--F)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--F)"></span>
+      <h2 class="ui">F · Facultades y Responsabilidades de Autoridades Competentes</h2><span class="range">R26–R35</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R26</span><span class="card-title">Regulación y supervisión de instituciones financieras</span></div>
+        <div class="card-body">Regulación y supervisión adecuadas; prohibido operar bancos pantalla; impedir que criminales controlen o dirijan una institución financiera.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R27</span><span class="card-title">Facultades de los supervisores</span></div>
+        <div class="card-body">Los supervisores deben poder inspeccionar, exigir información y sancionar (conforme a la R35), incluyendo restringir o retirar licencias.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R28</span><span class="card-title">Regulación y supervisión de las APNFD</span></div>
+        <div class="card-body">Los casinos requieren licencia y régimen estricto de supervisión; las demás APNFD son supervisadas por una autoridad o por un organismo autorregulador (OAR), según riesgo.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R29</span><span class="card-title">Unidades de Inteligencia Financiera (UIF)</span></div>
+        <div class="card-body">Centro nacional para recibir y analizar reportes de operaciones sospechosas y otra información relevante; debe tener acceso oportuno a información financiera, administrativa y del orden público.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R30</span><span class="card-title">Responsabilidades de autoridades de orden público e investigativas</span></div>
+        <div class="card-body">Investigación financiera proactiva y en paralelo en casos que generan grandes volúmenes de activos; identificación y embargo rápido de bienes.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R31</span><span class="card-title">Facultades de las autoridades de orden público e investigativas</span></div>
+        <div class="card-body">Acceso a documentos, registros, testigos y bienes; capacidad de usar técnicas especiales (operaciones encubiertas, intercepción de comunicaciones, entregas controladas).</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R32</span><span class="card-title">Transporte de efectivo</span></div>
+        <div class="card-body">Sistema de declaración y/o revelación para el transporte físico transfronterizo de moneda o instrumentos negociables al portador.</div>
+        <span class="badge">Umbral: USD/EUR 15,000</span></div>
+      <div class="card"><div class="card-top"><span class="card-num">R33</span><span class="card-title">Estadísticas</span></div>
+        <div class="card-body">Mantener estadísticas amplias: ROS recibidos, investigaciones, condenas, bienes congelados/decomisados y asistencia legal mutua.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R34</span><span class="card-title">Guía y retroalimentación</span></div>
+        <div class="card-body">Autoridades, supervisores y OAR deben dar directrices y retroalimentación a instituciones financieras y APNFD.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R35</span><span class="card-title">Sanciones</span></div>
+        <div class="card-body">Deben existir sanciones eficaces, proporcionales y disuasivas (penales, civiles o administrativas), aplicables también a directores y alta gerencia, para quienes incumplan las Recs 6 y 8 a 23.</div></div>
+    </div>
+  </div>
+
+  <!-- G -->
+  <div class="category" style="--cat-color:var(--G)">
+    <div class="category-head"><span class="cat-dot" style="background:var(--G)"></span>
+      <h2 class="ui">G · Cooperación Internacional</h2><span class="range">R36–R40</span></div>
+    <div class="cards">
+      <div class="card"><div class="card-top"><span class="card-num">R36</span><span class="card-title">Instrumentos internacionales</span></div>
+        <div class="card-body">Ratificar e implementar la Convención de Viena (1988), la Convención de Palermo (2000), la Convención de la ONU contra la Corrupción (2003) y el Convenio Internacional contra el FT (1999).</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R37</span><span class="card-title">Asistencia legal mutua</span></div>
+        <div class="card-body">Prestar la más amplia asistencia legal mutua posible, con base jurídica adecuada; no negarla solo por razones fiscales o de secreto bancario.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R38</span><span class="card-title">Asistencia legal mutua: congelamiento y decomiso</span></div>
+        <div class="card-body">Responder rápidamente a solicitudes extranjeras para identificar, congelar y decomisar bienes; poder compartir o devolver bienes decomisados.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R39</span><span class="card-title">Extradición</span></div>
+        <div class="card-body">Ejecutar solicitudes de extradición por LA/FT sin demora indebida; si un país no extradita a sus propios nacionales, debe juzgarlos internamente.</div></div>
+      <div class="card"><div class="card-top"><span class="card-num">R40</span><span class="card-title">Otras formas de cooperación internacional</span></div>
+        <div class="card-body">Prestar la más amplia cooperación posible entre autoridades competentes (no solo UIF o judicial), de forma espontánea o a solicitud.</div></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="ui">
+  Fuente: GAFI, «Las Recomendaciones del GAFI», versión adoptada en 2012, actualizada a diciembre de 2025. Los resúmenes están redactados en lenguaje propio para facilitar la memorización; los montos y plazos (USD/EUR 15,000; USD/EUR 1,000; USD/EUR 3,000; 5 años) están tomados literalmente del texto y de sus Notas Interpretativas.
+</footer>
+
+</body>
+</html>
