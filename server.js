@@ -6,16 +6,14 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HTML_DIR = path.join(__dirname, 'html');
 const PUBLIC_DIR = path.join(__dirname, 'public');
+const HTML_DIR = path.join(PUBLIC_DIR, 'html');
 
 if (!fs.existsSync(HTML_DIR)) {
   fs.mkdirSync(HTML_DIR, { recursive: true });
 }
 
 app.use(express.static(PUBLIC_DIR));
-app.use('/html', express.static(path.join(PUBLIC_DIR, 'html')));
-app.use('/files', express.static(HTML_DIR));
 
 app.get('/api/files', (_req, res) => {
   const files = fs
