@@ -84,6 +84,10 @@ async function loadFiles() {
     preview.hidden = true;
     placeholder.hidden = false;
   }
+
+  if (!activeFile) {
+    openFile(files[0].name, files[0].url);
+  }
 }
 
 function openFile(name, url) {
