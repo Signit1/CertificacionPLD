@@ -1,0 +1,783 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>DCG por Sujeto Obligado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070d;
+    --bg-panel:#0c1220ee;
+    --bg-panel-solid:#0c1220;
+    --bg-row:#0a0f1c;
+    --bg-row-alt:#0d1322;
+    --line:#1c2438;
+    --ink:#EDEFF7;
+    --ink-dim:#8b93ab;
+    --ink-faint:#525a72;
+    --catA:#e8b94a; /* Fundamento — oro */
+    --catB:#31b8ac; /* Identificación — teal */
+    --catC:#e8735a; /* Reportes — coral */
+    --catD:#a98bfa; /* Comité / Oficial de Cumplimiento — violeta */
+    --catE:#5aa9e8; /* Sanciones — azul */
+    --distinct:#ffcf4d;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);}
+  body{
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; left:0; right:0;
+    display:flex; align-items:center; gap:16px;
+    padding:16px 20px;
+    z-index:25;
+    background:rgba(5,7,13,0.97);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+    row-gap:10px;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    white-space:nowrap;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .brand small{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:400;
+    font-size:11px;
+    color:var(--ink-dim);
+    letter-spacing:0.04em;
+  }
+  .back-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    text-decoration:none;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 12px;
+    white-space:nowrap;
+  }
+  .back-link:hover{ color:var(--ink); background:rgba(255,255,255,0.06); }
+  .searchwrap{ margin-left:auto; position:relative; }
+  #search{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--line);
+    border-radius:999px;
+    color:var(--ink);
+    padding:8px 14px 8px 32px;
+    width:190px;
+    transition:width .18s, background .15s;
+  }
+  #search:focus{ outline:none; width:240px; background:rgba(255,255,255,0.08); border-color:var(--ink-faint); }
+  .searchwrap::before{
+    content:'';
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    width:9px; height:9px; border:1.5px solid var(--ink-dim); border-radius:50%;
+    pointer-events:none;
+  }
+  .searchwrap::after{
+    content:'';
+    position:absolute; left:19px; top:64%;
+    width:5px; height:1.5px; background:var(--ink-dim);
+    transform:rotate(45deg);
+    pointer-events:none;
+  }
+
+  .intro{
+    max-width:900px; margin:0 auto; padding:28px 20px 6px;
+  }
+  .intro h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(24px,4.5vw,34px);
+    margin:0 0 10px;
+    text-wrap:balance;
+  }
+  .intro p{
+    font-size:14px;
+    color:var(--ink-dim);
+    line-height:1.7;
+    margin:0 0 6px;
+    max-width:680px;
+  }
+  .legend-row{
+    display:flex; flex-wrap:wrap; gap:16px;
+    margin:18px 0 22px;
+    font-size:11.5px;
+    color:var(--ink-dim);
+  }
+  .legend-row .item{ display:flex; align-items:center; gap:7px; }
+  .legend-row .sw{ width:10px; height:10px; border-radius:3px; flex:none; }
+  .legend-row .flag{
+    width:10px; height:10px; border-radius:3px; flex:none;
+    background:rgba(255,207,77,0.18); border:1px solid var(--distinct);
+    position:relative;
+  }
+  .legend-row .flag::after{
+    content:''; position:absolute; top:-2px; right:-2px;
+    width:5px; height:5px; border-radius:50%; background:var(--distinct);
+  }
+
+  /* ---------- matrix ---------- */
+  .matrix-wrap{
+    max-width:1400px; margin:0 auto; padding:0 20px 60px;
+  }
+  .matrix-scroll{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:14px;
+    -webkit-overflow-scrolling:touch;
+  }
+  table.matrix{
+    border-collapse:separate;
+    border-spacing:0;
+    width:100%;
+    min-width:1080px;
+  }
+  table.matrix thead th{
+    position:sticky; top:0; z-index:10;
+    background:var(--bg-panel-solid);
+    padding:14px 16px;
+    text-align:left;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    border-bottom:2px solid var(--line);
+    white-space:nowrap;
+  }
+  table.matrix thead th.corner{
+    left:0; z-index:12;
+    min-width:168px;
+  }
+  table.matrix thead th .catdot{
+    display:inline-block; width:8px; height:8px; border-radius:50%;
+    margin-right:7px; vertical-align:middle;
+  }
+  table.matrix tbody th{
+    position:sticky; left:0; z-index:8;
+    background:var(--bg-panel-solid);
+    padding:14px 16px;
+    text-align:left;
+    font-family:'Fraunces', serif;
+    font-size:14.5px;
+    font-weight:600;
+    border-right:2px solid var(--line);
+    border-bottom:1px solid var(--line);
+    min-width:168px;
+    vertical-align:top;
+    line-height:1.3;
+  }
+  table.matrix tbody th small{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:400;
+    font-size:10px;
+    color:var(--ink-dim);
+    letter-spacing:0.02em;
+    margin-top:3px;
+    text-transform:none;
+  }
+  table.matrix tbody tr:nth-child(odd) td, table.matrix tbody tr:nth-child(odd) th{ background:var(--bg-row); }
+  table.matrix tbody tr:nth-child(even) td, table.matrix tbody tr:nth-child(even) th{ background:var(--bg-row-alt); }
+  table.matrix td{
+    padding:13px 16px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+    font-size:12.5px;
+    line-height:1.55;
+    color:#cfd3e2;
+    max-width:230px;
+    cursor:pointer;
+    transition:background .12s;
+    position:relative;
+  }
+  table.matrix td:hover{ background:rgba(255,255,255,0.045) !important; }
+  table.matrix td.distinct{ box-shadow:inset 3px 0 0 var(--distinct); }
+  table.matrix td.distinct::before{
+    content:'';
+    position:absolute; top:10px; right:10px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--distinct);
+  }
+  table.matrix td.dim{ opacity:0.25; }
+  table.matrix tbody th.dim{ opacity:0.35; }
+  tr.hide{ display:none; }
+
+  /* ---------- drawer ---------- */
+  #drawer{
+    position:fixed; top:0; right:0; bottom:0;
+    width:420px;
+    max-width:92vw;
+    background:var(--bg-panel-solid);
+    border-left:1px solid var(--line);
+    transform:translateX(100%);
+    transition:transform .32s cubic-bezier(.2,.8,.2,1);
+    z-index:40;
+    display:flex; flex-direction:column;
+    box-shadow:-30px 0 60px rgba(0,0,0,0.4);
+  }
+  #drawer.open{ transform:translateX(0); }
+  #scrim{
+    position:fixed; inset:0; z-index:35;
+    background:rgba(0,0,0,0.35);
+    opacity:0; pointer-events:none;
+    transition:opacity .25s;
+  }
+  #scrim.show{ opacity:1; pointer-events:auto; }
+  .drawer-head{
+    padding:26px 24px 16px;
+    border-bottom:1px solid var(--line);
+    flex:none;
+    position:relative;
+  }
+  .drawer-kicker{
+    display:flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin-bottom:10px;
+  }
+  .drawer-kicker .sw{ width:8px; height:8px; border-radius:50%; }
+  .drawer-title{
+    font-family:'Fraunces', serif;
+    font-size:21px;
+    font-weight:600;
+    line-height:1.25;
+    text-wrap:balance;
+  }
+  .drawer-sub{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12.5px;
+    color:var(--ink-dim);
+    margin-top:6px;
+  }
+  .drawer-close{
+    position:absolute; top:20px; right:20px;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px;
+    line-height:1;
+  }
+  .drawer-close:hover{ color:var(--ink); background:rgba(255,255,255,0.1); }
+  .drawer-body{
+    padding:20px 24px 28px;
+    overflow-y:auto;
+    flex:1;
+    font-size:14px;
+    line-height:1.7;
+    color:#cfd3e2;
+  }
+  .drawer-body p{ margin:0 0 16px; white-space:pre-line; text-align:justify; hyphens:auto; }
+  .distinct-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,207,77,0.12);
+    border:1px solid rgba(255,207,77,0.4);
+    color:var(--distinct);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    padding:5px 10px;
+    border-radius:7px;
+    margin-bottom:14px;
+  }
+  .fuente-block{
+    margin-top:6px;
+    padding:12px 14px;
+    background:rgba(255,255,255,0.03);
+    border-left:2px solid var(--ink-faint);
+    border-radius:0 8px 8px 0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    line-height:1.65;
+    color:var(--ink-dim);
+  }
+  .fuente-block b{ color:var(--ink); font-weight:500; }
+  .drawer-nav{
+    padding:16px 24px 22px;
+    border-top:1px solid var(--line);
+    flex:none;
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .navchip{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px 10px;
+    cursor:pointer;
+  }
+  .navchip:hover{ color:var(--ink); background:rgba(255,255,255,0.09); }
+  .navchip.active{ color:var(--bg); background:var(--ink); border-color:transparent; }
+
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+
+  @media (max-width:640px){
+    .brand{ font-size:16px; }
+    .searchwrap{ margin-left:0; }
+    #search{ width:150px; }
+    #search:focus{ width:180px; }
+    #drawer{ width:100vw; max-width:100vw; }
+    table.matrix{ min-width:920px; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="brand">DCG por Sujeto Obligado <small>PLD/FT · 12 sectores</small></div>
+  <a class="back-link" href="https://claude.ai/code/artifact/c60402b1-e4e8-4df9-b6fa-edc6624059d5" target="_blank" rel="noopener">← Sinapsis PLD/FT</a>
+  <div class="searchwrap">
+    <input id="search" type="text" placeholder="Buscar un sector…" autocomplete="off">
+  </div>
+</div>
+
+<div class="intro">
+  <h1>Las Disposiciones de Carácter General, sector por sector</h1>
+  <p>Los 12 sujetos obligados del Sistema Financiero que aparecen en tus documentos — Bancos, Casas de Bolsa, SOCAP, SOFIPO, Fondos de Inversión, Uniones de Crédito, SOFOMES, Casas de Cambio, Centros Cambiarios, Transmisores de Dinero, ITF y Asesores en Inversiones — comparados en las mismas 5 categorías: fundamento legal, identificación de clientes, reportes, Comité/Oficial de Cumplimiento y sanciones. Toca cualquier celda para leer el detalle completo con su cita exacta.</p>
+  <div class="legend-row">
+    <div class="item"><span class="catdot sw" style="background:var(--catA)"></span> Fundamento legal</div>
+    <div class="item"><span class="catdot sw" style="background:var(--catB)"></span> Identificación</div>
+    <div class="item"><span class="catdot sw" style="background:var(--catC)"></span> Reportes</div>
+    <div class="item"><span class="catdot sw" style="background:var(--catD)"></span> Comité / Oficial de Cumplimiento</div>
+    <div class="item"><span class="catdot sw" style="background:var(--catE)"></span> Sanciones</div>
+    <div class="item"><span class="flag"></span> particularidad exclusiva de ese sector — útil para detectar trampas de examen</div>
+  </div>
+</div>
+
+<div class="matrix-wrap">
+  <div class="matrix-scroll">
+    <table class="matrix" id="matrixTable">
+      <thead>
+        <tr id="headRow">
+          <th class="corner">Sujeto obligado</th>
+        </tr>
+      </thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="scrim"></div>
+<div id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-kicker"><span class="sw" id="dkSw"></span><span id="dkLabel"></span></div>
+    <div class="drawer-title" id="dTitle"></div>
+    <div class="drawer-sub" id="dSub"></div>
+    <div class="drawer-close" id="dClose">&times;</div>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+  <div class="drawer-nav" id="dNav"></div>
+</div>
+
+<script>
+/* =========================================================================
+   DCG por Sujeto Obligado — dataset
+   Toda cita, número de Disposición, artículo y umbral proviene literalmente
+   de las 12 Disposiciones de Carácter General (DCG) y leyes que Cindy subió.
+   Donde un dato (p. ej. el monto exacto de una multa) no aparece en los
+   documentos disponibles, se dice explícitamente "no se localizó" en vez
+   de inventarlo o de asumirlo igual al de Bancos. Nada aquí se inventa.
+   ========================================================================= */
+
+const SECTORS = [
+  { id:'bancos',      name:'Bancos',                          sub:'DCG Bancos' },
+  { id:'casasbolsa',  name:'Casas de Bolsa',                   sub:'DCG Casas de Bolsa' },
+  { id:'socap',       name:'SOCAP',                            sub:'Soc. Coop. de Ahorro y Préstamo' },
+  { id:'sofipo',      name:'SOFIPO',                           sub:'Soc. Financieras Populares' },
+  { id:'fondos',      name:'Fondos de Inversión',               sub:'Operadoras y distribuidoras' },
+  { id:'uniones',     name:'Uniones de Crédito',                sub:'DCG Uniones de Crédito' },
+  { id:'sofomes',     name:'SOFOMES',                          sub:'Soc. Financieras de Objeto Múltiple' },
+  { id:'casascambio', name:'Casas de Cambio',                   sub:'DCG Casas de Cambio' },
+  { id:'centroscamb', name:'Centros Cambiarios',                sub:'Art. 81-A LGOAAC' },
+  { id:'transmisores',name:'Transmisores de Dinero',            sub:'Art. 81-A Bis LGOAAC' },
+  { id:'itf',         name:'ITF',                              sub:'Instituciones de Tecnología Financiera' },
+  { id:'asesores',    name:'Asesores en Inversiones',           sub:'DCG Asesores en Inversiones' },
+];
+
+const CATEGORIES = [
+  { id:'fundamento',     name:'Fundamento legal',                    color:'A' },
+  { id:'identificacion', name:'Identificación de clientes/usuarios', color:'B' },
+  { id:'reportes',       name:'Reportes',                            color:'C' },
+  { id:'comite',         name:'Comité / Oficial de Cumplimiento',    color:'D' },
+  { id:'sanciones',      name:'Sanciones',                           color:'E' },
+];
+
+const D = (short, detail, fuente, distinct) => ({ short, detail, fuente, distinct: !!distinct });
+
+const DATA = {
+  bancos: {
+    fundamento: D(
+      'Art. 115 LIC (Ley de Instituciones de Crédito)',
+      'La DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito — se funda en el art. 115 de la LIC (Ley de Instituciones de Crédito). El Cap. I, Disp. 1ª y 2ª, define su objeto: establecer medidas para prevenir y detectar actos ligados a los arts. 139 Quáter y 400 Bis del Código Penal Federal (CPF).',
+      'DCG Bancos, Cap. I, Disp. 1ª; LIC art. 115.'),
+    identificacion: D(
+      'Cliente y Usuario · US$1,000 / 3,000 / 5,000',
+      'Distingue Cliente de Usuario. Montos umbral para identificación de Usuarios en transferencias: ≥US$1,000-<US$3,000 (datos básicos), ≥US$3,000-<US$5,000 (más copia de identificación), ≥US$5,000 (expediente completo). Operación Relevante ≥US$7,500.',
+      'DCG Bancos, Disp. 16ª, 21ª-1, 2ª fracc. XXX.'),
+    reportes: D(
+      'Relevantes/USD/Activos Virtuales trimestral · transferencias mensual · Inusuales 3 días hábiles · 24h',
+      'Reportes trimestrales de Relevantes, efectivo USD, cheques de caja y Activos Virtuales, en los 10 primeros días hábiles de enero/abril/julio/octubre; transferencias internacionales mensual; Operaciones Inusuales e Internas Preocupantes dentro de 3 días hábiles tras dictamen del Comité (máximo 60 días naturales para dictaminar); Reporte de 24 horas por sospecha fundada de los arts. 139 Quáter/400 Bis del Código Penal Federal (CPF).',
+      'DCG Bancos, Disp. 34ª-42ª; LIC art. 115.'),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · Oficial de Cumplimiento certificado ante la CNBV',
+      'Órgano colegiado obligatorio, mínimo 3 miembros, sesiona al menos 1 vez al mes. Entidades con menos de 25 personas a su servicio NO están obligadas a constituirlo — sus funciones las asume el Oficial de Cumplimiento.\n\nEl Oficial de Cumplimiento es designado por el consejo o el Comité, dentro de las 3 jerarquías inmediatas inferiores al director general, y debe contar con certificación ante la CNBV (Comisión Nacional Bancaria y de Valores), renovable cada 5 años.',
+      'DCG Bancos, Cap. VIII, Disp. 43ª-47ª.'),
+    sanciones: D(
+      'Art. 115 LIC (con montos explícitos): 10%-100% del monto · 30,000-100,000 días de salario · 5,000-50,000 días de salario',
+      'Es el ÚNICO de los 12 sectores donde la propia ley —no la DCG— reproduce montos exactos de multa. El art. 115 de la LIC (Ley de Instituciones de Crédito) establece: multa del 10% al 100% del monto de la operación (Lista de Personas Bloqueadas / operación inusual no reportada); 30,000 a 100,000 días de salario (reportes clave no presentados: Relevantes, Internas Preocupantes, Transferencias Internacionales o efectivo USD); y 5,000 a 50,000 días de salario para los demás incumplimientos.\n\nEn los otros 11 sectores, ni la DCG ni los documentos disponibles reproducen estos montos: remiten genéricamente a su ley.',
+      'LIC art. 115; DCG Bancos Disp. 67ª.', true),
+  },
+  casasbolsa: {
+    fundamento: D(
+      'Art. 212 de la LMV (Ley del Mercado de Valores)',
+      'Resolución por la que se expiden las DCG a que se refiere el artículo 212 de la Ley del Mercado de Valores (LMV). Expedida por la SHCP (Secretaría de Hacienda y Crédito Público) con opinión de la CNBV (Comisión Nacional Bancaria y de Valores), con fundamento también en el art. 31 fracciones VII y XXV de la Ley Orgánica de la Administración Pública Federal (LOAPF).',
+      'DCG Casas de Bolsa, Disp. 1ª; LMV art. 212.'),
+    identificacion: D(
+      'Cliente y Usuario · Relevante US$7,500 · efectivo USD 300/día, 1,500/mes',
+      'Distingue Cliente (Disp. 2ª fracc. IV, con contrato) de Usuario (Disp. 2ª fracc. XXXVII, sin relación permanente). Expediente de identificación del Cliente en la Disp. 4ª.\n\nPara dólares en efectivo, los Usuarios personas físicas tienen tope de US$300 por operación diaria y US$1,500 acumulado por mes calendario (Disp. 33ª); no se reciben dólares en efectivo de Usuarios personas morales ni Fideicomisos. Operación Relevante ≥US$7,500 (Disp. 2ª fracc. XXIX).',
+      'DCG Casas de Bolsa, Disp. 2ª fracc. IV, XXIX y XXXVII; Disp. 4ª y 33ª.'),
+    reportes: D(
+      'Relevantes trimestral (10 primeros días hábiles) · efectivo USD trimestral · transferencias mensual (15 días hábiles) · Inusuales 3 días/60 días · 24h',
+      'Operaciones Relevantes trimestral (Disp. 34ª), primeros 10 días hábiles de enero/abril/julio/octubre. Operaciones en efectivo con USD también trimestral (Disp. 35ª): umbral US$500 para Cliente / >US$250 para Usuario; si la operación ya es ≥US$7,500 queda exenta de duplicarse como Relevante.\n\nTransferencias internacionales mensual, dentro de los 15 días hábiles siguientes al mes (Disp. 36ª), umbral ≥US$1,000. Operaciones Inusuales (Disp. 38ª-42ª) e Internas Preocupantes (Disp. 43ª): dentro de 3 días hábiles tras la sesión del Comité que las dictamine, con hasta 60 días naturales desde la alerta para dictaminar. Reporte de 24 horas (Disp. 42ª) cuando hay sospecha fundada.',
+      'DCG Casas de Bolsa, Disp. 34ª-36ª, 38ª-43ª y 71ª.'),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas',
+      'Comité de Comunicación y Control obligatorio (Disp. 44ª), al menos 3 miembros. Exime a las Casas de Bolsa con menos de 25 personas a su servicio, directas o indirectas vía empresas de servicios complementarios (Disp. 45ª). Si no hay Comité, sus funciones las asume el Oficial de Cumplimiento, salvo la función de actualización de la clave del sistema (fracc. XI de la Disp. 44ª), que corresponde al director general.',
+      'DCG Casas de Bolsa, Disp. 44ª-45ª.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LMV (Ley del Mercado de Valores)',
+      'La Disp. 65ª-66ª de la DCG establece que la CNBV (Comisión Nacional Bancaria y de Valores) impondrá las sanciones correspondientes "en los términos señalados en la Ley" (LMV, Ley del Mercado de Valores), y define qué constituye incumplimiento (información incompleta, ilegible, con errores, o medios electrónicos fuera de especificaciones).\n\nEl monto exacto de las multas no está en la DCG ni en los documentos disponibles — no se puede citar sin inventarlo.',
+      'DCG Casas de Bolsa, Disp. 65ª-66ª; LMV (monto no localizado en los documentos disponibles).'),
+  },
+  socap: {
+    fundamento: D(
+      'Arts. 71 y 72 de la LRASCAP',
+      'Disposiciones de Carácter General a que se refieren los artículos 71 y 72 de la Ley para Regular las Actividades de las Sociedades Cooperativas de Ahorro y Préstamo (LRASCAP). Publicadas el 31-dic-2014, con fundamento también en el art. 31 fracc. XXXIV de la LOAPF (Ley Orgánica de la Administración Pública Federal).',
+      'DCG SOCAP, Disp. 1ª; LRASCAP arts. 71-72.'),
+    identificacion: D(
+      'Cliente y Usuario · Relevante US$7,500 · efectivo USD 500/250 · niveles de operación I-IV',
+      'Distingue Cliente (socios y terceros con contrato o cuentahabientes, Disp. 2ª fracc. II/III) de Usuario (sin relación patrimonial ni comercial permanente, fracc. XXXVIII). Expediente de identificación en la Disp. 4ª.\n\nIgual que Bancos, distingue montos de efectivo en dólares: US$500 para Cliente y US$250 para Usuario (Disp. 38ª). Operación Relevante ≥US$7,500 (Disp. 2ª fracc. XXIX). Particularidad exclusiva de este sector: la Ley clasifica a las Sociedades por niveles de operación I a IV (Disp. 2ª fracc. XXXV), lo cual condiciona algunas obligaciones.',
+      'DCG SOCAP, Disp. 2ª fracc. II, III, XXIX y XXXV; Disp. 4ª y 38ª.'),
+    reportes: D(
+      'Relevantes trimestral (10 primeros días hábiles) · efectivo USD trimestral · transferencias mensual · Inusuales 3 días/60 días · 24h',
+      'Esquema prácticamente idéntico a Casas de Bolsa: Operaciones Relevantes trimestral (Disp. 37ª), primeros 10 días hábiles de enero/abril/julio/octubre; efectivo en USD trimestral (Disp. 38ª), mismos umbrales US$500/US$250; transferencias internacionales mensual (Disp. 39ª), umbral ≥US$1,000.\n\nOperaciones Inusuales (Disp. 41ª-45ª) e Internas Preocupantes (Disp. 46ª) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales para dictaminar; Reporte de 24 horas (Disp. 45ª).',
+      'DCG SOCAP, Disp. 37ª-39ª, 41ª-46ª.'),
+    comite: D(
+      'Obligatorio · exime solo a Sociedades con nivel de operación I (no por número de personas) · + Comité de Supervisión Auxiliar',
+      'Comité de Comunicación y Control obligatorio (Disp. 47ª), al menos 3 miembros. Diferencia clave frente a Bancos, Casas de Bolsa y SOFIPO: el umbral de exención NO se basa en número de personas, sino en que la Sociedad tenga nivel de operación I (Disp. 48ª) — las de nivel I no están obligadas a constituirlo.\n\nSi no hay Comité, sus funciones las asume el Oficial de Cumplimiento. Este sector tiene además un órgano adicional, el Comité de Supervisión Auxiliar (Disp. 2ª fracc. VI; art. 18 de la Ley), del Fondo de Protección, que no existe en Casas de Bolsa ni SOFIPO.',
+      'DCG SOCAP, Disp. 47ª-48ª, 2ª fracc. VI; LRASCAP art. 18.', true),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LRASCAP',
+      'La Disp. 69ª-70ª establece que la Comisión (y, en su caso, el Comité de Supervisión Auxiliar) impondrá las sanciones "en los términos señalados en la Ley" (LRASCAP, Ley para Regular las Actividades de las Sociedades Cooperativas de Ahorro y Préstamo). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG SOCAP, Disp. 69ª-70ª; LRASCAP (monto no localizado en los documentos disponibles).'),
+  },
+  sofipo: {
+    fundamento: D(
+      'Art. 124 de la LACP (Ley de Ahorro y Crédito Popular)',
+      'Disposiciones de Carácter General a que se refiere el artículo 124 de la Ley de Ahorro y Crédito Popular (LACP), con fundamento adicional en el art. 46 Bis, primer párrafo, de la misma Ley. Publicadas el 31-dic-2014. Aplican a sociedades financieras populares, sociedades financieras comunitarias (niveles de operación I a IV) y organismos de integración financiera rural.',
+      'DCG SOFIPO, Disp. 1ª; LACP arts. 124 y 46 Bis.'),
+    identificacion: D(
+      'Cliente y Usuario · Relevante US$7,500 · efectivo USD 500/250',
+      'Distingue Cliente (Disp. 2ª fracc. III) de Usuario (sin relación patrimonial ni comercial permanente, fracc. XXXIX). Expediente de identificación en la Disp. 4ª, misma estructura que Casas de Bolsa y SOCAP.\n\nMismos umbrales de efectivo en dólares que SOCAP: US$500 Cliente / US$250 Usuario (Disp. 37ª). Operación Relevante ≥US$7,500 (Disp. 2ª fracc. XXXI).',
+      'DCG SOFIPO, Disp. 2ª fracc. III, XXXI; Disp. 4ª y 37ª.'),
+    reportes: D(
+      'Relevantes trimestral (10 primeros días hábiles) · efectivo USD trimestral · transferencias mensual · Inusuales 3 días/60 días · 24h',
+      'Mismo esquema que Casas de Bolsa y SOCAP: Operaciones Relevantes y efectivo en USD trimestral (Disp. 37ª, primeros 10 días hábiles), mismos umbrales US$500/US$250, exentas de duplicarse si ya son ≥US$7,500.\n\nTransferencias internacionales mensual (Disp. 38ª), umbral ≥US$1,000; Operaciones Inusuales (Disp. 40ª y sig.) e Internas Preocupantes con el mismo esquema de 3 días hábiles / 60 días naturales; Reporte de 24 horas con el mismo mecanismo.',
+      'DCG SOFIPO, Disp. 37ª-38ª, 40ª y sig.'),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · + Comité de Supervisión de las Federaciones',
+      'Comité de Comunicación y Control obligatorio (Disp. 46ª). Exime a las Entidades con menos de 25 personas a su servicio, igual que Casas de Bolsa (a diferencia de SOCAP, que usa "nivel de operación I").\n\nSi no hay Comité, sus funciones las asume el Oficial de Cumplimiento. Existe también un Comité de Supervisión, órgano propio de las Federaciones (Disp. 2ª fracc. VI), análogo al Comité de Supervisión Auxiliar de SOCAP.',
+      'DCG SOFIPO, Disp. 46ª, 2ª fracc. VI.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LACP (Ley de Ahorro y Crédito Popular)',
+      'La Disp. 69ª-70ª establece que la Comisión (y, en su caso, el Comité de Supervisión) impondrá las sanciones "en los términos señalados en la Ley" (LACP, Ley de Ahorro y Crédito Popular). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG SOFIPO, Disp. 69ª-70ª; LACP (monto no localizado en los documentos disponibles).'),
+  },
+  fondos: {
+    fundamento: D(
+      'Art. 91 de la Ley de Fondos de Inversión',
+      'Disposiciones de Carácter General a que se refiere el artículo 91 de la Ley de Fondos de Inversión. Aplicables a las sociedades operadoras de fondos de inversión y a las distribuidoras de acciones de fondos de inversión ("Entidades", Disp. 2ª fracc. IX).',
+      'DCG Fondos de Inversión, Disp. 1ª y 2ª fracc. IX; Ley de Fondos de Inversión art. 91.'),
+    identificacion: D(
+      'Solo Cliente (no existe la figura de Usuario) · Relevante US$7,500',
+      'Único de los sectores de este grupo que NO tiene la figura de Usuario: solo define Cliente (Disp. 2ª fracc. III), cualquier persona física, moral o Fideicomiso que realice Operaciones con las Entidades. Expediente de identificación previo a abrir cuenta o contrato (Disp. 4ª), con reglas específicas para contratación no presencial (Disp. 4ª Bis).\n\nEl régimen simplificado no depende de un monto, sino de que el Cliente tenga Grado de Riesgo bajo y esté en el listado del Anexo 1. Operación Relevante ≥US$7,500 (Disp. 2ª fracc. XXVIII).',
+      'DCG Fondos de Inversión, Disp. 2ª fracc. III y XXVIII; Disp. 4ª y 4ª Bis.', true),
+    reportes: D(
+      'Relevantes trimestral · Inusuales 3 días/60 días · 24h · SIN reporte separado de efectivo en USD',
+      'Operaciones Relevantes trimestral (Disp. 30ª), primeros 10 días hábiles de enero/abril/julio/octubre. Operaciones Inusuales (Disp. 31ª) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales para dictaminar. Reporte de 24 horas (Disp. 35ª). Operaciones Internas Preocupantes (Disp. 36ª), mismo plazo.\n\nA diferencia de Bancos, Casas de Bolsa, SOCAP y SOFIPO, no se localizó en el documento un capítulo específico de reporte de operaciones en efectivo con dólares — consistente con que los Fondos de Inversión no suelen manejar efectivo directamente.',
+      'DCG Fondos de Inversión, Disp. 30ª, 31ª, 35ª y 36ª.', true),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas',
+      'Comité de Comunicación y Control obligatorio (Disp. 37ª), mínimo 3 miembros, sesiona al menos mensualmente. Exime a las Entidades con menos de 25 personas a su servicio, directa o indirectamente (Disp. 38ª).\n\nSi no hay Comité, sus funciones las asume el Oficial de Cumplimiento o representante de la Entidad (Disp. 42ª), salvo la actualización de la clave de acceso (fracc. XI de la Disp. 37ª), que corresponde al director general. El Oficial de Cumplimiento (Disp. 41ª) es designado por el consejo de administración o el Comité, dentro de las 3 jerarquías inmediatas inferiores al director general.',
+      'DCG Fondos de Inversión, Disp. 37ª-38ª, 41ª-42ª.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la Ley de Fondos de Inversión',
+      'La Disp. 59ª-60ª establece que la Comisión impondrá las sanciones "en los términos señalados en la Ley" (Ley de Fondos de Inversión), y define qué constituye incumplimiento (información incompleta, ilegible, con errores, o medios electrónicos fuera de especificaciones). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG Fondos de Inversión, Disp. 59ª-60ª; Ley de Fondos de Inversión (monto no localizado).'),
+  },
+  uniones: {
+    fundamento: D(
+      'Art. 129 de la Ley de Uniones de Crédito',
+      'Resolución por la que se expiden las DCG a que se refiere el artículo 129 de la Ley de Uniones de Crédito. Publicada el 26-oct-2012. Aplicable a las uniones de crédito autorizadas ("Uniones", Disp. 2ª fracc. XXXV).',
+      'DCG Uniones de Crédito, Disp. 1ª; Ley de Uniones de Crédito art. 129.'),
+    identificacion: D(
+      'Solo Cliente (no existe la figura de Usuario) · Relevante US$7,500 · efectivo USD ≥500',
+      'Al igual que Fondos de Inversión, no define la figura de Usuario para efectos PLD/FT: solo Cliente (Disp. 2ª fracc. III), los socios o terceros con quienes la Unión realiza Operaciones. Expediente de identificación en la Disp. 4ª.\n\nOperación Relevante ≥US$7,500 (Disp. 2ª fracc. XXVII). Único de este grupo con reporte trimestral separado de compra de efectivo en dólares, por cada operación ≥US$500 (Disp. 27ª, con fundamento en el art. 41 de la Ley de Uniones de Crédito).',
+      'DCG Uniones de Crédito, Disp. 2ª fracc. III y XXVII; Disp. 4ª y 27ª; Ley de Uniones de Crédito art. 41.', true),
+    reportes: D(
+      'Relevantes trimestral · efectivo USD trimestral (≥US$500, exclusivo de este sector) · Inusuales 3 días/60 días · 24h',
+      'Operaciones Relevantes trimestral (Disp. 26ª), primeros 10 días hábiles. Único sector de este grupo con reporte trimestral separado de operaciones en efectivo con dólares (Disp. 27ª, fundamento art. 41 de la Ley de Uniones de Crédito): por cada compra en efectivo ≥US$500; si el monto acumulado llega a ≥US$7,500, la Unión queda exenta de reportarla también como Relevante.\n\nOperaciones Inusuales (Disp. 28ª) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales. Reporte de 24 horas (Disp. 32ª). Operaciones Internas Preocupantes (Disp. 33ª), mismo esquema de plazos.',
+      'DCG Uniones de Crédito, Disp. 26ª-28ª, 32ª-33ª; Ley de Uniones de Crédito art. 41.', true),
+    comite: D(
+      'Obligatorio · exime solo si simultáneamente: menos de 10 personas, menos de 500 socios Y activos menores a 100 millones de UDIS',
+      'Comité de Comunicación y Control obligatorio (Disp. 34ª), mínimo 3 miembros. Tiene el umbral de exención más estricto y complejo de los 12 sectores: solo exime a las Uniones que cumplan simultáneamente tres condiciones — menos de 10 personas a su servicio, menos de 500 socios, Y activos totales por menos de 100 millones de UDIS (Unidades de Inversión) — Disp. 35ª.\n\nSi no hay Comité, sus funciones las asume el Oficial de Cumplimiento (Disp. 38ª), designado por el consejo de administración o el Comité.',
+      'DCG Uniones de Crédito, Disp. 34ª-35ª y 38ª.', true),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la Ley de Uniones de Crédito',
+      'La Disp. 55ª-56ª establece que la Comisión impondrá las sanciones "en los términos señalados en la Ley" (Ley de Uniones de Crédito). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG Uniones de Crédito, Disp. 55ª-56ª; Ley de Uniones de Crédito (monto no localizado).'),
+  },
+  sofomes: {
+    fundamento: D(
+      'Art. 87-D LGOAAC (reguladas) / art. 95 Bis LGOAAC (no reguladas)',
+      'Resolución que expide las DCG a que se refieren los artículos 115 de la LIC (Ley de Instituciones de Crédito) en relación con el 87-D de la LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) para SOFOM reguladas, y el 95 Bis de la propia LGOAAC para SOFOM no reguladas. Publicada el 17-mar-2011. Es el único sector con doble fundamento legal según el tipo de SOFOM.',
+      'DCG SOFOMES, Disp. 1ª; LGOAAC arts. 87-D y 95 Bis; LIC art. 115.', true),
+    identificacion: D(
+      'Cliente y Usuario · Relevante US$7,500',
+      'Distingue expresamente Cliente (Disp. 2ª fracc. III, con relación comercial permanente) de Usuario (Disp. 2ª fracc. XXXVI, sin relación permanente); el propio Capítulo II de la DCG se titula "Política de Identificación del Cliente y del Usuario". Expediente de identificación en la Disp. 4ª.\n\nOperación Relevante ≥US$7,500 (Disp. 2ª fracc. XXVII).',
+      'DCG SOFOMES, Disp. 2ª fracc. III, XXVII y XXXVI; Disp. 4ª.'),
+    reportes: D(
+      'Relevantes trimestral (Clientes o Usuarios) · Inusuales 3 días/60 días (con indicadores propios de Usuarios) · 24h · SIN reporte separado de efectivo en USD',
+      'Operaciones Relevantes trimestral (Disp. 28ª), primeros 10 días hábiles, abarcando operaciones tanto de Clientes como de Usuarios. Operaciones Inusuales (Disp. 29ª) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales; sus indicadores (Disp. 30ª) incluyen supuestos referidos expresamente a Usuarios, algo que no aparece en Fondos de Inversión ni Uniones de Crédito.\n\nReporte de 24 horas (Disp. 33ª). Al igual que Fondos de Inversión, no se localizó un capítulo de reporte de efectivo en dólares separado.',
+      'DCG SOFOMES, Disp. 28ª-30ª y 33ª.'),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · contempla la figura de administrador único',
+      'Comité de Comunicación y Control obligatorio (Disp. 35ª). Exime a las Entidades con menos de 25 personas a su servicio, igual que Fondos de Inversión (distinto del umbral compuesto de Uniones de Crédito).\n\nParticularidad exclusiva de este sector: como las SOFOM pueden tener administrador único en vez de consejo de administración, varias disposiciones (35ª, 36ª, 39ª) contemplan expresamente esa figura alternativa. El Oficial de Cumplimiento (Disp. 39ª) es designado por el consejo, el administrador único o el Comité.',
+      'DCG SOFOMES, Disp. 35ª-36ª y 39ª.', true),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LGOAAC y la LIC, según el tipo de SOFOM',
+      'La Disp. 56ª-57ª establece que la Comisión, conforme a la LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) y demás ordenamientos, impondrá las sanciones "en los términos señalados en la legislación aplicable" — remite a LGOAAC o LIC (Ley de Instituciones de Crédito) según el tipo de SOFOM. El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG SOFOMES, Disp. 56ª-57ª; LGOAAC/LIC (monto no localizado).'),
+  },
+  casascambio: {
+    fundamento: D(
+      'Art. 95 de la LGOAAC',
+      'Disposiciones de Carácter General a que se refiere el artículo 95 de la Ley General de Organizaciones y Actividades Auxiliares del Crédito (LGOAAC), aplicables a las Casas de Cambio. Expedidas por la SHCP (Secretaría de Hacienda y Crédito Público) con fundamento en el art. 31 fracc. VIII y XXV de la LOAPF (Ley Orgánica de la Administración Pública Federal) y el propio art. 95 LGOAAC, previa opinión de la CNBV.',
+      'DCG Casas de Cambio, Disp. 1ª; LGOAAC art. 95.'),
+    identificacion: D(
+      'Solo Usuario (no existe la figura de Cliente) · expediente US$1,000/3,000/5,000 · Relevante US$7,500',
+      'A diferencia de Bancos y los sectores anteriores, este sector solo define Usuario (Disp. 1ª fracc. XXXIV) — no existe la categoría Cliente. Expediente de identificación por niveles (Disp. 4ª): US$1,000-<3,000 (datos mínimos), US$3,000-<5,000 (más copia de identificación oficial), ≥US$5,000 (expediente completo con domicilio, ocupación, teléfono, correo).\n\nOperación Relevante ≥US$7,500 (Disp. 1ª fracc. XXVII).',
+      'DCG Casas de Cambio, Disp. 1ª fracc. XXVII y XXXIV; Disp. 4ª.', true),
+    reportes: D(
+      'Relevantes trimestral (10 primeros días hábiles) · efectivo USD trimestral · transferencias mensual (15 días hábiles) · Inusuales 3 días/60 días · 24h',
+      'Operaciones Relevantes trimestral (Disp. 25ª), primeros 10 días hábiles, incluye reporte "en ceros" si no hubo operaciones. Operaciones en efectivo con USD trimestral (Disp. 25ª Bis), mismo plazo.\n\nTransferencias internacionales mensual, dentro de los 15 días hábiles siguientes al mes (Disp. 26ª/27ª), umbral ≥US$1,000. Operaciones Inusuales (Disp. 28ª) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales. Reporte de 24 horas (Disp. 32ª). Operaciones Internas Preocupantes (Disp. 33ª).',
+      'DCG Casas de Cambio, Disp. 25ª-28ª, 32ª-33ª.'),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · admite Oficial de Cumplimiento interino hasta 90 días',
+      'Comité de Comunicación y Control obligatorio (Disp. 34ª-37ª), mínimo 3 miembros, sesiona al menos mensualmente. Exime a las Casas de Cambio con menos de 25 personas a su servicio, directas o indirectas (Disp. 35ª).\n\nEl Oficial de Cumplimiento (Disp. 38ª) es designado por el Comité o consejo de administración, dentro de las 3 jerarquías inmediatas inferiores al director general; puede designarse un Oficial de Cumplimiento interino hasta por 90 días naturales al año (Disp. 38ª Bis).',
+      'DCG Casas de Cambio, Disp. 34ª-35ª y 38ª-38ª Bis.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LGOAAC',
+      'La Disp. 55ª-56ª establece que la CNBV impondrá las sanciones "en los términos señalados en la Ley" (LGOAAC, Ley General de Organizaciones y Actividades Auxiliares del Crédito). El monto exacto ni el artículo específico de la LGOAAC están en la DCG ni en los documentos disponibles.',
+      'DCG Casas de Cambio, Disp. 55ª-56ª; LGOAAC (monto no localizado).'),
+  },
+  centroscamb: {
+    fundamento: D(
+      'Art. 95 Bis LGOAAC — entidad definida en el art. 81-A',
+      'Disposiciones de Carácter General a que se refiere el artículo 95 Bis de la LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito), aplicables a los centros cambiarios definidos en el artículo 81-A de la misma Ley. Expedida por la SHCP, oída la opinión de la UIF (Unidad de Inteligencia Financiera) y el SAT (Servicio de Administración Tributaria).',
+      'DCG Centros Cambiarios, Disp. 1ª; LGOAAC arts. 95 Bis y 81-A.'),
+    identificacion: D(
+      'Solo Usuario · expediente US$1,000/3,000/5,000 · Relevante US$5,000 · límite US$10,000/usuario/día (art. 81-A LGOAAC)',
+      'Solo define Usuario (Disp. 1ª fracc. XXVI) — no existe Cliente. Mismos umbrales de expediente que Casas de Cambio: US$1,000-<3,000 / 3,000-<5,000 / ≥5,000. Su Operación Relevante es de ≥US$5,000 (Disp. 1ª fracc. XX) — MENOR que el umbral de US$7,500 de Casas de Cambio.\n\nEl límite operativo de US$10,000 por Usuario por día que fija el art. 81-A de la LGOAAC se cita en esta DCG solo por remisión (Disp. 2ª fracc. II y Disp. 1ª fracc. XVII) — el monto exacto no se reproduce literalmente dentro de la propia DCG, está en el texto del art. 81-A de la Ley.',
+      'DCG Centros Cambiarios, Disp. 1ª fracc. XX y XXVI, Disp. 2ª fracc. II y 1ª fracc. XVII; LGOAAC art. 81-A.', true),
+    reportes: D(
+      'Relevantes trimestral (ÚLTIMOS 10 días hábiles) · efectivo USD trimestral · Inusuales 3 días/60 días · 24h · SIN reporte de transferencias internacionales',
+      'Operaciones Relevantes trimestral (Disp. 22ª) — pero a diferencia de Casas de Cambio, dentro de los ÚLTIMOS 10 días hábiles de enero/abril/julio/octubre, no los primeros. Operaciones en efectivo con USD trimestral (Disp. 23ª), por cada compra ≥US$1,000.\n\nOperaciones Inusuales dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales; Reporte de 24 horas con el mismo mecanismo. Operaciones Internas Preocupantes (Disp. 29ª). No se localizó un reporte de transferencias internacionales específico para este sector, consistente con que su giro es compraventa de divisas y cheques de viajero, no envío de remesas.',
+      'DCG Centros Cambiarios, Disp. 22ª-23ª y 29ª.', true),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · admite Oficial de Cumplimiento interino',
+      'Comité de Comunicación y Control definido en la Disp. 30ª. Exime a los Centros Cambiarios con menos de 25 personas a su servicio (Disp. 31ª) — idéntico umbral que Casas de Cambio. Si no hay Comité, sus funciones las asume el Oficial de Cumplimiento, salvo la actualización de la clave. Contempla también Oficial de Cumplimiento Interino (Disp. 34ª y 34ª Bis).',
+      'DCG Centros Cambiarios, Disp. 30ª-31ª y 34ª-34ª Bis.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LGOAAC',
+      'La Disp. 53ª-54ª establece que la CNBV vigilará el cumplimiento e impondrá las sanciones "en los términos señalados en la Ley" (LGOAAC). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG Centros Cambiarios, Disp. 53ª-54ª; LGOAAC (monto no localizado).'),
+  },
+  transmisores: {
+    fundamento: D(
+      'Art. 95 Bis LGOAAC — entidad definida en el art. 81-A Bis',
+      'Disposiciones de Carácter General a que se refiere el artículo 95 Bis de la LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito), aplicables a los transmisores de dinero definidos en el artículo 81-A Bis de la misma Ley. Misma fecha de expedición y mismo esquema de opinión previa de la UIF y el SAT que Centros Cambiarios.',
+      'DCG Transmisores de Dinero, Disp. 1ª; LGOAAC arts. 95 Bis y 81-A Bis.'),
+    identificacion: D(
+      'Solo Usuario Remitente/Beneficiario · expediente US$1,000/3,000/5,000 · Relevante US$5,000',
+      'Solo define Usuario, con dos subcategorías propias de este sector: Usuario Remitente y Usuario Beneficiario — distinción que no existe en Casas de Cambio ni Centros Cambiarios. Mismos umbrales de expediente: US$1,000-<3,000 / 3,000-<5,000 / ≥5,000 (Disp. 4ª).\n\nOperación Relevante ≥US$5,000 (Disp. 1ª fracc. XX) — igual que Centros Cambiarios, menor que Casas de Cambio. La definición de "Operaciones" remite al art. 81-A Bis de la LGOAAC sin reproducir el texto literal del límite operativo.',
+      'DCG Transmisores de Dinero, Disp. 1ª fracc. XX; Disp. 4ª; LGOAAC art. 81-A Bis.', true),
+    reportes: D(
+      'Relevantes trimestral (últimos 10 días hábiles) · transferencias mensual (15 días hábiles, núcleo del giro) · Inusuales 3 días/60 días · 24h · SIN reporte separado de efectivo',
+      'Operaciones Relevantes trimestral (Disp. 23ª), últimos 10 días hábiles, igual que Centros Cambiarios. Transferencias internacionales mensual (Disp. 24ª), dentro de los 15 días hábiles siguientes al mes, ≥US$1,000 — a diferencia de Centros Cambiarios, aquí SÍ existe este reporte porque es el núcleo del giro del Transmisor; no existe en cambio un reporte separado de efectivo en dólares.\n\nOperaciones Inusuales (Disp. 26ª) dentro de 3 días hábiles tras dictamen del Comité; la Secretaría revisa la calidad de los reportes cada 6 meses (Disp. 29ª) — más espaciado que los 3 meses de Casas de Cambio. Reporte de 24 horas. Operaciones Internas Preocupantes (Disp. 31ª), que incluye expresamente como posibles responsables a accionistas, socios y dueños, no solo directivos/empleados.',
+      'DCG Transmisores de Dinero, Disp. 23ª-24ª, 26ª, 29ª y 31ª.', true),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · admite Oficial de Cumplimiento interino',
+      'Comité de Comunicación y Control definido en la Disp. 32ª. Exime a los Transmisores de Dinero con menos de 25 personas a su servicio (Disp. 33ª) — mismo umbral que Casas de Cambio y Centros Cambiarios. Si no hay Comité, sus funciones las asume el Oficial de Cumplimiento. Contempla también Oficial de Cumplimiento Interino (Disp. 36ª y 36ª Bis).',
+      'DCG Transmisores de Dinero, Disp. 32ª-33ª y 36ª-36ª Bis.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LGOAAC',
+      'La CNBV vigila el cumplimiento de Transmisores de Dinero, Agentes Relacionados, Personas Jurídicas Coadyuvantes y entidades financieras vinculadas, e impone las sanciones "en los términos señalados en la Ley" (LGOAAC). El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG Transmisores de Dinero, Disp. 55ª y 57ª (aprox.); LGOAAC (monto no localizado).'),
+  },
+  itf: {
+    fundamento: D(
+      'Art. 58 de la LRITF (Ley para Regular las Instituciones de Tecnología Financiera)',
+      'Disposiciones de Carácter General a que se refiere el artículo 58 de la Ley para Regular las Instituciones de Tecnología Financiera (LRITF). Publicadas en el DOF el 10-sep-2018. Su objeto (Art. 1, Título Primero) es establecer medidas mínimas para prevenir el delito del art. 139 Quáter y el supuesto del art. 400 Bis del Código Penal Federal (CPF), y regular los reportes a la CNBV.',
+      'DCG ITF, Título Primero, Art. 1; LRITF art. 58.'),
+    identificacion: D(
+      'Cliente y Usuario · cuentas nivel 1 (750 UDIS/mes) y nivel 2 (3,000 UDIS/mes) · Relevante US$5,000',
+      'Distingue Cliente (Art. 2 fracc. IV) de Usuario (Art. 100 fracc. II, aplicable solo a la transmisión de dinero vía Instituciones de Fondos de Pago Electrónico, bajo el art. 81-A Bis LGOAAC). Expediente general en el Art. 11.\n\nÚnico sector con un régimen de cuentas simplificadas por niveles medido en UDIS (Unidades de Inversión), no en dólares: cuentas nivel 1 limitadas a 750 UDIS/mes con saldo máximo de 1,000 UDIS; cuentas nivel 2 a 3,000 UDIS/mes (requieren domicilio e identificación digital); transferencias internacionales de bajo riesgo limitadas a 1,700 UDIS/mes (Art. 12). Prohíbe cuentas anónimas (Art. 14). Operación Relevante ≥US$5,000 (Art. 2 fracc. XXIV).',
+      'DCG ITF, Art. 2 fracc. IV y XXIV; Art. 11, 12, 14 y 100 fracc. II.', true),
+    reportes: D(
+      'Relevantes trimestral · efectivo USD trimestral · transferencias mensual · Activos Virtuales trimestral (≥7,500 UDIS) · Inusuales 3 días/60 días · 24h',
+      'Reporte de Operaciones Relevantes trimestral (Art. 66), primeros 10 días hábiles. Reporte de operaciones en efectivo en moneda extranjera trimestral (Art. 67), umbral ≥US$500. Reporte de transferencias internacionales mensual (Art. 68), dentro de 15 días hábiles, umbral ≥US$1,000.\n\nReporte de Operaciones con Activos Virtuales trimestral (Art. 74), umbral ≥7,500 UDIS — único de los 12 sectores con este reporte específico. Reporte de Operaciones Inusuales (Art. 69) dentro de 3 días hábiles tras dictamen del Comité, hasta 60 días naturales; su umbral de referencia para detectarlas es de operaciones que sumen ≥US$5,500 en un mes calendario (Art. 70 fracc. IV). Reporte de 24 horas (Art. 73). Reporte de Operaciones Internas Preocupantes (Art. 75).',
+      'DCG ITF, Art. 66-70 y 73-75.', true),
+    comite: D(
+      'Obligatorio · exime con menos de 25 personas · Oficial de Cumplimiento obligatorio en todo caso, con certificación conforme a la Ley de la CNBV',
+      'Comité obligatorio (Art. 45), al menos 3 miembros (Art. 46). Exime a las ITF con menos de 25 personas contratadas, directa o indirectamente (Art. 46, último párrafo); en ese caso sus funciones las asume el Oficial de Cumplimiento.\n\nA diferencia de otros sectores, el Oficial de Cumplimiento es obligatorio en todo caso, incluso con Comité (Art. 49), designado por el consejo/administrador único o el Comité, con requisitos de independencia (sin funciones de auditoría) y certificación conforme al art. 4 fracción X de la Ley de la Comisión Nacional Bancaria y de Valores (CNBV), según remite el art. 58 párrafo quinto de la LRITF.',
+      'DCG ITF, Art. 45-46 y 49-50; LRITF art. 58; Ley de la CNBV art. 4 fracc. X.'),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LRITF',
+      'El Art. 93 establece que la CNBV impondrá las sanciones "en los términos señalados en la Ley" (LRITF, Ley para Regular las Instituciones de Tecnología Financiera); el Art. 94 tipifica qué constituye incumplimiento. El monto exacto no está en la DCG ni en los documentos disponibles — el archivo de contexto sobre la LRITF resultó ser una copia idéntica de esta misma DCG, no el texto de la ley con su capítulo de sanciones.',
+      'DCG ITF, Art. 93-94; LRITF (monto no localizado en los documentos disponibles).'),
+  },
+  asesores: {
+    fundamento: D(
+      'Art. 226 Bis de la LMV (Ley del Mercado de Valores)',
+      'Disposiciones de Carácter General a que se refiere el artículo 226 Bis de la Ley del Mercado de Valores (LMV), aplicables a los Asesores en Inversiones. Publicadas el 31-dic-2014. Su objeto (Disp. 1ª) es establecer medidas mínimas frente a los arts. 139 Quáter y 400 Bis del Código Penal Federal (CPF), y reportar a la SHCP por conducto de la CNBV.',
+      'DCG Asesores en Inversiones, Disp. 1ª; LMV art. 226 Bis.'),
+    identificacion: D(
+      'Solo Cliente · sin umbrales monetarios · sin Operación Relevante (no maneja efectivo de clientes)',
+      'Solo define Cliente (Disp. 2ª fracc. III) — no existe Usuario como figura propia de este régimen. Expediente de identificación en la Disp. 4ª, con posibilidad de identificación no presencial (Disp. 4ª Bis) y contratos de "bajo Riesgo" (Disp. 8ª Ter).\n\nA diferencia de todos los demás sectores, no se localizó en el documento ningún umbral monetario (ni en dólares ni en UMA/UDIS) para identificación simplificada ni una definición de "Operación Relevante": el régimen simplificado depende solo de la clasificación por Grado de Riesgo bajo, consistente con que los Asesores en Inversiones no manejan fondos ni efectivo de sus Clientes.',
+      'DCG Asesores en Inversiones, Disp. 2ª fracc. III; Disp. 4ª, 4ª Bis y 8ª Ter.', true),
+    reportes: D(
+      'SIN Relevantes, SIN efectivo, SIN transferencias · solo Inusuales (dictaminadas por el Representante) + 24h + Internas Preocupantes',
+      'Único de los 12 sectores sin Reporte de Operaciones Relevantes ni reporte de operaciones en efectivo o transferencias internacionales — no se localizó ninguna mención a estos reportes ni a montos en dólares en todo el documento, consistente con que los Asesores en Inversiones no manejan fondos de sus Clientes.\n\nReporte de Operaciones Inusuales (Disp. 20ª-23ª) dentro de 3 días hábiles tras el dictamen, pero aquí quien dictamina es el Representante (la figura que sustituye al Comité en este sector), con hasta 60 días naturales desde la alerta. Reporte de 24 horas (Disp. 23ª). Reporte de Operaciones Internas Preocupantes (Disp. 24ª), mismo esquema de plazos. La Secretaría retroalimenta la calidad de los reportes al menos cada 3 meses (Disp. 22ª).',
+      'DCG Asesores en Inversiones, Disp. 20ª-24ª.', true),
+    comite: D(
+      'NO existe Comité — un Representante (o la propia persona física) cumple sus funciones · sin umbral de exención por número de personas',
+      'Único de los 12 sectores sin la figura del Comité de Comunicación y Control — la palabra "Comité" no aparece en todo el documento. En su lugar, los Asesores en Inversiones que sean personas morales deben designar, mediante su consejo de administración, gerentes, administrador único o socios administradores, a un Representante (Disp. 30ª) que concentra las funciones que en otros sectores están repartidas entre el Comité y el Oficial de Cumplimiento (elaborar el Manual de Cumplimiento, dictaminar Operaciones Inusuales e Internas Preocupantes, enlace con la Secretaría/CNBV).\n\nNo existe un umbral de exención por número de personas como en los demás sectores; para Asesores que son personas físicas, la propia persona cumple estas funciones directamente (Disp. 29ª).',
+      'DCG Asesores en Inversiones, Disp. 29ª-30ª.', true),
+    sanciones: D(
+      'Sin monto explícito en la DCG — remite a la LMV',
+      'La Disp. 40ª establece que la Comisión impondrá las sanciones "en los términos señalados en la Ley" (LMV, Ley del Mercado de Valores); la Disp. 41ª tipifica el incumplimiento con una redacción casi idéntica a la de ITF. El monto exacto no está en la DCG ni en los documentos disponibles.',
+      'DCG Asesores en Inversiones, Disp. 40ª-41ª; LMV (monto no localizado).'),
+  },
+};
+
+const CAT_COLOR = { A:'var(--catA)', B:'var(--catB)', C:'var(--catC)', D:'var(--catD)', E:'var(--catE)' };
+
+/* build header */
+const headRow = document.getElementById('headRow');
+CATEGORIES.forEach(cat=>{
+  const th = document.createElement('th');
+  th.innerHTML = `<span class="catdot" style="background:${CAT_COLOR[cat.color]}"></span>${cat.name}`;
+  headRow.appendChild(th);
+});
+
+/* build body */
+const tbody = document.getElementById('matrixBody');
+SECTORS.forEach(sec=>{
+  const tr = document.createElement('tr');
+  tr.dataset.sector = sec.id;
+  const th = document.createElement('th');
+  th.innerHTML = `${sec.name}<small>${sec.sub}</small>`;
+  tr.appendChild(th);
+  CATEGORIES.forEach(cat=>{
+    const cell = DATA[sec.id][cat.id];
+    const td = document.createElement('td');
+    td.textContent = cell.short;
+    if(cell.distinct) td.classList.add('distinct');
+    td.addEventListener('click', ()=> openDrawer(sec, cat, cell));
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+
+/* ---------------- search ---------------- */
+document.getElementById('search').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#matrixBody tr').forEach(tr=>{
+    const sec = SECTORS.find(s=>s.id===tr.dataset.sector);
+    const match = !q || sec.name.toLowerCase().includes(q) || sec.sub.toLowerCase().includes(q);
+    tr.classList.toggle('hide', !match);
+  });
+});
+
+/* ---------------- drawer ---------------- */
+const drawer = document.getElementById('drawer');
+const scrim = document.getElementById('scrim');
+let currentSector = null, currentCat = null;
+
+function openDrawer(sec, cat, cell){
+  currentSector = sec; currentCat = cat;
+  document.getElementById('dkSw').style.background = CAT_COLOR[cat.color];
+  document.getElementById('dkLabel').textContent = cat.name;
+  document.getElementById('dTitle').textContent = sec.name;
+  document.getElementById('dSub').textContent = sec.sub;
+  const body = document.getElementById('dBody');
+  body.innerHTML = '';
+  if(cell.distinct){
+    const tag = document.createElement('div');
+    tag.className = 'distinct-tag';
+    tag.textContent = '⚡ particularidad de este sector';
+    body.appendChild(tag);
+  }
+  cell.detail.split('\n\n').forEach(par=>{
+    const p = document.createElement('p');
+    p.textContent = par;
+    body.appendChild(p);
+  });
+  const fuenteBlock = document.createElement('div');
+  fuenteBlock.className = 'fuente-block';
+  fuenteBlock.innerHTML = `<b>Fuente:</b> ${cell.fuente}`;
+  body.appendChild(fuenteBlock);
+
+  /* nav: jump to same category, other sectors */
+  const nav = document.getElementById('dNav');
+  nav.innerHTML = '';
+  CATEGORIES.forEach(c=>{
+    const chip = document.createElement('div');
+    chip.className = 'navchip' + (c.id===cat.id ? ' active' : '');
+    chip.textContent = c.name;
+    chip.addEventListener('click', ()=> openDrawer(sec, c, DATA[sec.id][c.id]));
+    nav.appendChild(chip);
+  });
+
+  drawer.classList.add('open');
+  scrim.classList.add('show');
+}
+function closeDrawer(){
+  drawer.classList.remove('open');
+  scrim.classList.remove('show');
+}
+document.getElementById('dClose').addEventListener('click', closeDrawer);
+scrim.addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeDrawer(); });
+</script>
+</body></html>
