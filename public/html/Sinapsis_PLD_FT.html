@@ -1,0 +1,1357 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sinapsis PLD/FT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070d;
+    --bg-panel:#0c1220ee;
+    --bg-panel-solid:#0c1220;
+    --line:#1c2438;
+    --ink:#EDEFF7;
+    --ink-dim:#8b93ab;
+    --ink-faint:#525a72;
+    --area1:#e8b94a;   /* Área 1 — oro */
+    --area1-soft:#8a733a;
+    --area2:#31b8ac;   /* Área 2 — cian/teal */
+    --area2-soft:#2c6f6b;
+    --area3:#e8735a;   /* Área 3 — coral */
+    --area3-soft:#8c4a3d;
+    --memoriza:#ffcf4d; /* hechos a memorizar — ámbar brillante */
+    --hub:#a98bfa;      /* conceptos transversales — violeta */
+    --exam:#c9cfe0;     /* rama del examen — plata */
+    --root:#f7f4ec;     /* raíz — blanco cálido */
+    --pendiente:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);}
+  body{
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    overflow:hidden;
+    height:100vh;
+    width:100vw;
+    position:relative;
+  }
+  #graph{position:absolute; inset:0;}
+  #graphCanvas{position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:none;}
+  #graphCanvas.dragging{ cursor:grabbing; }
+  #graphCanvas.panning{ cursor:move; }
+  #graphFallback{
+    display:none;
+    max-width:520px;margin:18vh auto 0;padding:24px 28px;
+    font-family:'IBM Plex Sans',sans-serif;color:#cfd3e2;
+    background:#0c1220;border:1px solid #1c2438;border-radius:14px;
+  }
+  #graphFallback .t{ font-family:'Fraunces',serif;font-size:19px;margin-bottom:10px;color:#f7f4ec; }
+  #graphFallback .d{ font-size:13.5px;line-height:1.6; }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; align-items:center; gap:18px;
+    padding:14px 20px;
+    z-index:5;
+    background:linear-gradient(to bottom, rgba(5,7,13,0.92) 0%, rgba(5,7,13,0.75) 60%, transparent 100%);
+    pointer-events:none;
+    flex-wrap:wrap;
+    row-gap:10px;
+  }
+  .topbar > *{ pointer-events:auto; }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    white-space:nowrap;
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .brand small{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:400;
+    font-size:11px;
+    color:var(--ink-dim);
+    letter-spacing:0.04em;
+  }
+  .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 13px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:7px;
+    transition:background .15s, color .15s, border-color .15s;
+    user-select:none;
+  }
+  .chip:hover{ background:rgba(255,255,255,0.08); color:var(--ink); }
+  .chip.active{ color:var(--bg); border-color:transparent; font-weight:600; }
+  .chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .chip[data-f="1"].active{ background:var(--area1); }
+  .chip[data-f="2"].active{ background:var(--area2); }
+  .chip[data-f="3"].active{ background:var(--area3); }
+  .chip[data-f="memoriza"].active{ background:var(--memoriza); }
+  .chip[data-f="examen"].active{ background:var(--exam); }
+  .chip[data-f="all"].active{ background:var(--ink); }
+
+  .recenter-btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 13px;
+    cursor:pointer;
+    white-space:nowrap;
+    user-select:none;
+  }
+  .recenter-btn:hover{ background:rgba(255,255,255,0.08); color:var(--ink); }
+  .searchwrap{ margin-left:auto; position:relative; }
+  #search{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--line);
+    border-radius:999px;
+    color:var(--ink);
+    padding:8px 14px 8px 32px;
+    width:200px;
+    transition:width .18s, background .15s;
+  }
+  #search:focus{ outline:none; width:260px; background:rgba(255,255,255,0.08); border-color:var(--ink-faint); }
+  .searchwrap::before{
+    content:'';
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    width:9px; height:9px; border:1.5px solid var(--ink-dim); border-radius:50%;
+    pointer-events:none;
+  }
+  .searchwrap::after{
+    content:'';
+    position:absolute; left:19px; top:64%;
+    width:5px; height:1.5px; background:var(--ink-dim);
+    transform:rotate(45deg);
+    pointer-events:none;
+  }
+  #searchResults{
+    position:absolute; top:calc(100% + 6px); left:0; right:0;
+    background:var(--bg-panel-solid);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    display:none;
+    max-height:260px; overflow-y:auto;
+    z-index:20;
+  }
+  #searchResults.show{ display:block; }
+  .sres{
+    padding:9px 12px; font-size:12.5px; cursor:pointer;
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:8px;
+  }
+  .sres:last-child{ border-bottom:none; }
+  .sres:hover{ background:rgba(255,255,255,0.06); }
+  .sres .dot{ width:7px; height:7px; border-radius:50%; flex:none; }
+
+  /* ---------- legend / hint ---------- */
+  .legend{
+    position:absolute; left:20px; bottom:18px; z-index:5;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 16px;
+    font-size:11.5px;
+    color:var(--ink-dim);
+    display:flex; flex-direction:column; gap:6px;
+    backdrop-filter:blur(6px);
+    max-width:230px;
+  }
+  .legend .row{ display:flex; align-items:center; gap:8px; }
+  .legend .sw{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .legend .title{ color:var(--ink); font-weight:600; font-size:11.5px; margin-bottom:2px; text-transform:uppercase; letter-spacing:0.06em; }
+
+  .hint{
+    position:absolute; right:20px; bottom:18px; z-index:5;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    text-align:right;
+    line-height:1.6;
+    pointer-events:none;
+  }
+
+  .stat{
+    position:absolute; left:20px; top:66px; z-index:5;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    letter-spacing:0.02em;
+    pointer-events:none;
+  }
+  .stat b{ color:var(--ink-dim); font-weight:500; }
+
+  /* ---------- drawer ---------- */
+  #drawer{
+    position:absolute; top:0; right:0; bottom:0;
+    width:380px;
+    max-width:88vw;
+    background:var(--bg-panel-solid);
+    border-left:1px solid var(--line);
+    transform:translateX(100%);
+    transition:transform .32s cubic-bezier(.2,.8,.2,1);
+    z-index:15;
+    display:flex; flex-direction:column;
+    box-shadow:-30px 0 60px rgba(0,0,0,0.35);
+  }
+  #drawer.open{ transform:translateX(0); }
+  .drawer-head{
+    padding:26px 24px 16px;
+    border-bottom:1px solid var(--line);
+    flex:none;
+  }
+  .drawer-kicker{
+    display:flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin-bottom:10px;
+  }
+  .drawer-kicker .sw{ width:8px; height:8px; border-radius:50%; }
+  .drawer-title{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    line-height:1.25;
+    text-wrap:balance;
+  }
+  .drawer-close{
+    position:absolute; top:20px; right:20px;
+    width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px;
+    line-height:1;
+  }
+  .drawer-close:hover{ color:var(--ink); background:rgba(255,255,255,0.1); }
+  .drawer-body{
+    padding:20px 24px 28px;
+    overflow-y:auto;
+    flex:1;
+    font-size:14px;
+    line-height:1.75;
+    color:#cfd3e2;
+  }
+  .drawer-body p{ margin:0 0 18px; white-space:pre-line; text-align:justify; hyphens:auto; }
+  .pendiente-tag{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,107,107,0.12);
+    border:1px solid rgba(255,107,107,0.35);
+    color:var(--pendiente);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    padding:5px 10px;
+    border-radius:7px;
+    margin-bottom:14px;
+  }
+  .fuente-block{
+    margin-top:6px;
+    padding:12px 14px;
+    background:rgba(255,255,255,0.03);
+    border-left:2px solid var(--ink-faint);
+    border-radius:0 8px 8px 0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    line-height:1.65;
+    color:var(--ink-dim);
+  }
+  .fuente-block b{ color:var(--ink); font-weight:500; }
+  .open-link-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:16px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color:var(--bg);
+    background:var(--hub);
+    border-radius:999px;
+    padding:10px 18px;
+    text-decoration:none;
+    cursor:pointer;
+  }
+  .open-link-btn:hover{ filter:brightness(1.1); }
+  .drawer-nav{
+    padding:16px 24px 22px;
+    border-top:1px solid var(--line);
+    flex:none;
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .navchip{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:6px 10px;
+    cursor:pointer;
+  }
+  .navchip:hover{ color:var(--ink); background:rgba(255,255,255,0.09); }
+
+  /* ---------- intro overlay ---------- */
+  #intro{
+    position:absolute; inset:0; z-index:30;
+    background:radial-gradient(ellipse at 50% 40%, #0d1526 0%, #05070d 75%);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:24px;
+    transition:opacity .6s ease;
+  }
+  #intro h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(28px, 6vw, 46px);
+    margin:0 0 14px;
+    text-wrap:balance;
+  }
+  #intro p{
+    font-size:14.5px;
+    color:var(--ink-dim);
+    max-width:480px;
+    line-height:1.7;
+    margin:0 0 28px;
+  }
+  #introBtn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:var(--bg);
+    background:var(--memoriza);
+    border:none;
+    border-radius:999px;
+    padding:13px 30px;
+    cursor:pointer;
+    letter-spacing:0.01em;
+  }
+  #introBtn:hover{ filter:brightness(1.08); }
+  .pulse-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--memoriza);
+    display:inline-block;
+    margin-right:8px;
+    animation:pulseDot 1.8s ease-in-out infinite;
+    vertical-align:middle;
+  }
+  @keyframes pulseDot{ 0%,100%{opacity:.4; transform:scale(.8);} 50%{opacity:1; transform:scale(1.15);} }
+
+  @media (prefers-reduced-motion: reduce){
+    .pulse-dot{ animation:none; }
+  }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+
+  @media (max-width:640px){
+    .brand{ font-size:16px; }
+    .chips{ display:none; }
+    .searchwrap{ margin-left:0; }
+    #search{ width:150px; }
+    #search:focus{ width:180px; }
+    #drawer{ width:100vw; max-width:100vw; }
+    .stat{ display:none; }
+    .legend{ max-width:170px; padding:9px 12px; font-size:10.5px; }
+    .hint{ display:none; }
+  }
+</style>
+
+<div id="graph"><canvas id="graphCanvas"></canvas><div id="graphFallback"><div class="t">No se pudo dibujar la red</div><div class="d">Ocurrió un problema inesperado al iniciar el lienzo. Recarga la página — si sigue sin aparecer, avísame.</div></div></div>
+
+<div id="intro">
+  <div>
+    <span class="pulse-dot"></span>
+  </div>
+  <h1>Sinapsis PLD/FT</h1>
+  <p>Tu temario CNBV/SHCP convertido en un cerebro de conexiones: 3 áreas, 8 subáreas, 37 temas y los hechos exactos que debes memorizar — todo tomado de los documentos que subiste, con su cita. Arrastra para girar, toca un nodo para leerlo.</p>
+  <button id="introBtn">Entrar a la red</button>
+</div>
+
+<div class="topbar">
+  <div class="brand">Sinapsis PLD/FT <small>CNBV · SHCP · 24-OCT-2026</small></div>
+  <div class="chips">
+    <div class="chip active" data-f="all"><span class="dot" style="background:var(--ink)"></span>Todo</div>
+    <div class="chip" data-f="1"><span class="dot" style="background:var(--area1)"></span>Área 1</div>
+    <div class="chip" data-f="2"><span class="dot" style="background:var(--area2)"></span>Área 2</div>
+    <div class="chip" data-f="3"><span class="dot" style="background:var(--area3)"></span>Área 3</div>
+    <div class="chip" data-f="memoriza"><span class="dot" style="background:var(--memoriza)"></span>Memoriza</div>
+    <div class="chip" data-f="examen"><span class="dot" style="background:var(--exam)"></span>Mi examen</div>
+  </div>
+  <div class="recenter-btn" id="recenterBtn" title="Volver al centro (o doble clic en el lienzo)">⟲ Recentrar</div>
+  <div class="searchwrap">
+    <input id="search" type="text" placeholder="Buscar un tema o dato…" autocomplete="off">
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<div class="stat" id="stat"></div>
+
+<div class="legend">
+  <div class="title">Leyenda</div>
+  <div class="row"><span class="sw" style="background:var(--area1)"></span> Área 1 · básicos</div>
+  <div class="row"><span class="sw" style="background:var(--area2)"></span> Área 2 · técnicos</div>
+  <div class="row"><span class="sw" style="background:var(--area3)"></span> Área 3 · auditoría/EBR</div>
+  <div class="row"><span class="sw" style="background:var(--hub)"></span> Concepto transversal</div>
+  <div class="row"><span class="sw" style="background:var(--memoriza)"></span> Memoriza para el examen</div>
+  <div class="row"><span class="sw" style="background:var(--exam)"></span> Tu examen (24-oct-2026)</div>
+</div>
+
+<div class="hint">arrastra: girar &nbsp;·&nbsp; rueda: zoom &nbsp;·&nbsp; shift+arrastra (o 2 dedos): mover<br>clic en nodo: abrir &nbsp;·&nbsp; doble clic: recentrar</div>
+
+<div id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-kicker"><span class="sw" id="dkSw"></span><span id="dkLabel"></span></div>
+    <div class="drawer-title" id="dTitle"></div>
+    <div class="drawer-close" id="dClose">&times;</div>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+  <div class="drawer-nav" id="dNav"></div>
+</div>
+
+<script>
+/* No external libraries — the whole 3D graph below is plain JS + Canvas 2D,
+   so it always works, even on locked-down networks/browsers that block
+   CDN scripts or disable WebGL. */
+
+/* ---- state + UI wiring that must work even if the 3D graph library fails ---- */
+let activeFilter = 'all';
+let lastInteraction = Date.now();
+let Graph = null;
+
+document.getElementById('introBtn').addEventListener('click', ()=>{
+  const intro = document.getElementById('intro');
+  intro.style.opacity = '0';
+  setTimeout(()=>{ intro.style.display='none'; }, 620);
+  lastInteraction = Date.now();
+});
+
+/* =========================================================================
+   SINAPSIS PLD/FT — dataset
+   Toda etiqueta, número, artículo, plazo y monto proviene literalmente de
+   las guías de estudio ya construidas a partir de los documentos que Cindy
+   subió (bibliografía oficial CNBV/SHCP docs. 1-57, más el documento
+   complementario UIF/CEMEFI 2021, señalado como tal en cada nodo que lo usa).
+   Nada aquí se inventa; lo no confirmado por los documentos se marca
+   pendiente:true y se explica en la descripción.
+   ========================================================================= */
+
+const N = (id,name,group,area,val,desc,fuente,pendiente,link,linkLabel) =>
+  ({id,name,group,area,val,desc,fuente:fuente||null,pendiente:!!pendiente,link:link||null,linkLabel:linkLabel||null});
+
+const nodes = [
+  // ---------------- ÁREAS ----------------
+  N('a1','Área 1 — Conocimientos básicos en PLD/FT','area',1,19,
+    '3 subáreas y 10 temas: (1.1) lavado de dinero y financiamiento al terrorismo — sus conceptos, etapas y las penas exactas del Código Penal Federal —, más el concepto de corrupción; (1.2) los organismos internacionales — ONU, Comité de Basilea, Grupo Wolfsberg, Grupo Egmont, GAFI/GAFILAT — y las 40 Recomendaciones del GAFI; (1.3) el régimen mexicano de prevención y sus autoridades nacionales (CNBV, UIF-SHCP).',
+    'Temario oficial, Área 1 (subáreas 1.1, 1.2, 1.3).'),
+  N('a2','Área 2 — Conocimientos técnicos en PLD/FT','area',2,19,
+    '2 subáreas y 19 temas: (2.1) las 17 Disposiciones de Carácter General (DCG) que — sujeto por sujeto (Bancos, Casas de Cambio, Centros Cambiarios, SOFOM, Transmisores de Dinero, ITF) — regulan identificación de clientes, reportes, sistemas automatizados, Comité de Comunicación y Control, Oficial de Cumplimiento y sanciones; (2.2) la LFPIORPI: actividades vulnerables (art. 17) y restricciones al uso de efectivo (art. 32).',
+    'Temario oficial, Área 2 (subáreas 2.1, 2.2).'),
+  N('a3','Área 3 — Auditoría, supervisión y Enfoque Basado en Riesgos','area',3,19,
+    '3 subáreas y 8 temas: (3.1) la auditoría anual de PLD/FT y las facultades de supervisión de la CNBV; (3.2) el Enfoque Basado en Riesgo (EBR) según el GAFI y el Comité de Basilea; (3.3) su aplicación nacional — metodología de evaluación de riesgos de la CNBV, clasificación de Clientes por Grado de Riesgo, la Evaluación Nacional de Riesgos 2023 y los riesgos de corrupción.',
+    'Temario oficial, Área 3 (subáreas 3.1, 3.2, 3.3).'),
+
+  // ---------------- SUBÁREAS ----------------
+  N('s11','1.1 Conceptos básicos PLD/FT','subarea',1,13,'5 temas: lavado de dinero, financiamiento al terrorismo, corrupción y las penas de ambos delitos en el Código Penal Federal.'),
+  N('s12','1.2 Organismos internacionales','subarea',1,13,'3 temas. Los organismos internacionales son: ONU (Organización de las Naciones Unidas), Comité de Supervisión Bancaria de Basilea (BCBS), Grupo Wolfsberg, Grupo Egmont, GAFI (Grupo de Acción Financiera Internacional) y GAFILAT (Grupo de Acción Financiera de Latinoamérica) — ver tema 1.2.1 para la definición de cada uno. Los otros dos temas profundizan en el GAFI (1.2.2) y en sus 40 Recomendaciones (1.2.3).'),
+  N('s13','1.3 Autoridades nacionales','subarea',1,13,'2 temas: el régimen de prevención de PLD/CFT en México y las autoridades nacionales (CNBV, UIF).'),
+  N('s21','2.1 Leyes del sistema financiero y DCG aplicables a los sujetos obligados','subarea',2,13,'17 temas. "DCG" significa Disposiciones de Carácter General: son las reglas detalladas de PLD/FT que la Secretaría de Hacienda emite para cada tipo de entidad financiera, con fundamento en un artículo de su ley respectiva. Los 17 temas están construidos sobre la DCG de Bancos (fundamentada en el art. 115 de la Ley de Instituciones de Crédito, LIC) como documento maestro, más las DCG sectoriales equivalentes (Casas de Cambio, Centros Cambiarios, SOFOM, Transmisores de Dinero, ITF, entre otras).'),
+  N('s22','2.2 Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita (LFPIORPI)','subarea',2,13,'2 temas: actividades vulnerables (art. 17) y restricciones al uso de efectivo (art. 32). Objeto de la Ley (art. 2, reformado DOF 16-07-2025): proteger el sistema financiero y la economía nacional, estableciendo medidas y procedimientos para prevenir y detectar actos u operaciones que involucren recursos de procedencia ilícita, mediante coordinación interinstitucional, con el fin de reunir elementos para investigar y perseguir los Delitos de Operaciones con Recursos de Procedencia Ilícita (ORPI) y evitar que esos recursos financien organizaciones delictivas.'),
+  N('s31','3.1 Auditoría y supervisión','subarea',3,13,'2 temas: el Informe de Auditoría PLD/FT y las facultades de supervisión de la CNBV.'),
+  N('s32','3.2 Enfoque Basado en Riesgos (contexto internacional)','subarea',3,13,'2 temas: la guía del GAFI para el sector bancario y la guía del Comité de Basilea.'),
+  N('s33','3.3 Enfoque Basado en Riesgos (contexto nacional)','subarea',3,13,'4 temas: metodología de evaluación de riesgos, clasificación por grado de riesgo, la Evaluación Nacional de Riesgos 2023 y los riesgos de corrupción.'),
+
+  // ---------------- TEMAS — Área 1 ----------------
+  N('t111','1.1.1 Lavado de dinero','tema',1,9,
+    'Proceso a través del cual se encubre el origen de fondos generados por actividades ilegales, para que circulen como si fueran producto de actividades legítimas. En México, el tipo penal se llama Operaciones con Recursos de Procedencia Ilícita (ORPI) y está en el art. 400 Bis CPF: 5 a 15 años de prisión y 1,000 a 5,000 días multa a quien (Fracc. I) adquiera, enajene, administre, custodie, posea, cambie, invierta, transporte o transfiera recursos sabiendo que proceden de una actividad ilícita, o (Fracc. II) oculte o encubra su naturaleza, origen, ubicación, destino o titularidad.\n\nArt. 400 Bis 1 (agravantes): +1/3 a 1/2 si lo comete un consejero, administrador, funcionario, empleado, apoderado o prestador de servicios de un sujeto obligado (o dentro de los 2 años de haber dejado ese cargo), con inhabilitación; se duplica si lo comete un servidor público encargado de prevenir/detectar/investigar/juzgar estos delitos; y aumenta hasta en 1/2 si se utiliza a menores de 18 años o a personas sin capacidad de comprender o resistir el hecho.\n\nTres etapas, con ejemplo de cada una: Colocación (el lavador introduce sus ganancias ilícitas al sistema financiero — ej. depósitos bancarios en efectivo, inversión en instrumentos financieros), Estratificación (envío del dinero por varias transacciones para cambiar su forma y dificultar su rastreo — ej. transferencias bancarias, compra de bienes raíces o de lujo) e Integración (reinserción de los fondos en la economía como si fueran legítimos — ej. red de empresas de fachada, la venta de un yate adquirido en la etapa de Estratificación).',
+    'Documento CNBV sobre Lavado de Dinero (Vicepresidencia de Supervisión de Procesos Preventivos), págs. 1-2; Código Penal Federal arts. 400 Bis y 400 Bis 1.'),
+  N('t112','1.1.2 Financiamiento al terrorismo','tema',1,9,
+    'Art. 139 Quáter CPF: misma pena que el art. 139 (15 a 40 años de prisión, multa de 400 a 1,200 veces el valor diario de la UMA) a quien aporte o recaude fondos o recursos, por cualquier medio, directa o indirectamente, con conocimiento de que se destinarán a financiar o apoyar a individuos u organizaciones terroristas, o para cometer alguno de los delitos que el propio artículo enlista: Terrorismo (arts. 139, 139 Bis, 139 Ter), Sabotaje (art. 140), Terrorismo Internacional (arts. 148 Bis, 148 Ter, 148 Quáter), entre otros.\n\nArtículos relacionados y sus penas: Art. 139 (Terrorismo) — 15 a 40 años de prisión y 400 a 1,200 veces la UMA de multa; aumenta hasta en 1/2 si el delito es contra un inmueble de acceso público, causa daño a la economía nacional o hay un rehén. Art. 148 Bis (Terrorismo Internacional — actos contra un Estado extranjero, un organismo internacional o una persona internacionalmente protegida, como un jefe de Estado o de gobierno) — 15 a 40 años de prisión y de 400 a 1,200 días multa.',
+    'Código Penal Federal, art. 139 (reformado DOF 07-06-2024), art. 139 Quáter (adicionado DOF 14-03-2014) y art. 148 Bis (adicionado DOF 28-06-2007, reformado DOF 14-03-2014).'),
+  N('t113','1.1.3 Corrupción','tema',1,9,
+    'Definición de Transparencia Internacional: "el abuso del poder para beneficio propio". Se clasifica en 3 tipos: Corrupción a gran escala (actos en los niveles más altos del gobierno que distorsionan políticas o funciones centrales del Estado y permiten a las PEP beneficiarse a costa del bien común — incluye cohecho, tráfico de influencia, peculado y enriquecimiento ilícito), Actos de corrupción menores (abuso cotidiano de poder por PEP de bajo o mediano rango al interactuar con ciudadanos comunes, p. ej. en hospitales, escuelas o policía) y Corrupción política (manipulación de políticas, instituciones y normas de procedimiento por quienes toman decisiones políticas, para conservar poder, estatus y patrimonio). México cuenta con el Sistema Nacional Anticorrupción (SNA), creado por decreto el 27 de mayo de 2015 (art. 113 constitucional).',
+    'Guía para la Prevención y Detección de ORPI Derivadas de Actos de Corrupción (CNBV, 2020), Introducción, Sección I.1.3.'),
+  N('t114','1.1.4 Penas — operaciones con recursos de procedencia ilícita (CPF)','tema',1,9,
+    'Art. 400 Bis CPF: 5 a 15 años de prisión y 1,000 a 5,000 días multa a quien adquiera, enajene, administre, custodie, cambie, deposite, dé en garantía, invierta, transporte o transfiera recursos sabiendo que proceden o representan el producto de una actividad ilícita, con el fin de ocultar/encubrir su origen, ubicación, destino o propiedad, o de alentar la actividad ilícita de la que provienen.\n\nArt. 400 Bis 1 (agravantes): la pena aumenta de 1/3 a 1/2 si quien comete el delito pertenece a un sujeto obligado en materia de PLD/FT, y se duplica si es un servidor público encargado de prevenir, detectar, investigar o juzgar estos delitos.',
+    'Código Penal Federal, Título Vigesimotercero, Cap. I y II, arts. 400, 400 Bis y 400 Bis 1.'),
+  N('t115','1.1.5 Penas — financiamiento al terrorismo (CPF)','tema',1,9,
+    'Art. 139 CPF (Terrorismo): 15 a 40 años de prisión y multa de 400 a 1,200 veces el valor diario de la Unidad de Medida y Actualización (UMA) — la multa se calcula en UMA desde la reforma de este párrafo, DOF 07-06-2024; la pena aumenta hasta en 1/2 si el delito se comete contra un inmueble de acceso público, causa daño a la economía nacional o afecta a un rehén.\n\nArt. 139 Quáter (Financiamiento al Terrorismo): la misma pena que el art. 139 (15 a 40 años de prisión, 400 a 1,200 días de UMA de multa) a quien aporte o recaude fondos o recursos, por cualquier medio, sabiendo que se destinarán a financiar o apoyar a personas u organizaciones terroristas.',
+    'Código Penal Federal, Título Primero, Caps. VI y VI Bis, arts. 138 a 139 Quinquies (art. 139 reformado DOF 07-06-2024).'),
+
+  N('t121','1.2.1 Organismos y foros internacionales','tema',1,9,
+    'ONU: foro para que sus miembros tomen medidas sobre problemas globales — paz y seguridad, derechos humanos, desarme, terrorismo. Comité de Supervisión Bancaria de Basilea (BCBS): principal organismo normativo internacional para la regulación prudencial de bancos y foro de cooperación en supervisión bancaria. Grupo Wolfsberg: asociación de bancos que desarrolla estándares contra el financiamiento del terrorismo, la corrupción y el lavado de dinero en instituciones financieras. Grupo Egmont: foro para que las unidades de inteligencia financiera del mundo mejoren su cooperación contra el lavado de dinero y el financiamiento al terrorismo. GAFI: entidad intergubernamental que fija estándares y promueve su implementación efectiva contra el lavado de activos, el financiamiento del terrorismo y otras amenazas. GAFILAT: organización intergubernamental regional para prevenir y combatir el lavado de activos, el financiamiento del terrorismo y de la proliferación de armas de destrucción masiva en Latinoamérica.',
+    '"Organismos Internacionales", CNBV, gob.mx, 06 de enero de 2025.'),
+  N('t122','1.2.2 Grupo de Acción Financiera Internacional (GAFI)','tema',1,9,
+    'Entidad intergubernamental creada en 1989 por el G-7. Miembro desde el año 2000: México (uno de 34 miembros del Anexo A). Su Secretaría la proporciona la OCDE, con sede en París. Sesiona en Pleno al menos 3 veces al año.',
+    'Mandato del GAFI (2012-2020), abril 2012; Evaluación Nacional de Riesgos 2023.'),
+  N('t123','1.2.3 Recomendaciones del GAFI','tema',1,9,
+    'Las 40 Recomendaciones del GAFI, estándar internacional contra el lavado de activos, el financiamiento del terrorismo y de la proliferación, agrupadas en 7 bloques (A a G).',
+    'Estándares Internacionales — Las Recomendaciones del GAFI, diciembre 2025.'),
+
+  N('t131','1.3.1 Régimen de prevención','tema',1,9,
+    'El régimen de PLD/CFT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) se integra por 5 tipos de actores.\n\nSujetos Obligados (Sistema Financiero y Actividades Vulnerables) · Autoridades Reguladoras: la SHCP (Secretaría de Hacienda y Crédito Público) y la UIF (Unidad de Inteligencia Financiera, adscrita a la SHCP) · Autoridades Supervisoras: la CNBV (Comisión Nacional Bancaria y de Valores), la CNSF (Comisión Nacional de Seguros y Fianzas), la CONSAR (Comisión Nacional del Sistema de Ahorro para el Retiro) y el SAT (Servicio de Administración Tributaria) · la UIF, que además de Autoridad Reguladora recibe y analiza los reportes de los Sujetos Obligados.\n\nY otros integrantes del régimen: la FGR (Fiscalía General de la República), el PJF (Poder Judicial de la Federación), la SRE (Secretaría de Relaciones Exteriores), la FECC (Fiscalía Especializada en Combate a la Corrupción), la ASF (Auditoría Superior de la Federación), la SFP (Secretaría de la Función Pública) y la SSPC (Secretaría de Seguridad y Protección Ciudadana).',
+    'Evaluación Nacional de Riesgos 2023, Sección III, págs. 9-12.'),
+  N('t132','1.3.2 Autoridades nacionales','tema',1,9,
+    'CNBV: las Direcciones Generales de Prevención de Operaciones con Recursos de Procedencia Ilícita A, B y C (art. 48 RI-CNBV) verifican el cumplimiento de las disposiciones de prevención, detección y reporte de actos que pudiesen ubicarse en los supuestos de los arts. 139 Quáter o 400 Bis CPF, respecto de Entidades, sociedades con modelos novedosos, Asesores en Inversiones, Centros Cambiarios, Transmisores de Dinero y SOFOM no reguladas. UIF-SHCP (art. 10 RISHCP, 44 fracciones en 8 direcciones/coordinaciones internas): entre otras atribuciones, propone y emite opinión sobre las disposiciones de carácter general en materia de PLD/FT, recibe y analiza los reportes de los sujetos obligados, e interpreta para efectos administrativos la LFPIORPI y su Reglamento.',
+    'Reglamento Interior de la CNBV, art. 48; Reglamento Interior de la SHCP, art. 10.'),
+
+  // ---------------- TEMAS — Área 2 ----------------
+  N('t211','2.1.1 Objetivo','tema',2,9,
+    'Cap. I de la DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito — ("Objeto y Definiciones"): establecer medidas y procedimientos para prevenir y detectar actos que pudieran ubicarse en los supuestos de los arts. 139 Quáter o 400 Bis del Código Penal Federal (CPF). Define Oficial de Cumplimiento, Operación Relevante, PEP (Persona Políticamente Expuesta), Propietario Real, Proveedor de Recursos y Riesgo.',
+    'DCG Bancos (emitida con fundamento en el art. 115 de la Ley de Instituciones de Crédito, LIC), Cap. I, Disp. 1ª y 2ª.'),
+  N('t212','2.1.2 Política de identificación y conocimiento del cliente/usuario','tema',2,9,
+    'La DCG Bancos distingue "Cliente" (con quien la Entidad tiene una relación de negocios continua, p. ej. una cuenta) de "Usuario" (quien realiza una operación ocasional, p. ej. una transferencia sin ser cuentahabiente).\n\nRegla: cuando la Entidad actúa como ordenante o receptora de una transferencia de fondos (nacional o internacional) para un Usuario, entre más dinero se mueve, más datos se le exigen — es una medida para poder rastrear e identificar a quien está detrás del dinero. Los montos son en dólares de los Estados Unidos de América (o su equivalente): de US$1,000 a menos de US$3,000, se recaban datos básicos (nombre, país de nacimiento, nacionalidad, fecha de nacimiento, domicilio, número de identificación oficial); de US$3,000 a menos de US$5,000, además copia de la identificación oficial; US$5,000 o más, expediente de identificación completo (Disp. 16ª).\n\nPara Clientes (con cuenta), la Entidad aplica el Enfoque Basado en Riesgo para clasificarlos por Grado de Riesgo y conserva sus históricos por no menos de 10 años (Disp. 21ª-1 y 51ª fracc. XIII).',
+    'DCG Bancos (Disposiciones de Carácter General a que se refiere el art. 115 de la Ley de Instituciones de Crédito), Caps. II, II Bis y III; Disp. 16ª, 21ª-1 y 51ª fracc. XIII.'),
+  N('t213','2.1.3 Reportes','tema',2,9,
+    'La DCG Bancos define distintos tipos de reporte según qué tan "normal" es la operación:\n\nOperación Relevante — pago en efectivo (billetes/monedas de curso legal, cheques de viajero o monedas de platino/oro/plata) por un monto igual o superior al equivalente a US$7,500; se reporta aunque no haya nada sospechoso, solo por superar el monto.\n\nOperación Inusual — operación, conducta o comportamiento de un Cliente/Usuario que NO concuerda con su perfil transaccional habitual o los antecedentes que la Entidad conoce de él (p. ej. montos, frecuencia o tipo de operación fuera de lo normal), sin que exista una justificación razonable.\n\nOperación Interna Preocupante — la misma idea, pero de un directivo, funcionario, apoderado o empleado de la propia Entidad, cuya conducta pudiera contravenir la Ley o favorecer/ocultar los supuestos de los arts. 139 Quáter o 400 Bis CPF.\n\nCalendario: Relevantes, efectivo en USD, cheques de caja y Activos Virtuales se reportan trimestralmente, en los 10 primeros días hábiles de enero/abril/julio/octubre; transferencias internacionales, mensual; Inusuales e Internas Preocupantes, dentro de 3 días hábiles tras el dictamen del Comité de Comunicación y Control; y si hay sospecha fundada de los arts. 139 Quáter o 400 Bis CPF, reporte de 24 horas.',
+    'DCG Bancos, Disp. 2ª fracc. XXVIII a XXX (definiciones), Caps. IV-VII y Disp. 34ª-42ª (plazos); LIC art. 115.'),
+  N('t214','2.1.4 Restricciones de dólares en efectivo','tema',2,9,
+    'Comisionistas de hospedaje: hasta US$1,500 acumulados por mes calendario con turistas extranjeros; hasta US$300 diarios (tope US$1,500 mensual) con personas físicas mexicanas.',
+    'DCG Bancos, Caps. III Bis y IV Bis; Disp. 33ª/33ª Bis/34ª Bis.'),
+  N('t215','2.1.5 Sistemas automatizados','tema',2,9,
+    'DCG Bancos, Cap. X, Disp. 51ª: cada Entidad debe tener sistemas automatizados (parte de su "Infraestructura Tecnológica") que hagan, entre otras, estas funciones:\n\nConservar y permitir consultar los expedientes de identificación de cada Cliente; generar y transmitir a la Secretaría (vía CNBV) los reportes de Operaciones Relevantes, efectivo en USD, cheques de caja, Inusuales, Internas Preocupantes, Activos Virtuales y transferencias internacionales; clasificar los productos/operaciones y monitorearlas para detectar posibles Operaciones Inusuales; detectar operaciones repetidas de un mismo Cliente/Usuario.\n\nEjecutar el sistema de alertas; agrupar en una base consolidada las cuentas de un mismo Cliente; conservar los históricos de posibles Operaciones Inusuales/Internas Preocupantes; permitir que el personal reporte internamente esas operaciones de forma confidencial; ejecutar el sistema de alertas contra la Lista de Personas Bloqueadas y PEP.\n\nFacilitar la verificación de identificación no presencial; dar trazabilidad al origen de los Activos Virtuales; y ejecutar el modelo de evaluación de Riesgos para clasificar a los Clientes por Grado de Riesgo, conservando los históricos por no menos de 10 años. La Entidad debe evaluar la efectividad de este sistema al menos cada 2 años.',
+    'DCG Bancos, Cap. X, Disp. 51ª.'),
+  N('t216','2.1.6 Otras obligaciones','tema',2,9,
+    'DCG Bancos, Cap. XII, Disp. 54ª: la Entidad debe entregar a la Secretaría de Hacienda (por conducto de la CNBV) toda la información y documentación que le requiera relacionada con los reportes de estas Disposiciones — incluidos expedientes completos de identificación de Clientes o Usuarios —, en copia simple (o certificada si la Secretaría lo pide) y también en archivos electrónicos que puedan abrirse con el programa que la Secretaría indique, entregados en sobre cerrado a la unidad administrativa que se designe.',
+    'DCG Bancos, Cap. XII, Disp. 54ª.'),
+  N('t217','2.1.7 Intercambio de información','tema',2,9,
+    'Cap. XIII, Disp. 61ª+: permite a las Entidades intercambiar información de Clientes/Usuarios para prevenir actos de los arts. 139 Quáter/400 Bis CPF, sin violar el secreto bancario.',
+    'DCG Bancos, Cap. XIII; LIC arts. 52 y 115 Bis.'),
+  N('t218','2.1.8 Lista de personas bloqueadas','tema',2,9,
+    'Cap. XV, Disp. 70ª+: prohibido iniciar relaciones con personas en la Lista; reportar en 24 horas cualquier operación previa a su notificación; estrictamente prohibido alertar al Cliente sobre la Lista (Disp. 52ª fracc. IV).',
+    'DCG Bancos, Cap. XV; Disp. 41ª, 52ª, 62ª y 70ª.'),
+  N('t219','2.1.9 Comité de Comunicación y Control','tema',2,9,
+    'Órgano colegiado obligatorio, mínimo 3 miembros, sesiona al menos 1 vez al mes. Entidades con menos de 25 personas a su servicio NO están obligadas a constituirlo (sus funciones las asume el Oficial de Cumplimiento).',
+    'DCG Bancos, Cap. VIII, Disp. 43ª-46ª.'),
+  N('t2110','2.1.10 Oficial de cumplimiento','tema',2,9,
+    'Designado por el consejo o el Comité, dentro de las 3 jerarquías inmediatas inferiores al director general. Elabora el Manual de Cumplimiento y debe contar con certificación ante la CNBV (renovable cada 5 años).',
+    'DCG Bancos, Cap. VIII, Disp. 47ª y 47ª Bis.'),
+  N('t2111','2.1.11 Obligaciones de los modelos novedosos','tema',2,9,
+    'Cap. XIV Bis: identificar y evaluar el Riesgo del modelo (herramientas tecnológicas nuevas) antes de su lanzamiento y presentar el resultado a la CNBV junto con la solicitud de autorización.',
+    'DCG Bancos, Cap. XIV Bis, Disp. 69ª-2; Disp. 2ª fracc. XXV.'),
+  N('t2112','2.1.12 Centros cambiarios','tema',2,9,
+    'Art. 81-A de la LGOAAC — Ley General de Organizaciones y Actividades Auxiliares del Crédito —: solo sociedades anónimas registradas ante la CNBV (Comisión Nacional Bancaria y de Valores); límite de US$10,000 por cliente por día; el contravalor NUNCA puede liquidarse por transferencia, solo en efectivo, cheques de viajero o cheques en moneda nacional.',
+    'LGOAAC art. 81-A; DCG Centros Cambiarios.'),
+  N('t2113','2.1.13 Transmisores de dinero','tema',2,9,
+    'Art. 81-A Bis de la LGOAAC — Ley General de Organizaciones y Actividades Auxiliares del Crédito —: sociedad que recibe recursos en territorio nacional para transferirlos, mediante registro vigente ante la CNBV (Comisión Nacional Bancaria y de Valores). Nunca pueden realizar las operaciones reservadas a centros cambiarios.',
+    'LGOAAC art. 81-A Bis; DCG Transmisores de Dinero.'),
+  N('t2114','2.1.14 Instituciones de tecnología financiera (ITF)','tema',2,9,
+    'Art. 58 de la LRITF — Ley para Regular las Instituciones de Tecnología Financiera —: las ITF (Instituciones de Tecnología Financiera) deben prevenir/detectar actos de los arts. 139 Quáter (financiamiento al terrorismo) o 400 Bis (operaciones con recursos de procedencia ilícita) del Código Penal Federal (CPF), y diseñar una metodología de evaluación de Riesgos por productos/servicios/tecnologías. Es la única DCG — Disposiciones de Carácter General — organizada por Título/Capítulo en vez de Capítulo plano.',
+    'LRITF art. 58; DCG ITF (2018).'),
+  N('t2115','2.1.15 Sanciones','tema',2,9,
+    'Art. 115 de la LIC — Ley de Instituciones de Crédito —: multas de 10%-100% del monto (Lista de Personas Bloqueadas / operación inusual no reportada); 30,000-100,000 días de salario (reportes clave no presentados); 5,000-50,000 días de salario (demás incumplimientos).',
+    'LIC art. 115; DCG Bancos Disp. 67ª.'),
+  N('t2116','2.1.16 Propietario Real','tema',2,9,
+    'Persona física titular del 25% o más del capital social (Criterio I — propiedad/control), o que controla por cargo directivo (Criterio II), o por cualquier otro medio que permita presumir que goza de los beneficios (Criterio III).',
+    'Lineamientos para la Identificación del Propietario Real (27-mar-2019), Lineamiento 3.'),
+  N('t2117','2.1.17 Plazos de cumplimiento regulatorio','tema',2,7,
+    'No se localizó en ningún documento revisado una disposición con el título literal "Plazos de cumplimiento regulatorio". Los plazos que sí se documentaron (reportes, avisos, sesiones del Comité) están en 2.1.3; existen plazos de 90/180/240/270/360 días naturales en Disposiciones Transitorias de reformas a la DCG, pero sin un capítulo dedicado a este tema.',
+    null, true),
+
+  N('t221','2.2.1 Actividades vulnerables','tema',2,9,
+    'Art. 17 de la LFPIORPI — Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita — (reformado DOF 16-07-2025), las 16 fracciones de Actividades Vulnerables. Los umbrales están en veces el valor diario de la UMA: el primer monto es de identificación del Cliente, el segundo de Aviso a la Secretaría de Hacienda.\n\nI. Juegos con apuesta, concursos o sorteos ≥325/≥645 · II. Tarjetas de servicio o crédito, prepagadas y otros instrumentos de valor ≥805-645/≥1,285-645 · III. Cheques de viajero (emisión/comercialización distinta a Entidades Financieras) ≥645 aviso · IV. Mutuo, préstamos o créditos fuera del sistema financiero ≥1,605 aviso · V. Construcción/desarrollo inmobiliario e intermediación en compraventa de inmuebles ≥8,025 aviso · V Bis. Recepción de recursos para un Desarrollo Inmobiliario (venta o renta) ≥8,025 aviso.\n\nVI. Metales/piedras preciosas, joyas o relojes ≥805/≥1,605 · VII. Subasta o comercialización de obras de arte ≥2,410/≥4,815 · VIII. Comercialización de vehículos nuevos o usados ≥3,210/≥6,420 · IX. Blindaje de vehículos o inmuebles ≥2,410/≥4,815 · X. Traslado o custodia de dinero o valores ≥3,210 aviso (siempre, si no puede determinarse el monto).\n\nXI. Servicios profesionales independientes en nombre de un cliente (compraventa de inmuebles, manejo de recursos/cuentas, constitución de sociedades) — aviso según la operación · XII. Servicios de fe pública (notarios y corredores públicos): venta/constitución de derechos sobre inmuebles ≥8,000 aviso, poderes irrevocables y constitución/modificación de personas morales siempre aviso, fideicomisos ≥4,000 aviso · XIII. Donativos recibidos por Asociaciones y Sociedades sin fines de lucro (OSFL) ≥1,605/≥3,210.\n\nXIV. Comercio exterior (agentes/agencias aduanales): vehículos, máquinas de juego y blindaje sin importar el valor, joyas/metales preciosos ≥485, obras de arte ≥4,815 — todos siempre aviso · XV. Uso o goce de inmuebles (renta) mensual ≥1,605/≥3,210 · XVI. Intercambio de activos virtuales por sujetos distintos a Entidades Financieras ≥210 aviso.\n\nLos Avisos se presentan a más tardar el día 17 del mes siguiente (art. 23).',
+    'LFPIORPI arts. 17, 18 y 23 (reformado DOF 16-07-2025).'),
+  N('t222','2.2.2 Uso de efectivo','tema',2,9,
+    'Art. 32 de la LFPIORPI — Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita — (reformado DOF 16-07-2025): prohibido pagar, liquidar o aceptar el pago en efectivo (moneda nacional, divisas o Metales Preciosos) en las siguientes operaciones.\n\nI. Constitución/transmisión de derechos reales sobre inmuebles ≥8,025 UMA · II. Transmisión de propiedad de vehículos aéreos, marítimos o terrestres ≥3,210 UMA · III. Transmisión de relojes, joyería, Metales/Piedras Preciosas u obras de arte ≥3,210 UMA · IV. Boletos de juegos con apuesta, concursos o sorteos, incluido el pago de premios, ≥3,210 UMA.\n\nV. Servicios de blindaje de vehículos o inmuebles ≥3,210 UMA · VI. Transmisión de dominio de acciones o partes sociales ≥3,210 UMA · VII. Constitución de derechos de uso o goce (renta) sobre los bienes de las fracciones I, II y V, mensual, ≥3,210 UMA · VIII. Consignación de pago relacionada con cualquiera de las fracciones I a VII, según el umbral de cada una.',
+    'LFPIORPI art. 32 (reformado DOF 16-07-2025).'),
+
+  // ---------------- TEMAS — Área 3 ----------------
+  N('t311','3.1.1 Informe de auditoría PLD/FT','tema',3,9,
+    'Lineamientos para el Informe de Auditoría PLD/FT, DOF 18-oct-2021: 4 secciones obligatorias del Informe (A. Resultados de la Revisión, B. Cumplimiento regulatorio en 5 niveles, C. Asuntos clave, D. Hallazgos y acciones correctivas). Remisión vía el SITI PLD/FT — Sistema de Información y Transferencia de Información en materia de PLD/FT, el sistema electrónico de la CNBV para el envío de reportes y avisos — dentro de los 60 días naturales siguientes al cierre del ejercicio (dato tomado de la DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito —, Disp. 60ª).',
+    'Lineamientos para el Informe de Auditoría PLD/FT, DOF 18-oct-2021.'),
+  N('t312','3.1.2 Supervisión CNBV','tema',3,9,
+    'Art. 5 de la Ley CNBV, 4 facultades: Inspección (visitas, verificación de operaciones y auditoría de registros/sistemas, para comprobar el estado de las entidades), Vigilancia (análisis de la información económica y financiera, incluidos los controles preventivos de PLD/FT respecto de los arts. 139, 148 Bis y 400 Bis CPF; si hay deficiencias, la Comisión notifica y puede sancionar) y Prevención y corrección (programas de cumplimiento forzoso para eliminar irregularidades o corregir desequilibrios de liquidez, solvencia o estabilidad). Las visitas de inspección ordinarias y especiales se notifican con al menos 2 días hábiles de anticipación; las de investigación pueden notificarse hasta el momento de iniciarlas.',
+    'Ley de la CNBV, art. 5; Reglamento de Supervisión de la CNBV, art. 21.'),
+
+  N('t321','3.2.1 Guía EBR para el Sector Bancario — GAFI','tema',3,9,
+    'GAFI, octubre 2014: el Enfoque Basado en Riesgo no exime de aplicar medidas de debida diligencia y es un pre-requisito para la aplicación efectiva de las Recomendaciones del GAFI (no es opcional). Aplicación conforme a la Recomendación 1: identificación, evaluación y mitigación del riesgo.',
+    'Guía del Enfoque Basado en Riesgo para el Sector Bancario, GAFI, octubre 2014.'),
+  N('t322','3.2.2 Adecuada gestión de riesgos BC/FT — Comité de Basilea','tema',3,9,
+    'Comité de Supervisión Bancaria de Basilea, enero 2014: el banco debe evaluar y comprender sus riesgos de BC/FT considerando factores a escala nacional, sectorial, bancaria y de relación comercial; complementa el Principio 29 de Basilea ("utilización abusiva de servicios financieros").',
+    'Adecuada gestión de los riesgos relacionados con el BC/FT, Comité de Basilea, enero 2014.'),
+
+  N('t331','3.3.1 Metodología de evaluación de riesgos','tema',3,9,
+    'Guía CNBV, 6-sep-2019: 4 Elementos de Riesgo mínimos (productos/servicios; clientes/usuarios; países/áreas geográficas; transacciones/canales) y 3 fases (Diseño, Implementación, Valoración).',
+    'Guía para la elaboración de una metodología de evaluación de riesgos en materia de PLD/FT, CNBV, 6-sep-2019.'),
+  N('t332','3.3.2 Clasificación por grado de riesgo','tema',3,9,
+    'La clasificación de Clientes/Usuarios por Grado de Riesgo debe ser coherente con los resultados de la Metodología de Evaluación de Riesgos, pero es un ejercicio distinto e independiente: la Metodología mide el Riesgo al que está expuesto el propio Sujeto Supervisado, mientras que la clasificación por Grado de Riesgo mide el Riesgo específico de cada Cliente o Usuario en particular. En grupo financiero, la Metodología debe considerar los resultados de la de las demás entidades del grupo, y se recomienda coordinación y estrategia de mitigación a nivel grupo.',
+    'Guía CNBV, 6-sep-2019.'),
+  N('t333','3.3.3 Evaluación Nacional de Riesgos (ENR) 2023','tema',3,9,
+    'Escala de riesgo integral 0-9 (7-9 Alto, 5-7 Medio-Alto, 3-5 Medio, 0-3 Bajo). Conclusión Nacional: Lavado de Dinero Medio-Alto, Financiamiento al Terrorismo Bajo, FPADM — Financiamiento a la Proliferación de Armas de Destrucción Masiva — Bajo, Activos Virtuales Medio, Ransomware Medio.',
+    'Evaluación Nacional de Riesgos de LD/FT 2023, Secciones IV y XI.7.'),
+  N('t334','3.3.4 Riesgos de corrupción','tema',3,9,
+    'Guía Anticorrupción CNBV 2020: PEP = quien desempeña o ha desempeñado funciones públicas destacadas; Personas Vulnerables = quienes no son PEP pero pueden representar riesgo de LD por vínculo con una PEP. Sección III lista factores de riesgo en 4 apartados (III.1 a III.4).',
+    'Guía Anticorrupción, CNBV, 2020, apartado de Definiciones y Sección III.'),
+
+  // ---------------- MEMORIZA — hechos clave (ámbar) ----------------
+  N('m_etapas','3 etapas del lavado de dinero','memoriza',1,6,'Colocación → Estratificación → Integración. Ejemplo de Integración citado en el documento: la venta de un yate adquirido en la etapa de Estratificación.','Documento CNBV sobre Lavado de Dinero, págs. 1-2.'),
+  N('m_400bis','Art. 400 Bis CPF','memoriza',1,6,'5 a 15 años de prisión y 1,000 a 5,000 días multa, por adquirir/administrar/ocultar recursos sabiendo que proceden de actividad ilícita.','Código Penal Federal, art. 400 Bis.'),
+  N('m_400bis1','Art. 400 Bis 1 — agravantes','memoriza',1,6,'+1/3 a 1/2 de la pena si el infractor es consejero, administrador, funcionario, empleado, apoderado o prestador de servicios de un sujeto obligado (o dentro de los 2 años de haber dejado ese cargo), con inhabilitación adicional; se duplica si lo comete un servidor público encargado de prevenir/detectar/investigar/juzgar estos delitos; y aumenta hasta en 1/2 si se utiliza a menores de 18 años o a personas sin capacidad de comprender o resistir el hecho.','Código Penal Federal, art. 400 Bis 1 (DOF 14-03-2014).'),
+  N('m_139','Art. 139 CPF — Terrorismo','memoriza',1,6,'15 a 40 años de prisión y multa de 400 a 1,200 veces el valor diario de la UMA.','Código Penal Federal, art. 139.'),
+  N('m_139q','Art. 139 Quáter — Financiamiento al Terrorismo','memoriza',1,6,'Misma pena que el art. 139 (15 a 40 años de prisión, 400 a 1,200 días de UMA de multa).','Código Penal Federal, art. 139 Quáter.'),
+  N('m_gafi1989','GAFI: creado en 1989 por el G-7','memoriza',1,6,'México es miembro del GAFI desde el año 2000 — uno de los 34 miembros listados en el Anexo A del Mandato.','Mandato del GAFI 2012-2020; Evaluación Nacional de Riesgos 2023.'),
+  N('m_40rec','40 Recomendaciones en 7 bloques (A-G)','memoriza',1,6,'A. Políticas y Coordinación · B. Lavado de Activos y Decomiso · C. Financiamiento del Terrorismo/Proliferación · D. Medidas Preventivas · E. Transparencia/Beneficiario Final · F. Facultades de Autoridades · G. Cooperación Internacional.','Las Recomendaciones del GAFI, diciembre 2025.'),
+  N('m_iem','IEM de México: adoptado nov-2017, publicado ene-2018','memoriza',1,6,'"México enfrenta un riesgo significativo de lavado de activos proveniente principalmente de actividades asociadas con la delincuencia organizada: tráfico de drogas, extorsión, corrupción y evasión fiscal."','Fuente complementaria: presentación UIF/CEMEFI 2021 (no forma parte de la bibliografía oficial numerada, pero es consistente con el marco GAFI ya citado).'),
+  N('m_5actores','5 tipos de actores del régimen PLD/CFT','memoriza',1,6,'Sujetos Obligados · Autoridades Reguladoras (SHCP — Secretaría de Hacienda y Crédito Público — / UIF — Unidad de Inteligencia Financiera) · Autoridades Supervisoras (CNBV — Comisión Nacional Bancaria y de Valores — / CNSF — Comisión Nacional de Seguros y Fianzas — / CONSAR — Comisión Nacional del Sistema de Ahorro para el Retiro — / SAT — Servicio de Administración Tributaria) · UIF · Otros integrantes: FGR (Fiscalía General de la República), PJF (Poder Judicial de la Federación), SRE (Secretaría de Relaciones Exteriores), FECC (Fiscalía Especializada en Combate a la Corrupción), ASF (Auditoría Superior de la Federación), SFP (Secretaría de la Función Pública), SSPC (Secretaría de Seguridad y Protección Ciudadana).','Evaluación Nacional de Riesgos 2023, Sección III.'),
+  N('m_sujetos','3,549 + 107,642 sujetos obligados','memoriza',1,6,'Al 30-jun-2022: Sistema Financiero = 3,549 sujetos (19 sectores); Actividades Vulnerables = 107,642 sujetos (20 sectores).','Evaluación Nacional de Riesgos 2023, Sección III, págs. 9-12.'),
+
+  N('m_relevante','Operación Relevante ≥ US$7,500','memoriza',2,6,'Umbral que define una Operación Relevante: operación con billetes/monedas, cheques de viajero o monedas de metales preciosos por monto ≥ equivalente a US$7,500.','DCG Bancos, Disp. 2ª fracc. XXX.'),
+  N('m_trimestral','Reportes trimestrales: 10 primeros días hábiles','memoriza',2,6,'De enero, abril, julio y octubre — Relevantes, efectivo USD, cheques de caja y Activos Virtuales.','DCG Bancos, Disp. 34ª, 34ª Bis, 34ª Ter, 34ª Quáter.'),
+  N('m_24h','Reporte de 24 horas','memoriza',2,6,'Dentro de las 24 horas siguientes a que la Entidad conozca la sospecha fundada de arts. 139 Quáter o 400 Bis CPF, aun si decide no realizar la operación. Mismo plazo aplica a la Lista de Personas Bloqueadas.','DCG Bancos, Disp. 41ª.'),
+  N('m_10anios','Conservación: mínimo 10 años','memoriza',2,6,'Dos plazos de 10 años, de dos artículos distintos. El art. 115 de la LIC — Ley de Instituciones de Crédito — obliga a las instituciones a establecer, mediante disposiciones de carácter general de la Secretaría de Hacienda y Crédito Público (SHCP), medidas para prevenir y detectar operaciones ligadas a los delitos de los arts. 139/148 Bis/400 Bis del Código Penal Federal; su inciso c) es el que fija cómo deben resguardar la información y documentación de identificación de clientes y de los reportes: por al menos diez años.\n\nLa Disp. 51ª fracc. XIII de la DCG Bancos (Disposiciones de Carácter General aplicables a Instituciones de Crédito) es distinta: exige que el sistema automatizado de evaluación de Riesgos conserve, por un periodo no menor a diez años, los registros históricos de las modificaciones en el Grado de Riesgo y en el perfil transaccional del Cliente.','LIC — Ley de Instituciones de Crédito —, art. 115, párrafo sexto e inciso c); DCG Bancos, Disp. 51ª fracc. XIII.'),
+  N('m_25pct','Propietario Real: 25% o más del capital','memoriza',2,6,'Criterio I: identificar a la persona física titular directa o indirecta del 25% o más del capital social; si está fraccionado, se suman relaciones jurídicas entre titulares.','Lineamientos para la Identificación del Propietario Real, Lineamiento 3, Criterio I.'),
+  N('m_comite25','Comité: exención con menos de 25 personas','memoriza',2,6,'Entidades con menos de 25 personas a su servicio no están obligadas a constituir el Comité de Comunicación y Control; sus funciones las asume el Oficial de Cumplimiento (salvo la fracción XI, del director general).','DCG Bancos, Cap. VIII, Disp. 43ª-46ª.'),
+  N('m_multa1','Multa: 30,000 a 100,000 días de salario','memoriza',2,6,'Por no reportar Operaciones Relevantes, Internas Preocupantes, Transferencias Internacionales o efectivo USD, conforme al art. 115 de la Ley de Instituciones de Crédito (LIC).','Ley de Instituciones de Crédito (LIC), art. 115.'),
+  N('m_multa2','Multa: 5,000 a 50,000 días de salario','memoriza',2,6,'Para los demás incumplimientos (distintos de no reportar Operaciones Relevantes, Internas Preocupantes, Transferencias Internacionales o efectivo USD) al art. 115 de la Ley de Instituciones de Crédito (LIC) y a las disposiciones de la DCG Bancos que de él emanan.','Ley de Instituciones de Crédito (LIC), art. 115.'),
+  N('m_uma_donativos','Donativos a OSFL: 1,605 / 3,210 UMA','memoriza',2,6,'Una OSFL es una Asociación o Sociedad sin Fines de Lucro (p. ej. una asociación civil o una fundación). Conforme a la fracc. XIII del art. 17 de la Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita (LFPIORPI) — la ley que define las Actividades Vulnerables sujetas a identificación y aviso — recibir donativos es Actividad Vulnerable: identificación del donante ≥1,605 veces el valor diario de la UMA, Aviso a la Secretaría ≥3,210 veces la UMA.','LFPIORPI art. 17, fracc. XIII (reformado DOF 16-07-2025).'),
+  N('m_dia17','Avisos: a más tardar el día 17','memoriza',2,6,'Los Avisos se presentan a más tardar el día 17 del mes inmediato siguiente a aquel en que se realizó la operación.','LFPIORPI art. 23.'),
+  N('m_8025','Efectivo prohibido: inmuebles ≥8,025 UMA','memoriza',2,6,'Art. 32 LFPIORPI: prohibido pagar en efectivo la constitución o transmisión de derechos reales sobre inmuebles por 8,025 UMA o más.','LFPIORPI art. 32 fracc. I (reformado DOF 16-07-2025).'),
+  N('m_art6061','Arts. 60-61 LFPIORPI — sanciones y defensa','memoriza',2,6,'Art. 60: criterios para imponer sanciones (reincidencia, cuantía, intención). Art. 61: medios de defensa — recurso de revisión o procedimiento contencioso administrativo.','Fuente complementaria UIF/CEMEFI 2021, consistente con LFPIORPI arts. 52-56 ya citados.'),
+  N('m_art6263','Arts. 62-63 LFPIORPI — delitos','memoriza',2,6,'Penas de 2 a 8 años (art. 62) y de 4 a 10 años de prisión (art. 63) conforme al Código Penal Federal.','Fuente complementaria UIF/CEMEFI 2021.'),
+  N('m_osfl','OSFL: riesgo LD Medio / riesgo FT sin antecedente comprobado','memoriza',2,6,'En México, hasta el documento fuente, no existe algún antecedente comprobado de financiamiento al terrorismo mediante Organizaciones Sin Fines de Lucro.','Fuente complementaria UIF/CEMEFI 2021, consistente con art. 17 fracc. XIII LFPIORPI.'),
+
+  N('m_60dias','Informe de Auditoría: 60 días naturales','memoriza',3,6,'El Informe cubre enero-diciembre y debe remitirse a la Comisión dentro de los 60 días naturales siguientes al cierre del ejercicio (dato tomado de la DCG Bancos, Disp. 60ª).','DCG Bancos, Disp. 60ª.'),
+  N('m_auditor','Requisitos del Auditor','memoriza',3,6,'Licenciatura + 3 años de experiencia en PLD/FT (o, sin ese nivel de estudios, 5 años de experiencia); certificado vigente ante la CNBV, renovable cada 5 años.','Lineamientos para el Informe de Auditoría, Lineamiento CUARTO.'),
+  N('m_4secciones','Informe de auditoría: 4 secciones (A-D)','memoriza',3,6,'A. Resultados de la Revisión · B. Cumplimiento regulatorio (5 niveles) · C. Asuntos clave de la auditoría · D. Hallazgos y acciones correctivas.','Lineamientos para el Informe de Auditoría, Lineamiento OCTAVO.'),
+  N('m_2dias','Visita de inspección: 2 días hábiles de anticipación','memoriza',3,6,'La orden de visita debe notificarse con al menos 2 días hábiles de anticipación a la fecha en que deba iniciarse.','Reglamento de Supervisión de la CNBV, art. 21.'),
+  N('m_rec1gafi','Recomendación 1 del GAFI — EBR','memoriza',3,6,'Aplicación del Enfoque Basado en Riesgo en 3 pasos: identificación, evaluación y mitigación del riesgo. No es opcional: es un pre-requisito para aplicar el resto de las Recomendaciones.','Guía EBR para el Sector Bancario, GAFI, octubre 2014, párr. 21-24.'),
+  N('m_principio29','Principio 29 de Basilea','memoriza',3,6,'"Utilización abusiva de servicios financieros" — el que el documento de Basilea sobre gestión de riesgos de BC/FT complementa.','Principios básicos para una supervisión bancaria eficaz, Comité de Basilea, sept. 2012.'),
+  N('m_4elementos','4 Elementos de Riesgo (metodología CNBV)','memoriza',3,6,'Productos y servicios · Tipo de Clientes/Usuarios · Países y áreas geográficas · Transacciones y canales de envío o distribución.','Guía para la elaboración de una metodología de evaluación de riesgos, CNBV, 6-sep-2019.'),
+  N('m_3fases','3 fases: Diseño, Implementación, Valoración','memoriza',3,6,'Diseño (identificación, medición, mitigantes) → Implementación (riesgo residual, ≥12 meses de información) → Valoración (revisión de eficacia, actualización ≤12 meses).','Guía CNBV, 6-sep-2019.'),
+  N('m_escala09','Escala de riesgo ENR: 0 a 9','memoriza',3,6,'7-9 Alto · 5-7 Medio-Alto · 3-5 Medio · 0-3 Bajo.','Evaluación Nacional de Riesgos 2023.'),
+  N('m_conclusion','Conclusión Nacional ENR 2023','memoriza',3,6,'Lavado de Dinero: Medio-Alto · Financiamiento al Terrorismo: Bajo · FPADM: Bajo · Activos Virtuales: Medio · Ransomware: Medio · COVID-19: Bajo.','Evaluación Nacional de Riesgos 2023, Sección XI.7.'),
+  N('m_formula','Fórmula: Riesgo de LD','memoriza',3,6,'Riesgo de LD = 0.8 × Amenazas de LD + 0.1 × Vulnerabilidades de LD + 0.1 × Vulnerabilidades del Régimen PLD/CFT.','Evaluación Nacional de Riesgos 2023.'),
+  N('m_pep','PEP: funciones públicas destacadas','memoriza',3,6,'Individuo que desempeña o ha desempeñado funciones públicas destacadas en un país extranjero o en territorio nacional (jefes de estado, líderes políticos, funcionarios de alta jerarquía, altos ejecutivos de empresas estatales).','Guía Anticorrupción, CNBV, 2020, Definiciones fracc. XIII.'),
+
+  // ---------------- CONCEPTOS TRANSVERSALES (hub, violeta) ----------------
+  N('h_arts','Arts. 139 Quáter / 400 Bis CPF','hub',0,10,
+    'Los dos artículos del Código Penal Federal (CPF) que casi toda la regulación PLD/FT mexicana cita como el supuesto que se busca prevenir: financiamiento al terrorismo (art. 139 Quáter) y operaciones con recursos de procedencia ilícita, ORPI (art. 400 Bis).\n\nAparecen, con prácticamente el mismo texto, como el fundamento de la Disp. 1ª de la DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito —, de la DCG de Centros Cambiarios, de la DCG de Transmisores de Dinero y del art. 58 de la LRITF — Ley para Regular las Instituciones de Tecnología Financiera, ITF —: todas definen su objeto como "prevenir y detectar actos u operaciones que pudiesen ubicarse en los supuestos de estos dos artículos". Esa es la conexión entre documentos: leyes y DCG distintas comparten el mismo fundamento penal.\n\nEstos dos artículos también sustentan el reporte de 24 horas (tema 2.1.3), el objeto del Informe de Auditoría PLD/FT (tema 3.1.1) y las facultades de investigación de la CNBV (tema 3.1.2).',
+    'Código Penal Federal arts. 139 Quáter y 400 Bis; DCG Bancos Disp. 1ª; DCG Centros Cambiarios; DCG Transmisores de Dinero; LRITF art. 58.'),
+  N('h_uma','UMA — Unidad de Medida y Actualización','hub',0,10,
+    'La UMA sustituye al salario mínimo como base de cálculo desde la reforma del art. 139 del Código Penal Federal (CPF) (párrafo reformado DOF 07-06-2024). Es la unidad en la que se expresan todos los umbrales de la LFPIORPI — Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita — (arts. 17 y 32: identificación/aviso de actividades vulnerables, restricciones al uso de efectivo) y la multa del art. 139 CPF (400 a 1,200 veces UMA).\n\nEl valor exacto en pesos de la UMA no aparece en ninguno de tus documentos de examen, así que no es un dato para memorizar; lo que sí debes memorizar es qué leyes ya usan UMA (CPF art. 139, LFPIORPI) y cuáles todavía usan "días de salario mínimo" — la Ley de Instituciones de Crédito (LIC) art. 115 y la LGOAAC — Ley General de Organizaciones y Actividades Auxiliares del Crédito — art. 95 siguen usando salario mínimo, no UMA, pese a reformas recientes (14-nov-2025).',
+    'Código Penal Federal art. 139 (reforma DOF 07-06-2024); LFPIORPI arts. 17 y 32; LIC art. 115; LGOAAC art. 95.'),
+  N('h_ebr','Enfoque Basado en Riesgo (EBR)','hub',0,10,
+    'El mismo concepto atraviesa las tres áreas: el Cap. II Bis de la DCG Bancos (Área 2, tema 2.1.2) lo exige a nivel Entidad, clasificando a cada Cliente por Grado de Riesgo; la Guía del GAFI de octubre 2014 (Área 3, tema 3.2.1) lo exige a nivel banco y supervisor, como pre-requisito no opcional de la Recomendación 1; la Guía CNBV de metodología de 2019 (Área 3, tema 3.3.1) fija sus 4 Elementos (productos/servicios, clientes/usuarios, países/áreas geográficas, transacciones/canales) y sus 3 fases (Diseño, Implementación, Valoración); y la Guía Anticorrupción de la CNBV (Área 3, tema 3.3.4) recomienda incorporar en él los factores de riesgo de corrupción.',
+    'DCG Bancos Cap. II Bis; Guía EBR para el Sector Bancario, GAFI, octubre 2014; Guía para la elaboración de una metodología de evaluación de riesgos, CNBV, 2019; Guía Anticorrupción, CNBV, 2020.'),
+  N('h_gafi40','GAFI y sus 40 Recomendaciones','hub',0,10,
+    'El estándar que conecta el Área 1 (qué son y en qué se agrupan) con el Área 2 (Recomendación 8 sobre OSFL, citada en la sección de donativos) y el Área 3 (Recomendación 1 sobre EBR, Recomendación 26 sobre supervisión bancaria). Tiene su propia red dedicada: las 40 Recomendaciones una por una, con su número en grande, su resumen y qué valores hay que memorizar.',
+    'Las Recomendaciones del GAFI, diciembre 2025.', false,
+    'https://claude.ai/code/artifact/1dc1b2f8-abad-4873-8429-29fd0c642a92', 'Abrir red dedicada: GAFI y sus 40 Recomendaciones →'),
+  N('h_enr','Evaluación Nacional de Riesgos (ENR) 2023','hub',0,10,
+    'El mismo documento — la Evaluación Nacional de Riesgos de Lavado de Dinero y Financiamiento al Terrorismo 2023 (ENR 2023), publicada por la Secretaría de Hacienda y Crédito Público (SHCP) — alimenta tres temas distintos.\n\nEn el tema 1.3.1 "Régimen de prevención" describe los 5 tipos de actores del régimen (Sujetos Obligados, Autoridades Reguladoras, Autoridades Supervisoras, UIF — Unidad de Inteligencia Financiera — y otros integrantes como FGR/PJF/SRE).\n\nEn el tema 3.3.3 "Evaluación Nacional de Riesgos (ENR) 2023" aporta la fórmula de cálculo del riesgo de lavado de dinero y la Conclusión Nacional (Lavado de Dinero Medio-Alto, Financiamiento al Terrorismo Bajo, FPADM — Financiamiento a la Proliferación de Armas de Destrucción Masiva — Bajo).\n\nY su capítulo sobre Organizaciones Sin Fines de Lucro — Asociaciones y Sociedades sin fines de lucro (OSFL), tomado de la Evaluación Nacional de Riesgos de 2020 — sustenta, en el tema 2.2.1 "Actividades vulnerables", el análisis de riesgo de financiamiento al terrorismo en donativos a OSFL.',
+    'Evaluación Nacional de Riesgos de LD/FT 2023, Secciones III, IV y XI.7.'),
+  N('h_dcgmatriz','Las DCG, sector por sector','hub',0,10,
+    'La DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito — es el "documento maestro" que más se desarrolla en esta red, pero tus documentos incluyen 11 DCG sectoriales más: Casas de Bolsa, SOCAP (Sociedades Cooperativas de Ahorro y Préstamo), SOFIPO (Sociedades Financieras Populares), Fondos de Inversión, Uniones de Crédito, SOFOMES (Sociedades Financieras de Objeto Múltiple), Casas de Cambio, Centros Cambiarios, Transmisores de Dinero, ITF (Instituciones de Tecnología Financiera) y Asesores en Inversiones.\n\nTiene su propia red dedicada: una matriz que compara los 12 sectores en las mismas 5 categorías (fundamento legal, identificación de clientes, reportes, Comité/Oficial de Cumplimiento y sanciones), marcando en cada celda las particularidades de cada sector — por ejemplo, que solo Bancos tiene montos de multa explícitos en su ley, o que Centros Cambiarios y Transmisores usan un umbral de Operación Relevante de US$5,000 en vez de los US$7,500 del resto.',
+    'Las 12 Disposiciones de Carácter General (DCG) y sus leyes facultantes, citadas nodo por nodo en la red dedicada.', false,
+    'https://claude.ai/code/artifact/86d9a8ba-9985-463f-9618-bff1621a934f', 'Abrir red dedicada: DCG por Sujeto Obligado →'),
+  N('h_oficial','Oficial de Cumplimiento','hub',0,10,
+    'Pieza que conecta tres temas.\n\nEn 2.1.9 "Comité de Comunicación y Control" y 2.1.10 "Oficial de cumplimiento" (DCG Bancos — Disposiciones de Carácter General aplicables a Instituciones de Crédito), el Oficial de Cumplimiento asume las funciones del Comité cuando la Entidad tiene menos de 25 personas a su servicio, y es designado por el consejo o por el propio Comité.\n\nEn 3.1.1 "Informe de auditoría PLD/FT", el Comité o, en su caso, el Oficial de Cumplimiento debe conocer el contenido del Informe de Auditoría antes de que se remita a la CNBV — Comisión Nacional Bancaria y de Valores — vía SITI PLD/FT (Sistema de Información y Transferencia de Información en materia de PLD/FT) (Lineamiento DÉCIMO PRIMERO de los Lineamientos para el Informe de Auditoría PLD/FT).\n\nY en 3.3.1 "Metodología de evaluación de riesgos", el Oficial de Cumplimiento debe someter la Metodología de Evaluación de Riesgos a la aprobación del Comité, en un plazo menor a 12 meses desde la última modificación de la Metodología (Guía para la elaboración de una metodología de evaluación de riesgos, CNBV, 2019).',
+    'DCG Bancos, Cap. VIII, Disp. 43ª-47ª; Lineamientos para el Informe de Auditoría PLD/FT, Lineamiento DÉCIMO PRIMERO; Guía para la elaboración de una metodología de evaluación de riesgos, CNBV, 2019.'),
+  N('h_penas','Penas y sanciones, en la misma escala','hub',0,10,
+    'Tres leyes castigan lo mismo con unidades distintas: el Código Penal Federal (CPF) en años de prisión y veces la UMA — Unidad de Medida y Actualización — o días multa; la Ley de Instituciones de Crédito (LIC) en días de salario; la LFPIORPI — Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita — en veces la UMA y en porcentaje del monto de la operación.\n\nTiene su propia red dedicada: 18 penas y multas del temario (arts. 400 Bis y 400 Bis 1, 139, 139 Quáter, 148 Bis CPF; arts. 54, 62, 63 y 64 LFPIORPI; art. 115 LIC), alineadas en 5 franjas horizontales según su unidad, para comparar de un vistazo cuál es mayor sin saltar entre artículos. Marca con un tramo achurado los casos en que la propia ley ordena "se duplicará" (incremento exacto); cuando la ley solo dice "aumenta de un tercio a la mitad" u "hasta en una mitad" (incremento variable, sin cifra final fija), esa red lo explica en el texto pero no dibuja un número que la ley no da.',
+    'Código Penal Federal arts. 139, 139 Quáter, 148 Bis, 400 Bis y 400 Bis 1; LFPIORPI arts. 54, 62, 63 y 64; LIC art. 115.', false,
+    'https://claude.ai/code/artifact/ba2cd5f7-46df-411e-a04c-a6d4d325dcc8', 'Abrir red dedicada: Penas y Sanciones Comparadas →'),
+  N('h_actvuln','Actividades Vulnerables, fracción por fracción','hub',0,10,
+    'El tema 2.2.1 resume las 16 fracciones (más la V Bis) del art. 17 de la LFPIORPI — Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita — en un solo bloque de texto. Tiene su propia red dedicada: cada fracción como su propio nodo, agrupadas en 7 bloques temáticos (A. Juegos y valores · B. Financiamiento e inmuebles · C. Bienes de alto valor · D. Traslado y servicios profesionales · E. Fe pública · F. Donativos y comercio exterior · G. Renta y activos virtuales), cada una con su umbral exacto de Identificación y de Aviso en UMA — Unidad de Medida y Actualización —, un ejemplo tomado literalmente de su propio texto, y las 4 reglas transversales que aplican a todas (identificación vs. aviso, el acumulado de 6 meses, actuar por fideicomiso, y el plazo del día 17).',
+    'LFPIORPI art. 17 (reformado DOF 16-07-2025), citado fracción por fracción en la red dedicada.', false,
+    'https://claude.ai/code/artifact/59b52b5a-e955-4ee7-b895-9eba297e35d6', 'Abrir red dedicada: Actividades Vulnerables →'),
+  N('h_plazos','Todos los plazos, en la misma escala','hub',0,10,
+    'Horas, días hábiles, días naturales, meses y años del temario están repartidos entre la DCG Bancos, la LIC — Ley de Instituciones de Crédito —, la LFPIORPI y varios instrumentos propios de la CNBV — Comisión Nacional Bancaria y de Valores.\n\nTiene su propia red dedicada: cada plazo alineado en la franja de su propia unidad de tiempo (nunca mezcladas entre sí), con el verbo exacto de la disposición ("dentro de", "al menos", "cada", "no menor a") junto al número, y una franja aparte de reglas de calendario (día 17, sesiones mensuales o trimestrales) que no son duraciones. El tema 2.1.17 "Plazos de cumplimiento regulatorio" se marca ahí mismo como no localizado como capítulo propio.',
+    'DCG Bancos, Disp. 41ª, 51ª, 60ª y 34ª-42ª; LIC art. 115; LFPIORPI art. 23; Reglamento de Supervisión de la CNBV, art. 21; Guía CNBV, 6-sep-2019.', false,
+    'https://claude.ai/code/artifact/5b0899bf-d2d6-4020-8c4e-c6962a25a9b0', 'Abrir red dedicada: Plazos y Frecuencias →'),
+  N('h_autoridades','Los 5 tipos de actores, en un mapa','hub',0,10,
+    'El tema 1.3.1 describe el régimen de PLD/CFT — Prevención de Lavado de Dinero y Financiamiento al Terrorismo — como 5 tipos de actores en paralelo, no como una jerarquía de mando: Sujetos Obligados, Autoridades Reguladoras, Autoridades Supervisoras, la UIF — Unidad de Inteligencia Financiera — y otros integrantes del régimen.\n\nTiene su propia red dedicada: un mapa de 4 categorías (sin organigrama inventado) más el marco internacional — ONU, Comité de Basilea, Grupo Wolfsberg, Grupo Egmont, GAFI, GAFILAT — y los únicos flujos entre categorías que los documentos describen explícitamente.',
+    'Evaluación Nacional de Riesgos 2023, Sección III, págs. 9-12; Reglamento Interior de la CNBV, art. 48; Reglamento Interior de la SHCP, art. 10.', false,
+    'https://claude.ai/artifact/D17BYAoCoUiYzKvRtgeo3R', 'Abrir red dedicada: Autoridades y Organismos →'),
+
+  // ---------------- TU EXAMEN (plata) ----------------
+  N('e0','Tu examen — 24 de octubre de 2026','exam',0,17,
+    'Prueba de Conocimientos en Materia de PLD/FT, CNBV-CENEVAL, 12a edición 2026. Duración máxima confirmada: 4 horas (240 minutos), en una sola sesión, en línea.',
+    'Guía CNBV-PLDFT 12a ed. 2026; Convocatoria DOF 29-dic-2025.'),
+  N('e1','Formato general del examen','exam',0,9,
+    'Examen criterial de opción múltiple, 4 opciones por reactivo (solo una correcta), en línea. Incluye "reactivos piloto" adicionales que no cuentan para la calificación — el documento oficial no dice cuántos son.\n\nDato reportado por compañeros que ya presentaron el examen en 2026 (no aparece por escrito en el documento oficial, pero se toma como real): 140 reactivos en total, a contestar en las 4 horas (240 minutos) que sí confirma la Convocatoria. Eso da un promedio de aproximadamente 1.7 minutos — poco más de 1 minuto 40 segundos — por reactivo, si el tiempo se reparte parejo entre los 140.',
+    'Guía CNBV-PLDFT 12a ed. 2026, págs. 14, 18 y 25 (formato del examen y duración de 4 horas); número de 140 reactivos reportado por compañeros que presentaron el examen en 2026 — no confirmado por escrito en el documento oficial.', true),
+  N('e2','Estructura: 3 áreas · 8 subáreas · 37 temas','exam',0,9,
+    'La Tabla 1 del documento oficial reproduce exactamente esta misma división en áreas, subáreas y temas-tarea — es la columna vertebral de esta red completa.',
+    'Guía CNBV-PLDFT 12a ed. 2026, "Tabla 1", págs. 17-18.'),
+  N('e3','4 tipos de reactivos','exam',0,9,
+    'Tipo 1 Cuestionamiento directo · Tipo 2 Completamiento · Tipo 3 Relación de elementos · Tipo 4 Elección de elementos — cada uno con ejemplo oficial, respuesta y argumentación en el documento.',
+    'Guía CNBV-PLDFT 12a ed. 2026, sección "Ejemplos de reactivos", págs. 20-24.'),
+  N('e4','Convocatoria DOF 29-dic-2025','exam',0,9,
+    'Segunda Evaluación 2026. Registro: 3-28 de agosto de 2026. Cotejo y aplicación: 24 de octubre de 2026. Notificación de resultados: 17 de noviembre de 2026. Resultado binario: Aprobatorio / No Aprobatorio.',
+    'DOF 29/12/2025, Convocatoria, Bases CUARTA y QUINTA.'),
+  N('e5','Logística del 24 de octubre','exam',0,9,
+    'Presentarte a las 7:00 h para el cotejo de documentación (dato más específico que reemplaza la recomendación genérica de "90 minutos antes"); inicio a las 9:00 h, duración 4 horas. Cupo de hasta 1,500 lugares, en sedes de CDMX, Jalisco y Nuevo León — la sede exacta no aparece en la Convocatoria.',
+    'DOF 29/12/2025, Bases TERCERA y SEXTA.', true),
+];
+
+const L = (source,target,kind) => ({source,target,kind});
+const links = [
+  // jerarquía: áreas → subáreas → temas
+  L('a1','s11','hier'), L('a1','s12','hier'), L('a1','s13','hier'),
+  L('a2','s21','hier'), L('a2','s22','hier'),
+  L('a3','s31','hier'), L('a3','s32','hier'), L('a3','s33','hier'),
+
+  L('s11','t111','hier'), L('s11','t112','hier'), L('s11','t113','hier'), L('s11','t114','hier'), L('s11','t115','hier'),
+  L('s12','t121','hier'), L('s12','t122','hier'), L('s12','t123','hier'),
+  L('s13','t131','hier'), L('s13','t132','hier'),
+
+  L('s21','t211','hier'), L('s21','t212','hier'), L('s21','t213','hier'), L('s21','t214','hier'), L('s21','t215','hier'),
+  L('s21','t216','hier'), L('s21','t217','hier'), L('s21','t218','hier'), L('s21','t219','hier'), L('s21','t2110','hier'),
+  L('s21','t2111','hier'), L('s21','t2112','hier'), L('s21','t2113','hier'), L('s21','t2114','hier'), L('s21','t2115','hier'),
+  L('s21','t2116','hier'), L('s21','t2117','hier'),
+  L('s22','t221','hier'), L('s22','t222','hier'),
+
+  L('s31','t311','hier'), L('s31','t312','hier'),
+  L('s32','t321','hier'), L('s32','t322','hier'),
+  L('s33','t331','hier'), L('s33','t332','hier'), L('s33','t333','hier'), L('s33','t334','hier'),
+
+  // temas → hechos a memorizar
+  L('t111','m_etapas','mem'),
+  L('t114','m_400bis','mem'), L('t114','m_400bis1','mem'),
+  L('t115','m_139','mem'), L('t115','m_139q','mem'),
+  L('t122','m_gafi1989','mem'),
+  L('t123','m_40rec','mem'),
+  L('t121','m_iem','mem'),
+  L('t131','m_5actores','mem'), L('t131','m_sujetos','mem'),
+
+  L('t213','m_relevante','mem'), L('t213','m_trimestral','mem'), L('t213','m_24h','mem'),
+  L('t212','m_10anios','mem'),
+  L('t2116','m_25pct','mem'),
+  L('t219','m_comite25','mem'),
+  L('t2115','m_multa1','mem'), L('t2115','m_multa2','mem'),
+  L('t221','m_uma_donativos','mem'), L('t221','m_dia17','mem'), L('t221','m_art6061','mem'), L('t221','m_art6263','mem'), L('t221','m_osfl','mem'),
+  L('t222','m_8025','mem'),
+
+  L('t311','m_60dias','mem'), L('t311','m_auditor','mem'), L('t311','m_4secciones','mem'),
+  L('t312','m_2dias','mem'),
+  L('t321','m_rec1gafi','mem'),
+  L('t322','m_principio29','mem'),
+  L('t331','m_4elementos','mem'), L('t331','m_3fases','mem'),
+  L('t333','m_escala09','mem'), L('t333','m_conclusion','mem'), L('t333','m_formula','mem'),
+  L('t334','m_pep','mem'),
+
+  // conceptos transversales (hub) — conectan varias áreas
+  L('h_arts','t114','hub'), L('h_arts','t115','hub'), L('h_arts','t211','hub'), L('h_arts','t213','hub'), L('h_arts','t311','hub'), L('h_arts','t2112','hub'), L('h_arts','t2113','hub'), L('h_arts','t2114','hub'),
+  L('h_uma','t115','hub'), L('h_uma','t221','hub'), L('h_uma','t222','hub'),
+  L('h_ebr','t212','hub'), L('h_ebr','t321','hub'), L('h_ebr','t331','hub'), L('h_ebr','t334','hub'),
+  L('h_gafi40','t122','hub'), L('h_gafi40','t123','hub'), L('h_gafi40','t221','hub'), L('h_gafi40','t321','hub'),
+  L('h_enr','t131','hub'), L('h_enr','t333','hub'), L('h_enr','t221','hub'),
+  L('h_oficial','t219','hub'), L('h_oficial','t2110','hub'), L('h_oficial','t311','hub'),
+  L('h_dcgmatriz','t211','hub'), L('h_dcgmatriz','t2112','hub'), L('h_dcgmatriz','t2113','hub'), L('h_dcgmatriz','t2114','hub'), L('h_dcgmatriz','t2115','hub'),
+  L('h_penas','t114','hub'), L('h_penas','t115','hub'), L('h_penas','t2115','hub'), L('h_penas','m_400bis','hub'), L('h_penas','m_139','hub'), L('h_penas','m_139q','hub'), L('h_penas','m_multa1','hub'), L('h_penas','t221','hub'),
+  L('h_actvuln','t221','hub'), L('h_actvuln','s22','hub'), L('h_actvuln','m_uma_donativos','hub'), L('h_actvuln','m_dia17','hub'), L('h_actvuln','h_uma','hub'),
+  L('h_plazos','m_24h','hub'), L('h_plazos','t312','hub'), L('h_plazos','m_2dias','hub'), L('h_plazos','t213','hub'), L('h_plazos','m_trimestral','hub'), L('h_plazos','m_60dias','hub'), L('h_plazos','t2117','hub'), L('h_plazos','t331','hub'), L('h_plazos','m_3fases','hub'), L('h_plazos','t215','hub'), L('h_plazos','t2110','hub'), L('h_plazos','m_10anios','hub'), L('h_plazos','m_dia17','hub'), L('h_plazos','t219','hub'), L('h_plazos','t122','hub'),
+  L('h_autoridades','t131','hub'), L('h_autoridades','t132','hub'), L('h_autoridades','t121','hub'), L('h_autoridades','m_5actores','hub'), L('h_autoridades','m_sujetos','hub'), L('h_autoridades','h_enr','hub'), L('h_autoridades','h_actvuln','hub'),
+
+  // rama del examen
+  L('e0','e1','exam'), L('e0','e2','exam'), L('e0','e3','exam'), L('e0','e4','exam'), L('e0','e5','exam'),
+  L('e2','a1','exam'), L('e2','a2','exam'), L('e2','a3','exam'),
+];
+
+const graphData = { nodes, links };
+const nodeById = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+/* =========================================================================
+   Render
+   ========================================================================= */
+const COLORS = {
+  root:'#f7f4ec',
+  /* los 3 nodos "Área" en sí usan una versión mucho más clara/blanqueada
+     de su propio tono — así el punto de referencia de cada racimo no se
+     confunde entre sus muchos hijos (subáreas/temas/memoriza) del mismo
+     color de familia */
+  areaLandmark:{1:'#fce9b8',2:'#9fe7de',3:'#f4ac9c'},
+  area:{1:'#e8b94a',2:'#31b8ac',3:'#e8735a'},
+  subarea:{1:'#e8b94a',2:'#31b8ac',3:'#e8735a'},
+  tema:{1:'#e8b94a',2:'#31b8ac',3:'#e8735a'},
+  memoriza:'#ffcf4d',
+  hub:'#a98bfa',
+  exam:'#c9cfe0'
+};
+function colorFor(node){
+  if(node.group==='root') return COLORS.root;
+  if(node.group==='area') return COLORS.areaLandmark[node.area] || '#888';
+  if(node.group==='memoriza') return COLORS.memoriza;
+  if(node.group==='hub') return COLORS.hub;
+  if(node.group==='exam') return COLORS.exam;
+  return COLORS[node.group][node.area] || '#888';
+}
+function baseOpacity(node){
+  if(node.group==='root') return 1;
+  if(node.group==='area') return 0.98;
+  if(node.group==='subarea') return 0.92;
+  if(node.group==='tema') return 0.82;
+  if(node.group==='memoriza') return 1;
+  if(node.group==='hub') return 0.95;
+  if(node.group==='exam') return 0.92;
+  return 0.8;
+}
+nodes.forEach(n => { n.__baseOpacity = baseOpacity(n); n.__color = colorFor(n); });
+
+/* short text shown on the floating label under/above each node — the full
+   name (used in the drawer, tooltip and search) stays untouched */
+function shortLabel(n){
+  const max = n.group==='root' ? 30 : (n.group==='area' ? 30 : (n.group==='subarea' ? 26 : 24));
+  if(n.name.length <= max) return n.name;
+  let cut = n.name.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  if(lastSpace > 10) cut = cut.slice(0, lastSpace);
+  return cut + '…';
+}
+function labelHeight(n){
+  if(n.group==='root') return 5.6;
+  if(n.group==='area') return 4.2;
+  if(n.group==='subarea') return 3.1;
+  if(n.group==='hub') return 2.6;
+  if(n.id==='e0') return 3.1;
+  if(n.group==='tema' || n.group==='exam') return 2.3;
+  return 1.9; // memoriza
+}
+function sphereRadius(n){ return Math.cbrt(n.val) * 1.7; }
+
+function linkColor(l){
+  const s = typeof l.source==='object' ? l.source : nodeById[l.source];
+  const t = typeof l.target==='object' ? l.target : nodeById[l.target];
+  if(l.kind==='mem') return COLORS.memoriza;
+  if(l.kind==='hub') return COLORS.hub;
+  if(l.kind==='exam') return COLORS.exam;
+  return t && t.__color ? t.__color : '#3a4260';
+}
+function linkBaseOpacity(l, s, t){
+  if(l.kind==='hub'){
+    /* las líneas violeta de conceptos transversales solo se iluminan
+       cuando el nodo con el mouse encima (o el nodo abierto en el panel)
+       es uno de los dos extremos — el resto del tiempo quedan casi
+       invisibles para no cruzar toda la red con hilos permanentes */
+    const active = (hoverNode && (hoverNode===s || hoverNode===t)) ||
+                    (selectedNode && (selectedNode===s || selectedNode===t));
+    return active ? 0.62 : 0.05;
+  }
+  if(l.kind==='mem') return 0.55;
+  if(l.kind==='exam') return 0.4;
+  return 0.28;
+}
+
+/* ---- vista compacta por defecto ----
+   Con el filtro "Todo" activo y NADA seleccionado, los 37 temas y los ~35
+   datos para memorizar (el 70% de los nodos) empiezan casi invisibles:
+   solo áreas, subáreas, conceptos transversales y la rama del examen se
+   ven de entrada (~26 nodos). Acercar el zoom los va revelando por capas.
+   En cuanto se abre CUALQUIER nodo (clic o buscador), esta vista compacta
+   se desactiva por completo y se ve toda la red — aunque el zoom esté
+   lejos — para poder explorar libremente sus vecinos sin que la cámara
+   los oculte. Al cerrar el panel, vuelve la vista compacta. */
+const COMPACT_ZOOM_TEMA = 1.85;
+const COMPACT_ZOOM_MEM = 2.4;
+function nodeMatchesFilter(n){
+  if(activeFilter==='all'){
+    if(!selectedNode){
+      if(n.group==='tema' && view.zoom < COMPACT_ZOOM_TEMA) return false;
+      if(n.group==='memoriza' && view.zoom < COMPACT_ZOOM_MEM) return false;
+    }
+    return true;
+  }
+  if(activeFilter==='memoriza') return n.group==='memoriza';
+  if(activeFilter==='examen') return n.group==='exam';
+  return n.group==='hub' || String(n.area)===String(activeFilter);
+}
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.f;
+  });
+});
+
+/* =========================================================================
+   3D-ish engine — plain Canvas 2D, zero external libraries and no WebGL,
+   so it works even on locked-down corporate networks/browsers that block
+   CDN scripts or disable WebGL (the two things that broke earlier builds).
+   ========================================================================= */
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+const view = { w:0, h:0, yaw:0.6, pitch:-0.15, zoom:1.6, camDist:620, targetYaw:0.6, targetPitch:-0.15, animating:false, panX:0, panY:0 };
+let dragging = false, dragMoved = false;
+let hoverNode = null; // nodo bajo el mouse ahora mismo (solo mouse, no táctil)
+let selectedNode = null; // nodo abierto en el panel de detalle ahora mismo
+
+function resizeCanvas(){
+  const rect = document.getElementById('graph').getBoundingClientRect();
+  view.w = rect.width; view.h = rect.height;
+  canvas.width = Math.round(rect.width * DPR);
+  canvas.height = Math.round(rect.height * DPR);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function hash(str){ let h=0; for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i))|0; } return Math.abs(h)+1; }
+function seededRand(seed){ let s = seed % 2147483647; if (s<=0) s += 2147483646;
+  return function(){ s = (s*16807) % 2147483647; return (s-1)/2147483646; }; }
+function hexToRgba(hex, a){
+  const h = hex.replace('#','');
+  const r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+function roundRect(c,x,y,w,h,r){
+  c.beginPath(); c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath();
+}
+/* etiquetas de texto que no se amontonen: cada cuadro ya colocado en este
+   fotograma bloquea a los siguientes que lo invadan (los nodos importantes
+   —raíz/área/subárea/hub— nunca se ocultan; solo se ceden los demás) */
+let placedLabels = [];
+function rectOverlaps(a,b){ return !(a.x+a.w<b.x || b.x+b.w<a.x || a.y+a.h<b.y || b.y+b.h<a.y); }
+function nodeWorldRadius(n){ return Math.max(2.2, Math.cbrt(n.val) * 1.9); }
+function linkDistance(l){
+  if(l.kind==='mem') return 46;
+  if(l.kind==='hub') return 120;
+  if(l.kind==='exam') return 78;
+  return 74;
+}
+
+try {
+  /* 1. initial placement — random on a shell whose radius grows with
+        hierarchy depth, seeded per-id so the shape is stable across runs */
+  const DEPTH = { root:0, area:1, subarea:2, tema:3, memoriza:4, hub:2.4, exam:2.2 };
+  nodes.forEach(n=>{
+    const rnd = seededRand(hash(n.id));
+    const depth = n.id==='e0' ? 1.4 : (DEPTH[n.group] ?? 3);
+    const radius = 40 + depth*95;
+    const theta = rnd()*Math.PI*2, phi = Math.acos(2*rnd()-1);
+    n.x = radius*Math.sin(phi)*Math.cos(theta);
+    n.y = radius*Math.sin(phi)*Math.sin(theta);
+    n.z = radius*Math.cos(phi);
+    n.vx = 0; n.vy = 0; n.vz = 0;
+  });
+
+  /* 2. lightweight force-directed relaxation — runs once at load, then the
+        layout is frozen and the camera orbits the fixed cluster.
+        Además de repulsión/resorte/centro, cada nodo de Área 1/2/3 recibe
+        un jalón suave hacia un punto ancla propio de su área, repartidos
+        en un triángulo en 3D — así las tres nubes (oro/teal/coral) se
+        separan con claridad en vez de mezclarse todas en el centro. Los
+        conceptos transversales (hub) y la rama del examen NO tienen
+        ancla: deben poder asentarse entre las áreas que conectan. */
+  const AREA_ANCHOR = {
+    1: { x:-260, y: 95, z:-70 },
+    2: { x: 250, y:-55, z:130 },
+    3: { x:  10, y:-190, z:-150 },
+  };
+  (function relax(iterations){
+    const idx = new Map(nodes.map((n,i)=>[n.id,i]));
+    const REPULSION = 950, SPRING = 0.06, CENTER = 0.005, ANCHOR_PULL = 0.012, DAMPING = 0.78, STEP = 0.045;
+    for(let it=0; it<iterations; it++){
+      const fx = new Float64Array(nodes.length), fy = new Float64Array(nodes.length), fz = new Float64Array(nodes.length);
+      for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+          let dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y, dz=nodes[i].z-nodes[j].z;
+          let d2 = dx*dx+dy*dy+dz*dz; if(d2<1) d2=1;
+          const d = Math.sqrt(d2), s = REPULSION/d2;
+          dx/=d; dy/=d; dz/=d;
+          fx[i]+=dx*s; fy[i]+=dy*s; fz[i]+=dz*s;
+          fx[j]-=dx*s; fy[j]-=dy*s; fz[j]-=dz*s;
+        }
+      }
+      links.forEach(l=>{
+        const i = idx.get(typeof l.source==='object'?l.source.id:l.source);
+        const j = idx.get(typeof l.target==='object'?l.target.id:l.target);
+        if(i===undefined || j===undefined) return;
+        let dx=nodes[j].x-nodes[i].x, dy=nodes[j].y-nodes[i].y, dz=nodes[j].z-nodes[i].z;
+        let d = Math.sqrt(dx*dx+dy*dy+dz*dz) || 0.01;
+        const diff = (d - linkDistance(l)) * SPRING;
+        dx/=d; dy/=d; dz/=d;
+        fx[i]+=dx*diff; fy[i]+=dy*diff; fz[i]+=dz*diff;
+        fx[j]-=dx*diff; fy[j]-=dy*diff; fz[j]-=dz*diff;
+      });
+      for(let i=0;i<nodes.length;i++){
+        const n = nodes[i];
+        fx[i] += -n.x*CENTER; fy[i] += -n.y*CENTER; fz[i] += -n.z*CENTER;
+        const anchor = AREA_ANCHOR[n.area];
+        if(anchor && (n.group==='area' || n.group==='subarea' || n.group==='tema' || n.group==='memoriza')){
+          fx[i] += (anchor.x - n.x)*ANCHOR_PULL; fy[i] += (anchor.y - n.y)*ANCHOR_PULL; fz[i] += (anchor.z - n.z)*ANCHOR_PULL;
+        }
+        n.vx = n.vx*DAMPING + fx[i]; n.vy = n.vy*DAMPING + fy[i]; n.vz = n.vz*DAMPING + fz[i];
+        n.x += n.vx*STEP; n.y += n.vy*STEP; n.z += n.vz*STEP;
+      }
+    }
+  })(260);
+
+  /* 3. camera / perspective projection */
+  function project(n){
+    const cosY=Math.cos(view.yaw), sinY=Math.sin(view.yaw);
+    const x1 = n.x*cosY - n.z*sinY, z1 = n.x*sinY + n.z*cosY;
+    const cosX=Math.cos(view.pitch), sinX=Math.sin(view.pitch);
+    const y1 = n.y*cosX - z1*sinX, z2 = n.y*sinX + z1*cosX;
+    const scale = (view.camDist/(view.camDist+z2)) * view.zoom;
+    return { x: view.w/2 + view.panX + x1*scale, y: view.h/2 + view.panY + y1*scale, scale, depth:z2 };
+  }
+
+  /* 4. per-frame render */
+  function render(){
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.clearRect(0,0,view.w,view.h);
+    const g = ctx.createRadialGradient(view.w/2, view.h*0.42, 30, view.w/2, view.h*0.5, Math.max(view.w,view.h)*0.75);
+    g.addColorStop(0, 'rgba(22,29,50,0.4)'); g.addColorStop(1, 'rgba(5,7,13,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,view.w,view.h);
+
+    if(view.animating){
+      view.yaw += (view.targetYaw - view.yaw) * 0.09;
+      view.pitch += (view.targetPitch - view.pitch) * 0.09;
+      if(Math.abs(view.targetYaw-view.yaw) < 0.003 && Math.abs(view.targetPitch-view.pitch) < 0.003) view.animating = false;
+    } else if(!dragging && Date.now() - lastInteraction > 2600){
+      view.yaw += 0.0016; view.targetYaw = view.yaw;
+    }
+
+    placedLabels = [];
+    const proj = new Map();
+    nodes.forEach(n => proj.set(n.id, project(n)));
+
+    function pairDepth(l){
+      const s = typeof l.source==='object'?l.source:nodeById[l.source];
+      const t = typeof l.target==='object'?l.target:nodeById[l.target];
+      const ps=proj.get(s.id), pt=proj.get(t.id);
+      return ((ps?ps.depth:0)+(pt?pt.depth:0))/2;
+    }
+    links.slice().sort((a,b)=>pairDepth(b)-pairDepth(a)).forEach(l=>{
+      const s = typeof l.source==='object'?l.source:nodeById[l.source];
+      const t = typeof l.target==='object'?l.target:nodeById[l.target];
+      const ps = proj.get(s.id), pt = proj.get(t.id);
+      if(!ps || !pt) return;
+      const match = nodeMatchesFilter(s) && nodeMatchesFilter(t);
+      const alpha = match ? linkBaseOpacity(l, s, t) : 0.015;
+      ctx.strokeStyle = hexToRgba(linkColor(l), alpha);
+      ctx.lineWidth = (l.kind==='mem'?0.8:(l.kind==='hub'?1.2:0.7)) * ((ps.scale+pt.scale)/2);
+      ctx.beginPath(); ctx.moveTo(ps.x, ps.y); ctx.lineTo(pt.x, pt.y); ctx.stroke();
+      /* el punto viajero solo se dibuja si la línea está realmente
+         visible — si es un hilo hub atenuado (no hover/seleccionado),
+         el puntito brillante se omite para no seguir llamando la
+         atención sobre una conexión que se decidió apagar */
+      if(match && alpha > 0.1){
+        l.__t = (l.__t==null ? Math.random() : l.__t) + (l.kind==='mem'?0.006:0.0035);
+        if(l.__t>1) l.__t -= 1;
+        const px = ps.x+(pt.x-ps.x)*l.__t, py = ps.y+(pt.y-ps.y)*l.__t;
+        ctx.fillStyle = hexToRgba(linkColor(l), 0.95);
+        ctx.beginPath(); ctx.arc(px,py, 1.0*((ps.scale+pt.scale)/2), 0, Math.PI*2); ctx.fill();
+      }
+    });
+
+    nodes.slice().sort((a,b)=>proj.get(b.id).depth - proj.get(a.id).depth).forEach(n=>{
+      const p = proj.get(n.id);
+      const match = nodeMatchesFilter(n);
+      const alpha = match ? n.__baseOpacity : 0.05;
+      /* al acercar el mouse a un punto, ese punto (y su etiqueta) crece
+         para poder leerlo sin tener que hacer zoom — así el resto del
+         mapa puede quedarse compacto y no amontonado */
+      const hoverBoost = (n===hoverNode && match) ? 1.55 : 1;
+      const r = Math.max(1.4, nodeWorldRadius(n) * p.scale) * hoverBoost;
+
+      const grd = ctx.createRadialGradient(p.x,p.y,0, p.x,p.y, r*2.6);
+      grd.addColorStop(0, hexToRgba(n.__color, alpha*0.4)); grd.addColorStop(1, hexToRgba(n.__color, 0));
+      ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(p.x,p.y, r*2.6, 0, Math.PI*2); ctx.fill();
+
+      ctx.fillStyle = hexToRgba(n.__color, alpha);
+      ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2); ctx.fill();
+
+      n.__screen = { x:p.x, y:p.y, r: Math.max(7, r+6), depth: p.depth };
+    });
+
+    /* segunda pasada, solo para las etiquetas de texto: en vez de dibujarlas
+       en el mismo orden de profundidad de las esferas, se ordenan por
+       importancia (raíz > área > concepto transversal > subárea > examen >
+       tema > memoriza) para que, si dos chocan al acercar el zoom, gane
+       siempre la más importante en vez de amontonarse ambas */
+    function labelPriority(n){
+      if(n===hoverNode) return -1; // el que tiene el mouse encima siempre gana
+      if(n.group==='root') return 0;
+      if(n.group==='area') return 1;
+      if(n.group==='hub') return 2;
+      if(n.group==='subarea') return 3;
+      if(n.group==='exam') return 4;
+      if(n.group==='tema') return 5;
+      return 6; // memoriza
+    }
+    nodes.slice().sort((a,b)=>labelPriority(a)-labelPriority(b)).forEach(n=>{
+      const p = proj.get(n.id);
+      if(!nodeMatchesFilter(n)) return;
+      const isHover = (n===hoverNode);
+      const hoverBoost = isHover ? 1.55 : 1;
+      const r = Math.max(1.4, nodeWorldRadius(n) * p.scale) * hoverBoost;
+      const isLandmark = (n.group==='root' || n.group==='area' || n.group==='subarea' || n.group==='hub');
+      const labelThreshold = isLandmark ? 0.1 : 0.34;
+      /* al acercar el mouse, la etiqueta aparece SIEMPRE (aunque el zoom
+         sea bajo) y un poco más grande, para leer un punto sin acercarte */
+      if(!isHover && p.scale <= labelThreshold) return;
+      /* letras más chicas en reposo (menos ruido visual con todo junto)
+         y bastante más grandes al pasar el mouse — así se leen bien sin
+         tener que acercar el zoom, y el resto de la red se ve más limpia */
+      const baseFont = labelHeight(n) * p.scale * 1.2;
+      const fontSize = isHover
+        ? Math.max(11, Math.min(44, baseFont * 2.6))
+        : Math.max(6, Math.min(19, baseFont));
+      ctx.font = `600 ${fontSize}px 'IBM Plex Sans', sans-serif`;
+      const text = shortLabel(n);
+      const tw = ctx.measureText(text).width;
+      const lx = p.x - tw/2, ly = p.y + r + fontSize + 4;
+      const rect = { x:lx-5, y:ly-fontSize, w:tw+10, h:fontSize+6 };
+      if(!isHover && placedLabels.some(pl=>rectOverlaps(pl,rect))) return;
+      placedLabels.push(rect);
+      ctx.fillStyle = isHover ? 'rgba(5,7,13,0.82)' : 'rgba(5,7,13,0.64)';
+      roundRect(ctx, rect.x, rect.y, rect.w, rect.h, 4);
+      ctx.fill();
+      ctx.fillStyle = hexToRgba(n.__color, Math.min(1, n.__baseOpacity+0.05));
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(text, lx, ly);
+    });
+  }
+  function loop(){ render(); requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+
+  /* 5. interaction: drag to orbit, wheel to zoom, tap/click to open */
+  function handleTap(clientX, clientY){
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left, y = clientY - rect.top;
+    /* entre varios nodos que se solapen bajo el dedo/cursor, gana el de
+       radio de acierto MÁS PEQUEÑO (el más específico) — no el más cercano
+       a la cámara — para que una esfera grande (raíz, área) no se robe el
+       clic que iba dirigido a un nodo chico que está delante de ella */
+    let best = null, bestR = Infinity;
+    nodes.forEach(n=>{
+      if(!n.__screen || !nodeMatchesFilter(n)) return;
+      const dx = n.__screen.x - x, dy = n.__screen.y - y;
+      if(Math.sqrt(dx*dx+dy*dy) <= n.__screen.r && n.__screen.r < bestR){ best = n; bestR = n.__screen.r; }
+    });
+    if(best) openNode(best);
+  }
+
+  /* cámara: un dedo/clic normal gira (orbita) — Shift+arrastra, el botón
+     central del mouse, o dos dedos a la vez, MUEVEN la vista (paneo) para
+     poder acomodar cualquier zona hacia el centro sin perder de dónde
+     partiste. "Recentrar" (botón o doble clic) regresa todo a cero. */
+  const pointers = new Map();
+  let gestureMode = 'orbit';
+  let gestureStart = { x:0, y:0, yaw:0, pitch:0, mx:0, my:0, panX:0, panY:0 };
+  function midpoint(){
+    const pts = [...pointers.values()];
+    if(!pts.length) return {x:0,y:0};
+    const mx = pts.reduce((s,p)=>s+p.x,0)/pts.length;
+    const my = pts.reduce((s,p)=>s+p.y,0)/pts.length;
+    return {x:mx,y:my};
+  }
+  function resetView(){
+    view.yaw = 0.6; view.pitch = -0.15; view.zoom = 1.6;
+    view.targetYaw = 0.6; view.targetPitch = -0.15;
+    view.panX = 0; view.panY = 0;
+    view.animating = false;
+    lastInteraction = Date.now();
+  }
+  canvas.addEventListener('pointerdown', e=>{
+    canvas.style.cursor = ''; // deja que .dragging/.panning manden mientras se arrastra
+    pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    dragging = true; dragMoved = false;
+    view.animating = false;
+    lastInteraction = Date.now();
+    try{ canvas.setPointerCapture(e.pointerId); }catch(err){}
+    const wantsPan = e.shiftKey || e.button === 1 || pointers.size >= 2;
+    gestureMode = wantsPan ? 'pan' : 'orbit';
+    canvas.classList.toggle('panning', gestureMode==='pan');
+    canvas.classList.toggle('dragging', gestureMode==='orbit');
+    const mp = midpoint();
+    gestureStart = { x:mp.x, y:mp.y, yaw:view.yaw, pitch:view.pitch, mx:mp.x, my:mp.y, panX:view.panX, panY:view.panY };
+  });
+  canvas.addEventListener('pointermove', e=>{
+    lastInteraction = Date.now();
+    if(e.pointerType==='mouse' && !dragging){
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX-rect.left, y = e.clientY-rect.top;
+      let best=null, bestR=Infinity;
+      nodes.forEach(n=>{
+        if(!n.__screen || !nodeMatchesFilter(n)) return;
+        const dx=n.__screen.x-x, dy=n.__screen.y-y;
+        if(Math.sqrt(dx*dx+dy*dy) <= n.__screen.r && n.__screen.r<bestR){ best=n; bestR=n.__screen.r; }
+      });
+      hoverNode = best;
+      canvas.style.cursor = best ? 'pointer' : '';
+    }
+    if(!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if(!dragging) return;
+    const mp = midpoint();
+    if(gestureMode==='pan'){
+      const dx = mp.x - gestureStart.mx, dy = mp.y - gestureStart.my;
+      if(Math.abs(dx)+Math.abs(dy) > 3) dragMoved = true;
+      view.panX = gestureStart.panX + dx;
+      view.panY = gestureStart.panY + dy;
+    } else {
+      const dx = mp.x - gestureStart.x, dy = mp.y - gestureStart.y;
+      if(Math.abs(dx)+Math.abs(dy) > 3) dragMoved = true;
+      view.yaw = gestureStart.yaw + dx*0.006;
+      view.pitch = Math.max(-1.3, Math.min(1.3, gestureStart.pitch + dy*0.006));
+      view.targetYaw = view.yaw; view.targetPitch = view.pitch;
+    }
+  });
+  function endDrag(e){
+    const wasSingleOrbit = pointers.size===1 && gestureMode==='orbit';
+    pointers.delete(e.pointerId);
+    if(wasSingleOrbit && !dragMoved) handleTap(e.clientX, e.clientY);
+    if(pointers.size===0){
+      dragging = false;
+      canvas.classList.remove('dragging','panning');
+    } else {
+      const mp = midpoint();
+      gestureMode = 'orbit';
+      gestureStart = { x:mp.x, y:mp.y, yaw:view.yaw, pitch:view.pitch, mx:mp.x, my:mp.y, panX:view.panX, panY:view.panY };
+      canvas.classList.remove('panning'); canvas.classList.add('dragging');
+    }
+  }
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', e=>{ pointers.delete(e.pointerId); if(pointers.size===0){ dragging=false; canvas.classList.remove('dragging','panning'); } });
+  canvas.addEventListener('contextmenu', e=>{ e.preventDefault(); });
+  canvas.addEventListener('dblclick', ()=>{ resetView(); });
+  canvas.addEventListener('wheel', e=>{
+    e.preventDefault();
+    lastInteraction = Date.now();
+    /* la rueda / el scroll (mouse o trackpad) siempre hace zoom, sin pedir
+       Ctrl — es lo que la mayoría espera al usar la rueda. Para mover la
+       vista: Shift+arrastra, botón central, o dos dedos arrastrando sobre
+       el lienzo (no el scroll de dos dedos, que aquí sigue siendo zoom). */
+    view.zoom = Math.max(0.45, Math.min(7, view.zoom * (1 - e.deltaY*0.0012)));
+  }, {passive:false});
+  document.getElementById('recenterBtn').addEventListener('click', resetView);
+
+  Graph = true; // engine initialized fine
+} catch (err) {
+  console.error('Sinapsis PLD/FT — fallo al iniciar la red:', err);
+  document.getElementById('graphFallback').style.display = 'block';
+  canvas.style.display = 'none';
+}
+
+/* =========================================================================
+   Drawer
+   ========================================================================= */
+const drawer = document.getElementById('drawer');
+const dTitle = document.getElementById('dTitle');
+const dBody = document.getElementById('dBody');
+const dNav = document.getElementById('dNav');
+const dkSw = document.getElementById('dkSw');
+const dkLabel = document.getElementById('dkLabel');
+
+const KIND_LABEL = {
+  root:'Temario', area:'Área', subarea:'Subárea', tema:'Tema-tarea',
+  memoriza:'Memoriza para el examen', hub:'Concepto transversal', exam:'Tu examen'
+};
+
+function neighborsOf(id){
+  const out = new Set();
+  links.forEach(l=>{
+    const s = typeof l.source==='object'?l.source.id:l.source;
+    const t = typeof l.target==='object'?l.target.id:l.target;
+    if(s===id) out.add(t);
+    if(t===id) out.add(s);
+  });
+  return [...out].map(x=>nodeById[x]).filter(Boolean);
+}
+
+function openNode(node){
+  if(!node) return;
+  /* al seleccionar cualquier nodo, nodeMatchesFilter() deja de ocultar
+     temas/memoriza por zoom — toda la red se vuelve visible de inmediato,
+     sin tener que forzar la cámara */
+  selectedNode = node;
+  dkSw.style.background = node.__color;
+  dkLabel.textContent = KIND_LABEL[node.group] || '';
+  dTitle.textContent = node.name;
+  let html = '';
+  if(node.pendiente){
+    html += `<div class="pendiente-tag">⚠ PENDIENTE / no especificado en los documentos</div>`;
+  }
+  html += `<p>${node.desc || ''}</p>`;
+  if(node.fuente){
+    html += `<div class="fuente-block"><b>Fuente:</b> ${node.fuente}</div>`;
+  }
+  if(node.link){
+    html += `<a class="open-link-btn" href="${node.link}" target="_blank" rel="noopener">${node.linkLabel || 'Abrir →'}</a>`;
+  }
+  dBody.innerHTML = html;
+
+  const neigh = neighborsOf(node.id).filter(n=>n.id!==node.id);
+  dNav.innerHTML = '';
+  neigh.slice(0,10).forEach(n=>{
+    const el = document.createElement('div');
+    el.className = 'navchip';
+    el.textContent = n.name.length > 34 ? n.name.slice(0,34)+'…' : n.name;
+    el.addEventListener('click', ()=>{ focusNode(n); openNode(n); });
+    dNav.appendChild(el);
+  });
+
+  drawer.classList.add('open');
+  focusNode(node);
+}
+function closeDrawer(){ drawer.classList.remove('open'); selectedNode = null; }
+document.getElementById('dClose').addEventListener('click', closeDrawer);
+
+function focusNode(node){
+  if (!Graph || node.x==null) return;
+  const dist = Math.sqrt(node.x*node.x + node.z*node.z);
+  view.targetYaw = Math.atan2(node.x, node.z);
+  view.targetPitch = Math.max(-1.1, Math.min(1.1, Math.atan2(node.y, dist || 1)));
+  view.animating = true;
+  lastInteraction = Date.now();
+}
+
+/* =========================================================================
+   Search
+   ========================================================================= */
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('searchResults');
+const DIACRITIC_RE = new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g');
+function norm(s){ return s.toLowerCase().normalize('NFD').replace(DIACRITIC_RE,''); }
+searchInput.addEventListener('input', ()=>{
+  const q = norm(searchInput.value.trim());
+  if(!q){ searchResults.classList.remove('show'); searchResults.innerHTML=''; return; }
+  const matches = nodes.filter(n => norm(n.name).includes(q) || (n.desc && norm(n.desc).includes(q))).slice(0,8);
+  if(!matches.length){ searchResults.innerHTML = '<div class="sres" style="cursor:default;color:var(--ink-faint)">Sin resultados en el temario</div>'; searchResults.classList.add('show'); return; }
+  searchResults.innerHTML = matches.map(n => `<div class="sres" data-id="${n.id}"><span class="dot" style="background:${n.__color}"></span>${n.name}</div>`).join('');
+  searchResults.classList.add('show');
+  searchResults.querySelectorAll('.sres[data-id]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const n = nodeById[el.dataset.id];
+      searchResults.classList.remove('show');
+      searchInput.value = '';
+      openNode(n);
+    });
+  });
+});
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.searchwrap')) searchResults.classList.remove('show');
+});
+
+/* =========================================================================
+   Stat line
+   ========================================================================= */
+document.getElementById('stat').textContent =
+  `${nodes.filter(n=>n.group==='tema').length} temas · ${nodes.filter(n=>n.group==='memoriza').length} datos para memorizar · ${nodes.filter(n=>n.group==='hub').length} conceptos transversales · ${links.length} conexiones`;
+
+</script>
+
+</body></html>

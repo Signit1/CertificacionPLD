@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Las 40 Recomendaciones del GAFI — Mapa de relaciones normativas</title>
+<style>
+  :root{
+    --bg: #0c1420;
+    --bg-panel: #121d2e;
+    --ink: #e7edf5;
+    --ink-dim: #8fa2b8;
+    --line: #24344a;
+    --A: #57c7d4;
+    --B: #e2585a;
+    --C: #f0a24a;
+    --D: #5b8ef2;
+    --E: #b47ee0;
+    --F: #4fbf82;
+    --G: #e3c548;
+    --range-line: #3a4d66;
+  }
+  * { box-sizing: border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--ink);
+    font-family: "Iowan Old Style","Georgia","Source Serif 4",serif; }
+  .ui { font-family: "Inter","Segoe UI",system-ui,sans-serif; }
+
+  header{
+    padding: 28px 32px 14px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1{
+    margin: 0 0 6px 0;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  header p{
+    margin: 0;
+    color: var(--ink-dim);
+    font-size: 14.5px;
+    max-width: 760px;
+    line-height: 1.5;
+  }
+
+  .layout{
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 0;
+    min-height: calc(100vh - 108px);
+  }
+  @media (max-width: 900px){
+    .layout{ grid-template-columns: 1fr; }
+  }
+
+  .stage{
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 12px;
+  }
+
+  svg { width: 100%; height: auto; max-width: 1040px; }
+
+  .node-label{
+    font-family: "Inter",sans-serif;
+    font-size: 9.5px;
+    fill: var(--ink);
+    pointer-events: none;
+  }
+  .node-num{
+    font-family: "Inter",sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    fill: var(--bg);
+    pointer-events: none;
+  }
+  .node-dot{
+    stroke: var(--bg);
+    stroke-width: 1.4;
+    cursor: pointer;
+    transition: r 120ms ease, opacity 120ms ease;
+  }
+  .node-dot:hover{ opacity: 1; }
+
+  .edge{
+    fill:none;
+    opacity: 0.38;
+    transition: opacity 150ms ease, stroke-width 150ms ease;
+  }
+  .edge.range{ stroke-dasharray: 1.5 3; opacity: 0.22; }
+  .edge.dim{ opacity: 0.045 !important; }
+  .edge.hi{ opacity: 0.95 !important; stroke-width: 2.4; }
+
+  .cat-arc{ fill:none; stroke-width: 6; opacity: 0.9; }
+  .cat-label{
+    font-family: "Inter",sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    fill: var(--ink-dim);
+  }
+
+  .sidebar{
+    background: var(--bg-panel);
+    border-left: 1px solid var(--line);
+    padding: 22px 22px 22px 22px;
+    overflow-y: auto;
+    max-height: calc(100vh - 108px);
+  }
+  .sidebar h2{
+    font-family:"Inter",sans-serif;
+    font-size: 13.5px;
+    text-transform: none;
+    letter-spacing: 0.2px;
+    color: var(--ink-dim);
+    margin: 0 0 12px 0;
+    font-weight: 600;
+  }
+
+  .legend{ list-style:none; margin:0 0 22px 0; padding:0; font-family:"Inter",sans-serif; }
+  .legend li{
+    display:flex; align-items:flex-start; gap:9px;
+    font-size: 12.5px; line-height: 1.35;
+    padding: 5px 0;
+    color: var(--ink);
+  }
+  .legend .swatch{
+    width: 11px; height: 11px; border-radius: 3px;
+    margin-top: 3px; flex: none;
+  }
+  .legend b{ font-weight:600; }
+  .legend .range-note{ color: var(--ink-dim); font-size: 11.5px; }
+
+  .toggle-row{
+    display:flex; align-items:center; gap:8px;
+    font-family:"Inter",sans-serif; font-size: 12.5px;
+    color: var(--ink); margin: 4px 0 22px 0;
+    cursor: pointer; user-select:none;
+  }
+  .toggle-row input{ accent-color: var(--D); width:15px; height:15px; }
+
+  #detail{
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    font-family:"Inter",sans-serif;
+  }
+  #detail .placeholder{ color: var(--ink-dim); font-size: 12.5px; line-height:1.5; }
+  #detail .rec-head{
+    display:flex; align-items:flex-start; gap:14px; margin-bottom:14px;
+  }
+  #detail .rec-bignum{
+    font-family:"Inter",sans-serif;
+    font-weight:800; font-size:44px; line-height:1;
+    flex:none;
+    text-shadow: 0 0 18px currentColor;
+  }
+  #detail .rec-head-text{ padding-top:3px; }
+  #detail .rec-cat{
+    font-size: 11px; color: var(--ink-dim); font-weight:600; letter-spacing:0.4px;
+    text-transform:uppercase;
+  }
+  #detail .rec-title{
+    font-family: "Iowan Old Style","Georgia",serif;
+    font-size: 17px; margin: 3px 0 0 0; line-height:1.3;
+  }
+  #detail .rel-list{ list-style:none; margin:0; padding:0; }
+  #detail .rel-item{
+    padding: 9px 0; border-top: 1px solid var(--line);
+    font-size: 12.5px; line-height: 1.45;
+  }
+  #detail .rel-item:first-child{ border-top:none; }
+  #detail .rel-tag{
+    display:inline-block; font-size: 10.5px; font-weight:700;
+    padding: 1px 6px; border-radius: 999px; margin-right:6px;
+    color: var(--bg);
+  }
+  #detail .rel-target{ font-weight:600; }
+
+  #detail .tipo-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  #detail .tipo-badge{
+    font-size: 10.5px; font-weight:700; padding: 3px 9px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  #detail .tipo-badge.core{ background: #7a3a3a; color:#fff; border-color:transparent; }
+  #detail .tipo-badge.key{ background: #7a5a2a; color:#fff; border-color:transparent; }
+  #detail .tipo-badge.importante{ background: #2a5a6a; color:#fff; border-color:transparent; }
+
+  #detail .mx-section{ margin: 0 0 16px 0; }
+  #detail .mx-label{
+    font-size: 10.5px; font-weight:700; letter-spacing:0.4px; text-transform: uppercase;
+    color: var(--ink-dim); margin-bottom: 5px;
+  }
+  #detail .mx-body{ font-size: 12.8px; line-height: 1.55; color: var(--ink); text-align: justify; hyphens: auto; }
+  #detail .mx-mexico{
+    font-size: 12.5px; line-height: 1.5; color: var(--ink); text-align: justify; hyphens: auto;
+    background: rgba(255,255,255,0.04); border-left: 3px solid var(--D);
+    padding: 8px 10px; border-radius: 4px;
+  }
+  #detail .verif-note{
+    font-size: 11.5px; line-height:1.45; color:#e8c46a;
+    background: rgba(232,196,106,0.08); border-left: 3px solid #e8c46a;
+    padding: 7px 10px; border-radius:4px; margin-top:6px;
+  }
+  #detail .rel-heading{
+    font-size: 10.5px; font-weight:700; letter-spacing:0.4px; text-transform: uppercase;
+    color: var(--ink-dim); margin: 4px 0 8px 0; padding-top:14px; border-top:1px solid var(--line);
+  }
+
+  footer{
+    padding: 6px 32px 22px 32px;
+    color: var(--ink-dim);
+    font-family:"Inter",sans-serif;
+    font-size: 11.5px;
+    line-height: 1.5;
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Las 40 Recomendaciones del GAFI</h1>
+  <p>Mapa de relaciones normativas entre las 40 Recomendaciones, agrupadas por sus 7 categorías oficiales. Cada línea representa una referencia cruzada <b style="color:var(--ink)">explícita</b>, citada tal cual en el texto de las Recomendaciones o de sus Notas Interpretativas (versión de diciembre de 2025). Pasa el cursor sobre un número, o haz clic para fijarlo.</p>
+</header>
+
+<div class="layout">
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 880 880"></svg>
+  </div>
+
+  <div class="sidebar ui">
+    <h2>Categorías (A–G)</h2>
+    <ul class="legend" id="legend"></ul>
+
+    <label class="toggle-row">
+      <input type="checkbox" id="toggleRanges">
+      Mostrar también las referencias de aplicación por rango (ej. "Recomendaciones 10 a 21")
+    </label>
+
+    <h2>Recomendación seleccionada</h2>
+    <div id="detail">
+      <div class="placeholder">Selecciona un número en el gráfico para ver su título completo y con qué otras Recomendaciones se relaciona según el documento.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Fuente: GAFI, «Las Recomendaciones del GAFI — Estándares Internacionales sobre la Lucha contra el Lavado de Activos, el Financiamiento del Terrorismo y de la Proliferación», versión adoptada en 2012, actualizada a diciembre de 2025. Las relaciones mostradas corresponden a menciones textuales de una Recomendación dentro de otra o de su Nota Interpretativa; no se han añadido vínculos temáticos no citados expresamente en el documento.
+</footer>
+
+<script>
+/* ---------- Datos: 40 Recomendaciones (títulos exactos del documento) ---------- */
+const titles = {
+  1:"Evaluación de riesgos y aplicación de un enfoque basado en riesgo",
+  2:"Cooperación y coordinación nacional",
+  3:"Delito de lavado de activos",
+  4:"Decomiso y medidas provisionales",
+  5:"Delito de financiamiento del terrorismo",
+  6:"Sanciones financieras dirigidas relacionadas con el terrorismo y el financiamiento del terrorismo",
+  7:"Sanciones financieras dirigidas relacionadas con la proliferación",
+  8:"Organizaciones sin fines de lucro (OSFL)",
+  9:"Leyes sobre el secreto de las instituciones financieras",
+  10:"Debida diligencia del cliente (DDC)",
+  11:"Mantenimiento de registros",
+  12:"Personas expuestas políticamente (PEP)",
+  13:"Banca corresponsal",
+  14:"Servicios de transferencia de dinero o valores (STDV)",
+  15:"Nuevas tecnologías",
+  16:"Transparencia de pagos",
+  17:"Dependencia en terceros",
+  18:"Controles internos y sucursales y filiales extranjeras",
+  19:"Países de mayor riesgo",
+  20:"Reporte de operaciones sospechosas (ROS)",
+  21:"Revelación (tipping-off) y confidencialidad",
+  22:"APNFD (Actividades y Profesiones No Financieras Designadas): Debida diligencia del cliente",
+  23:"APNFD: otras medidas",
+  24:"Transparencia y beneficiario final de las personas jurídicas",
+  25:"Transparencia y beneficiario final de otras estructuras jurídicas",
+  26:"Regulación y supervisión de las instituciones financieras",
+  27:"Facultades de los supervisores",
+  28:"Regulación y supervisión de las APNFD",
+  29:"Unidades de inteligencia financiera",
+  30:"Responsabilidades de las autoridades de orden público e investigativas",
+  31:"Facultades de las autoridades de orden público e investigativas",
+  32:"Transporte de efectivo",
+  33:"Estadísticas",
+  34:"Guía y retroalimentación",
+  35:"Sanciones",
+  36:"Instrumentos internacionales",
+  37:"Asistencia legal mutua",
+  38:"Asistencia legal mutua: congelamiento y decomiso",
+  39:"Extradición",
+  40:"Otras formas de cooperación internacional"
+};
+
+const mxData = {
+  1: { tipo: "Importante", grupo: "Políticas y Coordinación PLD/FT", puntos: "Los países deben identificar, entender y evaluar los riesgos, estableciendo mitigantes. Designar una autoridad responsable, incluyendo a las APNFD. Las acciones deben ser proporcionales al riesgo identificado, para asignar eficazmente los recursos.", nota: "Se establecen directrices para implementar un Enfoque Basado en Riesgo (EBR): a mayor riesgo, medidas intensificadas, y viceversa, pudiendo en su caso no implementar alguna Recomendación. Se establecen obligaciones y decisiones para los países, las instituciones financieras y las APNFD: evaluación del riesgo, administración y mitigación del riesgo, riesgo mayor, riesgo menor, exenciones y monitoreo del riesgo.", mexico: "Capítulo II Bis de las Disposiciones de Carácter General (DCG) — disposiciones que emite la Comisión Nacional Bancaria y de Valores (CNBV) con fundamento en el Artículo 115 de la Ley de Instituciones de Crédito (LIC), y que instruyen a las instituciones financieras a construir su propia metodología de Enfoque Basado en Riesgo (EBR) para PLD/FT." },
+  2: { tipo: "Importante", grupo: "Políticas y Coordinación PLD/FT", puntos: "Las políticas deben establecerse a nivel nacional de acuerdo con los riesgos identificados, con una autoridad que coordine y con cooperación entre todos los partícipes. Se debe garantizar la compatibilidad de los requisitos ALA/CFT/CFP con la protección de datos y la privacidad.", nota: "Establecer marcos institucionales apropiados para la cooperación y coordinación, que permitan definir políticas nacionales e incluir a las autoridades relevantes en la materia. Los países deben establecer mecanismos que permitan la cooperación operativa y el intercambio de información relevante entre las diferentes autoridades.", mexico: "La coordinación nacional recae en la Secretaría de Hacienda y Crédito Público (SHCP), a través de: la Comisión Nacional Bancaria y de Valores (CNBV, supervisa bancos y otras entidades financieras), el Servicio de Administración Tributaria (SAT, supervisa a las APNFD bajo la LFPIORPI), la Unidad de Inteligencia Financiera (UIF, recibe y analiza los reportes) y la Unidad de Banca, Valores y Ahorro (UBVA, unidad administrativa de la SHCP que emite criterios de interpretación normativa en materia ALA/CFT)." },
+  3: { tipo: "Core", grupo: "Lavado de Dinero y Decomiso", puntos: "Los países deben tipificar el LD con base en la Convención de Viena (1988) y la Convención de Palermo (2000), estableciéndolo para todos los delitos graves.", nota: "Se establecen directrices para la tipificación del delito, relacionadas principalmente con los delitos determinantes (también llamados delitos precedentes o subyacentes): las conductas ilícitas que generan los bienes o ganancias que después se pretenden lavar. El estándar exige aplicar el lavado de activos a la más amplia gama posible de delitos determinantes, ya sea mediante un enfoque de «todos los delitos» o estableciendo un umbral de gravedad, incluyendo los delitos fiscales.", mexico: "Artículo 400 Bis del Código Penal Federal — tipifica el delito de Operaciones con Recursos de Procedencia Ilícita (lavado de dinero). Como referencia: la Convención de Viena (1988) es la Convención de la ONU contra el Tráfico Ilícito de Estupefacientes y Sustancias Sicotrópicas, primer tratado en obligar a tipificar el lavado de activos derivado del narcotráfico; la Convención de Palermo (2000) es la Convención de la ONU contra la Delincuencia Organizada Transnacional, que amplió esa obligación a los delitos derivados de la delincuencia organizada en general." },
+  4: { tipo: "Key", grupo: "Lavado de Dinero y Decomiso", puntos: "Se debe asegurar contar con políticas y marcos operativos que prioricen la recuperación de activos en el contexto nacional e internacional. Establecer medidas legislativas que permitan a las autoridades competentes congelar o incautar, decomisar y administrar bienes de acuerdo con las convenciones internacionales.", nota: "Los países deben establecer mecanismos que permitan a sus autoridades competentes manejar con eficacia y, cuando sea necesario, disponer de los bienes que se hayan congelado, embargado o decomisado, para su uso propio o el de otros países. Procesos: A) Marco de priorización y recuperación de activos; B) Bienes delictivos y de valor equivalente; C) Medidas provisionales; D) Decomiso; E) Recuperación de activos y autoridades tributarias; F) Administración, devolución y disposición de activos.", mexico: "El instrumento más directo es la Ley Nacional de Extinción de Dominio, que permite decomisar bienes de origen o destino ilícito sin necesidad de una condena penal previa (decomiso no basado en condena). El Capítulo XV de las Disposiciones de Carácter General (DCG) — Lista de Personas Bloqueadas — es, en realidad, el instrumento de congelamiento de activos de las Recomendaciones 6 y 7; se incluye aquí solo como referencia relacionada, ya que ambos mecanismos conviven en la estrategia de despojo patrimonial al crimen organizado." },
+  5: { tipo: "Core", grupo: "Financiamiento al Terrorismo y Financiamiento a la proliferación de armas de destrucción masiva", puntos: "Los países deben tipificar el FT con base en el Convenio Internacional para la Represión de la Financiación del Terrorismo (1999), incluyendo a quienes financien a grupos terroristas, y estos delitos deben ser determinantes del LD.", nota: "Asegurar que los países cuenten con la capacidad legal para procesar y aplicar sanciones penales a las personas que financien el terrorismo, e incluir los delitos de financiamiento del terrorismo como delitos determinantes del LA.", mexico: "LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) — regula las actividades vulnerables, incluidos sectores como bienes raíces y casinos. El delito de financiamiento al terrorismo está tipificado en el Artículo 139 Quáter del Código Penal Federal (Capítulo «Del Financiamiento al Terrorismo»): sanciona a quien aporte o recaude fondos o recursos sabiendo que se destinarán a financiar o apoyar a personas u organizaciones terroristas. Su penalidad es la misma que la del artículo 139 (terrorismo): prisión de 15 a 40 años y multa de 400 a 1,200 días (UMA)." },
+  6: { tipo: "Core", grupo: "Financiamiento al Terrorismo y Financiamiento a la proliferación de armas de destrucción masiva", puntos: "Implementar regímenes de sanciones financieras dirigidas para cumplir, sin demora, con las Resoluciones del Consejo de Seguridad de la ONU (CSNU) relativas a la prevención y represión del terrorismo y su financiamiento — congelando de inmediato los fondos u otros activos de las personas y entidades designadas. La Resolución 1267 (1999) creó el régimen de sanciones contra Al-Qaida y el Talibán (lista consolidada de la ONU); la Resolución 1373 (2001), adoptada tras los atentados del 11 de septiembre, obliga a todos los Estados a congelar sin demora los activos de cualquier persona que cometa o facilite actos terroristas, esté o no en una lista específica de la ONU.", nota: "Se establece el objetivo de la Recomendación y se desarrollan, entre otros, los siguientes puntos: a) cómo identificar y designar a las personas y entidades que financian o apoyan el terrorismo; b) la obligación de congelar sin demora y prohibir poner a disposición fondos u otros activos de las personas y entidades designadas; c) el procedimiento de exclusión de la lista («delisting») para quienes dejen de cumplir los criterios de designación; d) el descongelamiento y el acceso a fondos por razones humanitarias o de subsistencia; y e) los criterios de designación de las Naciones Unidas y el intercambio de información entre países para sustentar las designaciones.", mexico: "Listas de Personas Bloqueadas, administradas por la Unidad de Inteligencia Financiera (UIF). Sanciones penales de respaldo: Artículo 139 Quáter del Código Penal Federal (CPF) (financiamiento al terrorismo) y Artículo 148 Bis CPF (terrorismo internacional) — ambos sancionan con prisión de 15 a 40 años y multa de 400 a 1,200 días (UMA, Unidad de Medida y Actualización)." },
+  7: { tipo: "Otras", grupo: "Financiamiento al Terrorismo y Financiamiento a la proliferación de armas de destrucción masiva", puntos: "Los países deben implementar sanciones financieras dirigidas para cumplir, sin demora, con las resoluciones del Consejo de Seguridad de la ONU (CSNU) relativas a la prevención, represión e interrupción del financiamiento de la proliferación de armas de destrucción masiva (PADM).", nota: "Se establece el objetivo, cómo identificar y designar personas y entidades que financian y apoyan actividades de proliferación, el congelamiento y prohibición de fondos u otros activos de personas y entidades designadas, la exclusión de la lista, el descongelamiento y la facilitación del acceso a fondos u otros activos congelados y, finalmente, los criterios de designación de las Naciones Unidas.", mexico: "Las sanciones del Consejo de Seguridad de la ONU sobre proliferación de armas de destrucción masiva (Corea del Norte, Irán) se implementan en México a través de la Lista de Personas Bloqueadas de la Unidad de Inteligencia Financiera (UIF) —el mismo mecanismo de congelamiento que para terrorismo (R6)— y de la Evaluación Nacional de Riesgos, Capítulo VII, que identifica los riesgos de financiamiento a la proliferación en el sistema financiero mexicano." },
+  8: { tipo: "Importante", grupo: "Financiamiento al Terrorismo y Financiamiento a la proliferación de armas de destrucción masiva", puntos: "Los países deben identificar a las organizaciones sin fines de lucro (OSFL) y evaluar su riesgo de FT, identificando: a) organizaciones terroristas que se presentan como entidades legítimas; b) entidades legítimas explotadas como conductos para el FT; y c) el ocultamiento del desvío clandestino de fondos destinados a propósitos legítimos hacia organizaciones terroristas.", nota: "Debido a la variedad de formas legales que pueden tomar las Organizaciones Sin Fines de Lucro (OSFL), dependiendo del país, el GAFI ha adoptado una definición funcional de OSFL. Esta definición está basada en aquellas actividades y características de una organización que la ponen en riesgo de abuso para financiamiento del terrorismo, y no en el simple hecho de que su operación no se basa en el lucro. Para los propósitos de esta Recomendación, OSFL se refiere a una persona o estructura legal u organización que principalmente se desempeña en la recolección o el ejercicio de fondos para fines caritativos, religiosos, culturales, educativos, sociales o fraternales, o para llevar a cabo otro tipo de «buenas obras». Sin perjuicio de la Recomendación 1, esta Recomendación sólo se aplica a las OSFL que se encuentren dentro de la definición del GAFI. El objetivo de la Recomendación 8 es asegurar que las OSFL no sean utilizadas indebidamente por organizaciones terroristas.", mexico: "LFPIORPI, Artículo 17, Fracción XIII: considera actividad vulnerable la recepción de donativos por parte de asociaciones y sociedades sin fines de lucro, cuando el monto sea igual o superior a 1,605 UMA (umbral de identificación) o 3,210 UMA (umbral de aviso)." },
+  9: { tipo: "Key", grupo: "Medidas preventivas", puntos: "Los países deben asegurar que las leyes sobre el secreto de la institución financiera (secreto bancario) no impidan la implementación de las Recomendaciones del GAFI.", nota: "NA", mexico: "Artículo 117 de la Ley de Instituciones de Crédito (LIC): establece el secreto bancario, pero incluye una excepción expresa que permite a las instituciones de crédito proporcionar información a las autoridades hacendarias y a la Unidad de Inteligencia Financiera (UIF) para la prevención de lavado de dinero y financiamiento al terrorismo, sin que ello constituya una violación al secreto bancario." },
+  10: { tipo: "Core", grupo: "Medidas preventivas", puntos: "Prohibir operaciones anónimas y aplicar debida diligencia del cliente (DDC) al iniciar relaciones comerciales, al realizar transacciones ocasionales por encima del umbral aplicable designado de USD/EUR 15,000, cuando exista sospecha de LA/FT, o cuando existan dudas sobre la veracidad o suficiencia de los datos de identificación obtenidos previamente. Estas medidas incluyen identificar al cliente y verificar su identidad, identificar al beneficiario final, y monitorear las operaciones. En caso de no poder cumplirlas, se debe terminar la relación comercial, y aplicarlas tanto a clientes nuevos como existentes. Se establecen los riesgos mayores y menores respecto al cliente, el área geográfica, el producto y los métodos de transacción y canales de envío, así como las medidas de DDC recomendadas para alto y bajo riesgo.", nota: "Se establecen directrices acerca de: A) Debida diligencia del cliente y revelación; B) DDC de personas que actúan en nombre de un cliente; C) DDC para personas jurídicas y otras estructuras jurídicas; D) DDC para beneficiarios de pólizas de seguro de vida; E) Seguridad en la identificación y verificación ya realizada; F) Momento para llevar a cabo la verificación; G) Clientes existentes; y H) Enfoque basado en riesgo (riesgos mayores, riesgos menores, variables de riesgo, medidas intensificadas y simplificadas de DDC, y umbrales). El umbral señalado para transacciones ocasionales es de USD/EUR 15,000; para las transferencias electrónicas, la propia Nota remite a la Nota Interpretativa de la Recomendación 16, donde se fija un umbral mínimo (no superior a USD/EUR 1,000) tanto para transferencias nacionales como transfronterizas. Como ejemplo de factor de menor riesgo, dentro de los factores de riesgo relativos a productos, servicios, transacciones o canales de envío, se menciona a las pólizas de seguro de vida en las que la prima es baja (por ejemplo, una prima anual de menos de USD/EUR 1,000, o una prima única de menos de USD/EUR 2,500); estos montos son solo un ejemplo indicativo de «prima baja» —no un umbral obligatorio— que puede justificar medidas simplificadas de DDC.", mexico: "Disposiciones de Carácter General (DCG), emitidas por la Comisión Nacional Bancaria y de Valores (CNBV) con fundamento en el Artículo 115 de la Ley de Instituciones de Crédito (LIC): el Capítulo II regula la Identificación del Cliente, el Capítulo II Bis el Enfoque Basado en Riesgo (EBR), y el Capítulo III el Conocimiento del Cliente (monitoreo continuo de la relación)." },
+  11: { tipo: "Core", grupo: "Medidas preventivas", puntos: "Mantener registros al menos 5 años, tanto de los clientes , como de sus operaciones", nota: "NA", mexico: "Las Disposiciones de Carácter General (DCG, Art. 115 LIC) exigen a las instituciones financieras conservar los expedientes de identificación y las operaciones por al menos 10 años; la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita), aplicable a las APNFD, exige un plazo menor de 5 años." },
+  12: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Además de establecer medidas de DD, contar con sistemas para determinar si es PEP, obtener autorización de la alta gerencia, investigar origen de recursos y monitorear operativa; tanto a ellos como familiares o personas asociadas", nota: "Las instituciones financieras deben tomar medidas razonables para determinar si los beneficiarios de una póliza de seguro de vida y/o, cuando se requiera, el beneficiario final del beneficiario, son personas expuestas políticamente", mexico: "Capítulo III de las Disposiciones de Carácter General (DCG) — Conocimiento del Cliente: exige contar con listas de Personas Expuestas Políticamente (PEP) nacionales y extranjeras, y aplicarles las medidas reforzadas que señala esta misma Recomendación." },
+  13: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Además de establecer medidas de DDC, a) revisar información pública de la institución; b) evaluar sus controles; c) obtener autorización de la alta gerencia; d) entender claramente las respectivas responsabilidades de cada institución; y e) analizar si llevan procesos apropiados de DDC, prohibiendo la operación con bancos pantalla.", nota: "Entre las relaciones similares a las que las instituciones financieras deben aplicar los criterios (a) al (e) están, por ejemplo, las que se establecen para transacciones de valores o transferencias de fondos, ya sea para la institución financiera transfronteriza en calidad de principal o para sus clientes.", mexico: "El archivo original citaba la Ley de Sistema de Pagos, pero esa ley regula la infraestructura de pagos interbancarios (SPEI), no la debida diligencia en relaciones de banca corresponsal transfronteriza. Ojo: en México existe también la figura de «corresponsalía bancaria» (Art. 46 Bis 1 LIC: agentes como tiendas de conveniencia que ofrecen servicios bancarios), un concepto distinto al de banca corresponsal internacional que regula esta Recomendación — conviene no confundirlos en el examen. En la práctica, la debida diligencia reforzada hacia bancos corresponsales extranjeros se instrumenta dentro de las propias Disposiciones de Carácter General (DCG, Art. 115 LIC) de conocimiento del cliente." },
+  14: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Los proveedores de Servicios de Transferencia de Dinero o Valores (STDV) — es decir, quienes prestan ese servicio de forma habitual y profesional, como los transmisores de dinero — y sus agentes, deben estar registrados o contar con una licencia.", nota: "Los países no necesitan imponer un sistema separado de otorgamiento de licencia o registro o designar otra autoridad competente, con respecto a las personas naturales o jurídicas que ya tienen licencia o están registradas como instituciones financieras.", mexico: "Registro de Centros Cambiarios y Transmisores de Dinero ante la Comisión Nacional Bancaria y de Valores (CNBV); la Ley Fintech (Ley para Regular las Instituciones de Tecnología Financiera, LRITF) regula, además, a los proveedores de fondos de pago electrónico que prestan servicios similares de transferencia de valor." },
+  15: { tipo: "Key", grupo: "Medidas preventivas", puntos: "Los países deben identificar y evaluar los riesgos de LA o FT que pudieran surgir con respecto al desarrollo de nuevos productos y prácticas comerciales, y al uso de nuevas tecnologías en productos nuevos (previo a su lanzamiento) o existentes. Los países deben poder administrar y mitigar estos riesgos, y quienes provean servicios de activos virtuales deben contar con registro y monitoreo.", nota: "Se define la operación de los Activos Virtuales y las reglas para su operación, indicando que los países deben aplicar un enfoque basado en riesgo siguiendo la metodología de la R1, así como establecer registro, supervisión y sanciones para los proveedores de AV (PSAV). Respecto a las medidas preventivas de las Recomendaciones 10 a 21, que se aplican a los PSAV (Proveedores de Servicios de Activos Virtuales), el umbral para transacciones ocasionales es de USD/EUR 1,000 — más bajo que el umbral general de USD/EUR 15,000 de la R10 —, además de la necesidad de mantener información del beneficiario en las transferencias de AV y de establecer directrices de asistencia internacional entre países.", mexico: "Capítulo XII Bis DCG Modelos Novedosos, Ley Fintech, Reportes de transferencias internacionales de fondos" },
+  16: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Asegurar información completa sobre el ordenante y el beneficiario en todo pago o transferencia de valor por encima del umbral aplicable: nombre y número de cuenta (o número de referencia de la transacción) de ambos; dirección o fecha de nacimiento del ordenante; y el identificador oficial (BIC/LEI) cuando se trate de personas jurídicas. Para pagos y transferencias de valor, tanto transfronterizos como nacionales, los países pueden adoptar un umbral mínimo no mayor a USD/EUR 1,000, por debajo del cual basta con incluir datos reducidos del ordenante. Los proveedores de Servicios de Transferencia de Dinero o Valores (STDV) deben cumplir con todos los requisitos de esta Recomendación en cada país donde operen, directamente o a través de sus agentes. En su caso, se debe congelar fondos al amparo de las Resoluciones 1267 y 1373.", nota: "Se establece el objetivo de la Recomendación 16 (evitar el abuso de las transferencias por parte de terroristas), su alcance, qué tipo de transferencias califican y la información requerida, las transferencias electrónicas internas, y las responsabilidades de las instituciones financieras ordenante, intermediaria y beneficiaria. En los retiros de efectivo dentro del mismo país no se requiere información adicional al número de cuenta o de tarjeta; en los retiros de efectivo transfronterizos (con tarjeta de crédito, débito o prepago de otra entidad), el número de tarjeta debe acompañar el retiro, y el nombre del titular debe enviarse a la entidad financiera adquirente, previa solicitud, en un plazo de 3 días hábiles.", mexico: "El Reporte de Transferencias Internacionales de Fondos se origina en las Disposiciones de Carácter General emitidas conforme al Artículo 115 de la Ley de Instituciones de Crédito, bajo las cuales la UIF publica el formato oficial que las instituciones financieras deben usar para presentarlo. La Ley Fintech (Ley para Regular las Instituciones de Tecnología Financiera, LRITF, DOF 09/03/2018) crea la figura de Institución de Tecnología Financiera (ITF, que agrupa a las Instituciones de Fondos de Pago Electrónico e Instituciones de Financiamiento Colectivo); su Artículo 70 obliga a las ITF a reportar a la CNBV, la CONDUSEF y el Banco de México, y las Disposiciones de su Artículo 58 exigen medidas reforzadas de identificación en operaciones con transferencias internacionales." },
+  17: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Cuando se delegue la id del cliente a un tercero, asegurar DDC ,supervisando al tercero y que este en países autorizados.", nota: "Esta Recomendación no se aplica a la tercerización o relaciones de agencias. En un escenario de dependencia en un tercero, el tercero debe estar sujeto a los requisitos de DDC y mantenimiento de registros de acuerdo con las Recomendaciones 10 y 11, y estar regulado, supervisado o monitoreado. El tercero usualmente tendrá una relación comercial existente con el cliente, que es independiente de la relación que creará el cliente con la institución dependiente.", mexico: "Disposiciones de Carácter General (DCG): estipulan que, aun cuando la institución financiera delegue la identificación del cliente en un tercero, la responsabilidad legal de que esa información esté completa y correcta sigue siendo de la propia institución financiera que delega." },
+  18: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Debe exigirse a las instituciones financieras implementar programas contra el lavado de activos y el financiamiento del terrorismo. Los grupos financieros deben implementar dichos programas a nivel de todo el grupo, incluyendo políticas y procedimientos para el intercambio de información dentro del grupo para efectos de DDC y de gestión del riesgo de LA/FT, aplicables también a sus sucursales y filiales en el extranjero.", nota: "Los programas de las instituciones financieras deben incluir: a) el desarrollo de políticas, procedimientos y controles internos, con procedimientos adecuados de contratación de personal; b) un programa continuo de capacitación a los empleados; y c) una función de auditoría independiente para comprobar el sistema, designando además a un oficial de cumplimiento a nivel gerencial. A nivel de grupo financiero, estos programas deben aplicarse a todas las sucursales y filiales de propiedad mayoritaria —incluidas las del extranjero—, con intercambio de información entre ellas para fines de DDC y gestión de riesgo, y con salvaguardas de confidencialidad. Cuando el país sede exija estándares menos estrictos que el país de origen, las sucursales y filiales extranjeras deben aplicar los requisitos del país de origen, en la medida en que las leyes locales lo permitan; si no lo permiten, el grupo debe aplicar medidas adicionales e informar a su supervisor de origen.", mexico: "DCG, Capítulo VIII (Estructuras internas), Capítulo IX (Capacitación)" },
+  19: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Debe exigirse a las instituciones financieras aplicar medidas de debida diligencia intensificada a las relaciones comerciales y transacciones con personas naturales y jurídicas, e instituciones financieras, procedentes de países para los cuales el GAFI hace un llamado en tal sentido; el tipo de medidas debe ser eficaz y proporcional al riesgo. Los países deben poder aplicar contramedidas apropiadas cuando el GAFI haga un llamado para ello, e incluso independientemente de dicho llamado.", nota: "Las medidas de debida diligencia intensificada incluyen las plasmadas en el párrafo 20 de la Nota Interpretativa de la Recomendación 10: obtener información adicional sobre el cliente y actualizar con mayor frecuencia sus datos de identificación; obtener información sobre el propósito de la relación comercial y sobre el origen de los fondos o de la riqueza del cliente; obtener la aprobación de la alta gerencia para iniciar o continuar la relación; intensificar el monitoreo de la relación comercial; y exigir que el primer pago se realice a través de una cuenta a nombre del cliente en un banco sujeto a estándares de DDC similares —además de cualquier otra medida con efecto similar—. Entre las contramedidas que los países pueden aplicar están: exigir elementos específicos de DDC intensificada; introducir mecanismos de reporte reforzados; negarse a establecer, o restringir, sucursales, filiales u oficinas representativas del país en cuestión; limitar las relaciones comerciales o transacciones con el país o sus personas; prohibir la dependencia en terceros ubicados ahí; exigir revisar, enmendar o terminar relaciones de banca corresponsal con instituciones de ese país; y exigir exámenes de supervisión y/o auditoría externa más profundos para sucursales y filiales radicadas en el país en cuestión.", mexico: "El GAFI mantiene dos listas, actualizadas en cada Plenaria: las «Jurisdicciones de Alto Riesgo» (lista negra, actualmente Corea del Norte, Irán y Myanmar) y las «Jurisdicciones bajo Mayor Monitoreo» (lista gris). La UIF de la SHCP publica su propia lista de países de riesgo, y el Capítulo III de las DCG (Conocimiento del Cliente) es donde se instrumenta la debida diligencia intensificada derivada de esta clasificación de riesgo por país." },
+  20: { tipo: "Core", grupo: "Medidas preventivas", puntos: "Si una institución financiera sospecha o tiene motivos razonables para sospechar que los fondos son producto de una actividad criminal, o están relacionados con el financiamiento del terrorismo, debe estar obligada por ley a reportar con prontitud sus sospechas a la Unidad de Inteligencia Financiera (UIF), mediante un Reporte de Operación Sospechosa (ROS).", nota: "La referencia a «actividad criminal» abarca todos los actos que constituirían un delito determinante de lavado de activos o, como mínimo, los delitos que constituyan un delito determinante conforme a la Recomendación 3 (se exhorta firmemente a adoptar la primera alternativa). El financiamiento del terrorismo incluye financiar actos, organizaciones o terroristas individuales, aun sin vínculo a un acto específico. Los delitos determinantes designados por el GAFI cubren 21 categorías: participación en un grupo delictivo organizado, terrorismo (incluido su financiamiento), trata de personas y tráfico ilícito de migrantes, explotación sexual, tráfico de estupefacientes, tráfico ilegal de armas, tráfico de mercancías robadas, corrupción y soborno, fraude, falsificación de dinero, falsificación y piratería de productos, delitos ambientales, homicidio y lesiones corporales graves, secuestro y privación ilegítima de la libertad, robo, contrabando, delitos fiscales, extorsión, falsificación, piratería, y uso indebido de información privilegiada y manipulación del mercado. Todas las operaciones sospechosas —incluidas las tentativas— deben reportarse sin importar el monto, y la obligación de reportar debe ser directa: no se acepta el «reporte indirecto».", mexico: "Capítulos IV, V y VI de las DCG (Art. 115 LIC): regulan, respectivamente, el Reporte de Operaciones Relevantes, el Reporte de Operaciones Inusuales y el Reporte de Operaciones Internas Preocupantes —los formatos que la UIF exige presentar—, a los que se suman los reportes específicos de financiamiento al terrorismo cuando corresponda." },
+  21: { tipo: "Otras", grupo: "Medidas preventivas", puntos: "Las instituciones financieras, sus directores, funcionarios y empleados deben: a) estar protegidos por ley frente a responsabilidad penal y civil por violar restricciones de revelación de información —contractuales, legislativas, normativas o administrativas— si reportan de buena fe sus sospechas a la UIF, aun sin conocer con precisión la actividad criminal subyacente y con independencia de si ésta realmente ocurrió; y b) tener prohibido por ley revelar («tipping-off») que se está entregando o se entregó a la UIF un Reporte de Operación Sospechosa (ROS) o información relacionada. Estas disposiciones no buscan inhibir el intercambio de información que exige la Recomendación 18.", nota: "NA", mexico: "Capítulo XI de las DCG (Reserva y Confidencialidad): protege legalmente al personal de las instituciones financieras que reporta de buena fe, y prohíbe expresamente revelar —incluso al propio cliente involucrado— que se presentó un ROS en su contra, replicando la doble protección que exige la Recomendación 21." },
+  22: { tipo: "Importante", grupo: "Medidas preventivas", puntos: "Los requisitos de debida diligencia del cliente y mantenimiento de registros de las Recomendaciones 10, 11, 12, 15 y 17 se aplican a las Actividades y Profesiones No Financieras Designadas (APNFD) en las siguientes situaciones: a) Casinos, cuando el cliente realiza transacciones financieras por un monto igual o mayor al umbral designado; b) agentes inmobiliarios, en transacciones de compraventa de inmuebles para sus clientes; c) comerciantes de metales preciosos y piedras preciosas, en transacciones en efectivo por un monto igual o mayor al umbral designado; d) abogados, notarios, otros profesionales jurídicos independientes y contadores, cuando realizan para un cliente actividades como compraventa de inmuebles, administración de dinero/valores/cuentas del cliente, u organización, creación o administración de sociedades y otras personas jurídicas o estructuras jurídicas; y e) proveedores de servicios societarios y fideicomisos, cuando actúan como agentes de constitución, directores o apoderados, proveen domicilio registrado, actúan como fiduciarios, o actúan como accionistas nominales por cuenta de otra persona.", nota: "Los umbrales designados son: Casinos, USD/EUR 3,000; comerciantes de metales preciosos y piedras preciosas, USD/EUR 15,000 —aplicables a una sola operación o a varias operaciones que parezcan estar ligadas—. Las Notas Interpretativas que aplican a las instituciones financieras son relevantes también para las APNFD cuando corresponda (por ejemplo, en venta de inmuebles debe identificarse tanto al comprador como al vendedor). Para efectos de la R.23, los requisitos sobre «grupos financieros» de la R.18 se aplican también a los grupos de APNFD que operen bajo una estructura similar.", mexico: "LFPIORPI, Artículo 17: las fracciones relacionadas con esta Recomendación son la I (juegos con apuesta, concursos y sorteos: casinos), V (compraventa de inmuebles: agentes inmobiliarios), VI (joyerías y comercio de metales y piedras preciosas), XI (servicios profesionales) y XII (fe pública: notarios y corredores públicos) — cada una corresponde a una de las APNFD que enumera esta Recomendación." },
+  23: { tipo: "Importante", grupo: "Medidas preventivas", puntos: "Los requisitos de las Recomendaciones 18 a 21 se aplican a todas las APNFD, sujeto a: a) exigir a abogados, notarios, otros profesionales jurídicos independientes y contadores reportar operaciones sospechosas cuando, en nombre de un cliente, participan en una transacción relacionada con las actividades del párrafo (d) de la Recomendación 22 (se exhorta a extender este requisito al resto de la actividad profesional de los contadores, incluida la auditoría); b) exigir a los comerciantes de metales preciosos y piedras preciosas reportar operaciones sospechosas en transacciones en efectivo por el umbral designado; y c) exigir a los proveedores de servicios societarios y fideicomisos reportar operaciones sospechosas relacionadas con las actividades del párrafo (e) de la Recomendación 22.", nota: "Comparte la Nota Interpretativa conjunta con la R.22: los mismos umbrales (Casinos USD/EUR 3,000; metales y piedras preciosas USD/EUR 15,000) y el mismo criterio de que las Notas de las instituciones financieras aplican también a las APNFD. Adicionalmente, especifica que para cumplir estas Recomendaciones los países no necesitan emitir leyes exclusivas para abogados, notarios y contadores, siempre que estas actividades queden cubiertas por las leyes que regulan las actividades subyacentes; y que los requisitos sobre «grupos financieros» de la R.18 se extienden a los grupos de APNFD que compartan estructura, propiedad o control de cumplimiento.", mexico: "LFPIORPI, Artículo 17: son las mismas fracciones que la R.22 (I, V, VI, XI y XII), ya que la obligación de presentar avisos por operaciones sospechosas (Art. 18, fracción II LFPIORPI) recae sobre quienes realizan las actividades vulnerables ahí enlistadas." },
+  24: { tipo: "Otras", grupo: "Transparencia y beneficiario final de las personas jurídicas y otras estructuras Jurídicas", puntos: "Los países deben evaluar los riesgos de uso indebido de las personas jurídicas para el LA/FT y adoptar medidas para prevenirlo. Deben asegurar que exista información adecuada, precisa y actualizada sobre el beneficiario final y el control de las personas jurídicas, accesible de forma rápida y eficiente a través de un registro o un mecanismo alternativo. No debe permitirse la emisión de acciones al portador nuevas, y deben evitarse que las acciones y directores nominales se usen indebidamente para LA/FT. (Una persona jurídica es una entidad distinta de una persona física —como una sociedad mercantil, asociación o fundación— creada conforme a la ley, capaz de tener derechos y obligaciones propios, patrimonio propio, y de actuar por medio de sus representantes.)", nota: "Se especifica la información a obtener del beneficiario final, en los siguientes puntos: A) información básica sobre la sociedad mercantil (control, accionistas); B) información sobre el beneficiario final; C) acceso oportuno a información actualizada y precisa; D) obstáculos a la transparencia (como acciones al portador o directores nominales); E) reglas para otras personas jurídicas; F) responsabilidad y sanciones por incumplimiento; y G) cooperación internacional sobre esta información.", mexico: "Artículos 32-B Ter, 32-B Quáter y 32-B Quinquies del Código Fiscal de la Federación (CFF) —reforma vigente desde 2022—: obligan a las personas morales a obtener, conservar y proporcionar al Servicio de Administración Tributaria (SAT) información fidedigna y actualizada sobre su beneficiario controlador (equivalente mexicano al «beneficiario final» del GAFI). Además: Ley Federal de Transparencia y Acceso a la Información Pública Gubernamental; Lineamientos para la identificación del propietario real (SHCP); y reportes a la Secretaría de Economía sobre la integración del capital social." },
+  25: { tipo: "Otras", grupo: "Transparencia y beneficiario final de las personas jurídicas y otras estructuras Jurídicas", puntos: "Los países deben asegurar que exista información adecuada, precisa y actualizada sobre los fideicomisos expresos y otras estructuras jurídicas similares, incluyendo información sobre el fideicomitente, el fiduciario y los beneficiarios, accesible de manera oportuna y eficaz para las autoridades competentes. A diferencia de una persona jurídica, una estructura jurídica —cuyo ejemplo más común es el fideicomiso— no tiene personalidad jurídica propia: el fideicomitente (settlor) es quien aporta bienes o derechos a un patrimonio autónomo; el fiduciario (trustee, en México típicamente una institución de crédito o casa de bolsa autorizada) es quien administra ese patrimonio conforme a lo instruido en el contrato; y el fideicomisario o beneficiario es quien recibe los beneficios. El fideicomiso en sí no tiene voluntad propia: quien decide y actúa es el fiduciario.", nota: "Los países deben exigir a los fiduciarios de todo fideicomiso expreso regido bajo sus leyes que obtengan y conserven información adecuada, precisa y actualizada sobre el beneficiario final del fideicomiso. Se exhorta a asegurar que otras autoridades, personas y entidades relevantes conserven información sobre los fideicomisos con los que tengan relación, y a prestar rápida y eficaz cooperación internacional sobre esta información, incluyendo la del beneficiario final. Deben existir responsabilidades y sanciones para el incumplimiento por parte de los fiduciarios.", mexico: "Los mismos Artículos 32-B Ter, Quáter y Quinquies del Código Fiscal de la Federación (CFF) aplican también a fideicomisos y otras figuras jurídicas: la obligación de identificar al beneficiario controlador recae sobre la fiduciaria, el fideicomitente y el fideicomisario. Adicionalmente: Disposiciones de Carácter General (DCG), Capítulo II (Identificación de Cliente) y Capítulo III (Conocimiento de Cliente), aplicables a las instituciones autorizadas para actuar como fiduciarias en México." },
+  26: { tipo: "Key", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben asegurar que las instituciones financieras estén sujetas a una regulación y supervisión adecuadas y que implementen eficazmente las Recomendaciones del GAFI. Que se aplique la misma supervisión consolidad de regulación prudencial y de LD , tener registros de transmisores y CC, para asignar recursos se debe de basar en un EBR.", nota: "Se debe de aplicar un enfoque basado en riesgos para la supervisión que se refiere a: a ) el proceso general mediante el cual un supervisor, según su comprensión de los riesgos, asigna sus recursos a la supervisión ALA/CFT; y (b) el proceso específico de supervisión de las instituciones en el que se aplica un enfoque basado en riesgo ALA/CFT. Los países deben suministrar a sus autoridades competentes responsables de la supervisión, recursos financieros, humanos y técnicos adecuados. Estas autoridades competentes deben contar con suficiente independencia y autonomía operativa para asegurar la libertad frente a una influencia o interferencia indebida.", mexico: "Facultades de la Comisión Nacional Bancaria y de Valores (CNBV, supervisa bancos y casas de bolsa), el Servicio de Administración Tributaria (SAT, supervisa APNFD) y la Unidad de Inteligencia Financiera (UIF) — conforme a la Ley de Instituciones de Crédito (LIC), que prohíbe expresamente la operación de bancos sin autorización (bancos pantalla) y exige que la CNBV verifique la idoneidad de accionistas y consejeros." },
+  27: { tipo: "Importante", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los supervisores deben contar con facultades adecuadas para supervisar o monitorear a las instituciones financieras y asegurar su cumplimiento con los requisitos ALA/CFT, incluyendo autorización para realizar inspecciones. Deben poder exigir la presentación de información relevante para el monitoreo de dicho cumplimiento, e imponer sanciones —de acuerdo con la Recomendación 35— por incumplimiento. Los supervisores deben tener la facultad de imponer una gama de sanciones disciplinarias y financieras, y potestad para retirar, restringir o suspender la licencia de la institución financiera, cuando corresponda.", nota: "NA", mexico: "La Ley de Instituciones de Crédito (LIC) y las demás leyes financieras sectoriales (Ley del Mercado de Valores, Ley General de Organizaciones y Actividades Auxiliares del Crédito, etc.) otorgan a la Comisión Nacional Bancaria y de Valores (CNBV) las facultades de inspección, de requerimiento de información, y de imposición de sanciones y revocación de licencias a las instituciones que supervisa." },
+  28: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Las APNFD deben estar sujetas a regulación y supervisión: a) los casinos requieren un régimen amplio que asegure la implementación eficaz de medidas ALA/CFT; como mínimo, deben tener licencia, impedir que criminales o sus cómplices sean dueños, beneficiarios finales, directivos u operadores de un casino, y estar supervisados eficazmente. b) Las demás APNFD deben estar sujetas a sistemas eficaces de monitoreo y cumplimiento según su riesgo, ejecutados por un supervisor o por un Organismo Autorregulador (OAR) — un colegio, cámara o asociación profesional (por ejemplo, de notarios o contadores) facultado para asegurar que sus miembros cumplan sus obligaciones ALA/CFT—; el supervisor o el OAR deben también impedir que criminales controlen o dirijan a sus miembros, y contar con sanciones efectivas conforme a la Recomendación 35.", nota: "El enfoque basado en riesgo en materia de supervisión se refiere a: (a) el proceso general mediante el cual un supervisor u OAR, según su comprensión de los riesgos, asigna sus recursos a la supervisión ALA/CFT; y (b) el proceso específico de supervisión o monitoreo de las APNFD que aplica dicho enfoque. Las autoridades deben determinar la intensidad y frecuencia de la supervisión y monitoreo, y tener capacidad de sancionar, manteniendo altos estándares profesionales e integridad en su personal.", mexico: "Capítulo III de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita): otorga facultades de supervisión sobre las APNFD al Servicio de Administración Tributaria (SAT), con apoyo de la Unidad de Inteligencia Financiera (UIF) y, en su caso, de la Fiscalía General de la República (FGR)." },
+  29: { tipo: "Key", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben establecer una Unidad de Inteligencia Financiera (UIF) que sirva como centro nacional para la recepción y el análisis de: a) Reportes de Operaciones Sospechosas (ROS); y b) otra información relevante para el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo, y para comunicar los resultados de ese análisis. La UIF debe poder obtener información adicional de los sujetos obligados, y debe tener acceso oportuno a información financiera, administrativa y del orden público para desempeñar sus funciones.", nota: "Sus funciones centrales son: a) Recepción de los ROS y de otra información exigida por ley (reportes de operaciones en efectivo, transferencias electrónicas u otras declaraciones basadas en umbral). b) Análisis operativo (para rastrear objetivos específicos y sus vínculos con el delito) y estratégico (para identificar tendencias y patrones), apoyado en herramientas analíticas que no sustituyen el juicio humano. c) Comunicación de la información y de los resultados del análisis a las autoridades competentes, de forma espontánea o en respuesta a una solicitud. La UIF debe tener acceso a la gama más amplia posible de información financiera, administrativa y del orden público; debe ser operativa e independientemente autónoma, libre de influencia política o gubernamental indebida; debe proteger la seguridad y confidencialidad de la información; y debe solicitar su membresía al Grupo Egmont, tomando en cuenta sus Principios para el Intercambio de Información entre UIF.", mexico: "Unidad de Inteligencia Financiera (UIF), adscrita a la Secretaría de Hacienda y Crédito Público (SHCP), integrante del Grupo Egmont. Su facultad de obtener información adicional de los sujetos obligados sigue, entre otras, las Recomendaciones 10, 11 y 22." },
+  30: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben asegurar que las autoridades del orden público designadas tengan responsabilidad de investigar el lavado de activos y el financiamiento del terrorismo. Al menos en los casos que produzcan un gran volumen de activos, deben desarrollar una investigación financiera de manera proactiva y en paralelo a la persecución penal —incluyendo casos donde el delito determinante ocurrió en otra jurisdicción—, identificar y embargar con rapidez bienes delictivos y de valor equivalente, usar grupos multidisciplinarios especializados cuando sea necesario, y realizar investigaciones cooperativas con autoridades de otros países.", nota: "Deben existir autoridades del orden público designadas responsables de investigar apropiadamente el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo mediante una investigación financiera. Los países deben designar también autoridades competentes para identificar, rastrear e iniciar el congelamiento y embargo de bienes sujetos —o que pudieran estarlo— a decomiso, considerar medidas legislativas al respecto, y pueden designar autoridades anticorrupción especializadas.", mexico: "Facultades de la FGR (Fiscalía General de la República). Dentro de ella, la UEIORPIFAM (Unidad Especializada en Investigación de Operaciones con Recursos de Procedencia Ilícita y de Falsificación o Alteración de Moneda) investiga el delito de lavado de dinero, y la UEAF (Unidad Especializada en Análisis Financiero, prevista en el Artículo 7 de la LFPIORPI) realiza los análisis financieros y patrimoniales que apoyan las investigaciones." },
+  31: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Las autoridades competentes deben ser capaces de obtener acceso a todos los documentos e información necesarios para investigar el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo, así como para los procesos judiciales y acciones relacionadas —incluyendo exigir registros a instituciones financieras y APNFD, buscar personas y lugares, tomar declaraciones de testigos, y embargar evidencia—. Deben poder utilizar una amplia gama de técnicas investigativas: operaciones encubiertas, intercepción de comunicaciones, acceso a sistemas computarizados y entregas controladas. Los países deben garantizar acceso oportuno a información sobre beneficiario final, autoridades tributarias, registros de activos (terrenos, vehículos, acciones) y registros de ciudadanía o residencia, con mecanismos para identificar cuentas y activos sin notificación previa al propietario, y poder solicitar a la UIF toda la información relevante en su poder.", nota: "NA", mexico: "Facultades de la Fiscalía General de la República (FGR); dentro de ella, la Unidad Especializada en Investigación de Operaciones con Recursos de Procedencia Ilícita y de Falsificación o Alteración de Moneda (UEIORPIFAM) y la Unidad Especializada en Análisis Financiero (UEAF)." },
+  32: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben contar con medidas para detectar el transporte físico transfronterizo de moneda e instrumentos negociables al portador, mediante un sistema de declaración y/o revelación aplicable a montos iguales o mayores a USD/EUR 15,000. Las autoridades competentes deben poder detener o restringir el efectivo o los instrumentos sobre los que se sospeche relación con LA/FT, o que sean declarados o revelados falsamente, y debe haber sanciones eficaces, proporcionales y disuasivas para quienes hagan una declaración falsa; cuando el efectivo esté relacionado con LA/FT o delitos determinantes, los países deben poder decomisarlo, de acuerdo con la Recomendación 4.", nota: "El objetivo es asegurar que los países cuenten con medidas para: (a) detectar el transporte transfronterizo de moneda e instrumentos negociables al portador; (b) detener moneda o instrumentos sospechosos de relación con LA/FT; (c) detener los que sean declarados o revelados falsamente; (d) sancionar la declaración o revelación falsa; y (e) posibilitar su decomiso. Los países pueden optar por un sistema de declaración (escrita para todos los viajeros, escrita solo por encima de un umbral, u oral mediante «canal rojo/verde») o por un sistema de revelación (a solicitud de la autoridad), y deben asegurar coordinación entre Aduana, Migración y la UIF.", mexico: "LFPIORPI, Artículo 17, Fracción X: regula el traslado o custodia de valores (empresas de transporte de fondos y valores) como actividad vulnerable, con un umbral de aviso de 3,210 UMA — el análogo doméstico más cercano a esta Recomendación; el reporte aduanero de entrada o salida de divisas del país se rige, además, por la Ley Aduanera y las reglas del SAT." },
+  33: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben mantener estadísticas amplias sobre la eficacia y eficiencia de sus sistemas ALA/CFT, incluyendo: ROS recibidos y divulgados; investigaciones, procesos y condenas por lavado de activos y financiamiento del terrorismo; bienes congelados, incautados y decomisados; y asistencia legal mutua u otras solicitudes internacionales de cooperación.", nota: "NA", mexico: "Las Disposiciones de Carácter General (DCG) exigen a las instituciones financieras conservar estadísticas de sus reportes; la Unidad de Inteligencia Financiera (UIF) integra y publica trimestralmente estadísticas nacionales agregadas sobre Reportes de Operación Sospechosa (ROS), operaciones relevantes, y demás reportes recibidos del sistema financiero y de las APNFD." },
+  34: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Las autoridades competentes, los supervisores y los Organismos Autorreguladores (OAR —colegios o asociaciones profesionales facultados para vigilar el cumplimiento de sus propios miembros—) deben establecer directrices y ofrecer retroalimentación que ayude a las instituciones financieras y a las APNFD a aplicar las medidas nacionales ALA/CFT, en particular en la detección y el reporte de operaciones sospechosas.", nota: "NA", mexico: "Guías de la Comisión Nacional Bancaria y de Valores (CNBV); facultades de la CNBV en materia de capacitación a las instituciones que supervisa." },
+  35: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben asegurar que exista una gama de sanciones eficaces, proporcionales y disuasivas —penales, civiles o administrativas— disponibles para las personas naturales o jurídicas cubiertas en las Recomendaciones 6 y 8 a la 23 que incumplan los requisitos ALA/CFT. Las sanciones deben ser aplicables no solo a las instituciones financieras y APNFD, sino también a sus directores y alta gerencia.", nota: "NA", mexico: "Artículo 115 de la Ley de Instituciones de Crédito; sanciones penales de respaldo en los Artículos 400 Bis y 139 Quáter del Código Penal Federal" },
+  36: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben tomar medidas inmediatas para ser parte de, e implementar a plenitud: la Convención de Viena (1988), la Convención de Palermo (2000), la Convención de las Naciones Unidas contra la Corrupción (2003), y el Convenio Internacional para la Represión de la Financiación del Terrorismo (1999). Cuando corresponda, se exhorta también a ratificar otras convenciones relevantes: la Convención del Consejo de Europa sobre el Cibercrimen (2001), la Convención Interamericana contra el Terrorismo (2002), y el Convenio del Consejo de Europa sobre Blanqueo, Detección, Embargo y Decomiso de los Productos de un Delito y sobre el Financiamiento del Terrorismo (2005).", nota: "A qué se refiere cada convención: Viena (1988) — tráfico ilícito de estupefacientes y sustancias psicotrópicas; primer tratado en exigir tipificar el lavado de activos. Palermo (2000) — delincuencia organizada transnacional; amplía esa obligación a los delitos del crimen organizado en general. Convención de la ONU contra la Corrupción (2003) — soborno, malversación y otros actos de corrupción, e instrumentos para la recuperación de activos. Convenio Internacional para la Represión de la Financiación del Terrorismo (1999) — obliga a tipificar el financiamiento del terrorismo como delito autónomo.", mexico: "México es parte de las cuatro convenciones centrales; a nivel interno, la implementación se refleja en el Código Penal Federal (Art. 400 Bis, 139 Quáter) y en la LFPIORPI." },
+  37: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben prestar, rápida, constructiva y eficazmente, el mayor rango posible de asistencia legal mutua en investigaciones, procesos judiciales y procedimientos relacionados con el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo, contando con base jurídica adecuada y, cuando corresponda, tratados o mecanismos para mejorar la cooperación. En particular: no deben negarse a prestar asistencia solo por motivos fiscales o de secreto bancario/profesional; deben contar con procesos claros y una autoridad central para tramitar solicitudes; deben mantener la confidencialidad de las peticiones; y deben prestar asistencia aun en ausencia de doble incriminación cuando no se requieran medidas coercitivas.", nota: "NA", mexico: "Tratados de Asistencia Jurídica Mutua bilaterales y multilaterales (por ejemplo, la Convención Interamericana sobre Asistencia Mutua en Materia Penal), coordinados por la Fiscalía General de la República y, por la vía diplomática, por la Secretaría de Relaciones Exteriores." },
+  38: { tipo: "Otras", grupo: "Cooperación Internacional", puntos: "Los países deben tener medidas legislativas para actuar con rapidez ante solicitudes extranjeras de identificación, rastreo, congelamiento, incautación y decomiso de bienes delictivos y de valor equivalente, incluyendo reconocer y ejecutar órdenes extranjeras de congelamiento o decomiso. Deben poder administrar los bienes en todas las etapas del proceso de recuperación de activos, y compartir o devolver los bienes decomisados, contando con la gama más amplia posible de tratados o mecanismos para mejorar esta cooperación.", nota: "Los países deben poder actuar sobre la base de procedimientos de decomiso no basado en condena y de medidas provisionales; al reconocer órdenes extranjeras, pueden confiar en las determinaciones de hecho de la petición, sin condicionar el cumplimiento a una investigación interna propia; deben poder compartir bienes decomisados con otros países, en particular cuando el decomiso resulta de acciones coordinadas, y acordar mecanismos para compartir costos; y deben mantener comunicación informal con otros países sobre el estatus de las solicitudes.", mexico: "Tratados de Asistencia Jurídica Mutua (misma red bilateral/multilateral que la R.37) — no se trata de un tratado único, sino de la red de convenios vigentes de México, coordinados por la FGR." },
+  39: { tipo: "Otras", grupo: "Cooperación Internacional", puntos: "Los países deben ejecutar, constructiva y eficazmente, las solicitudes de extradición relacionadas con el lavado de activos y el financiamiento del terrorismo, sin demora indebida, y asegurar que no sirvan de refugio a terroristas. En particular: el LA y el FT deben ser delitos extraditables; debe haber procesos claros y eficientes para tramitar solicitudes; no deben imponerse condiciones restrictivas poco razonables; y debe existir un marco jurídico adecuado. Cada país debe extraditar a sus propios nacionales o, si no lo hace únicamente por motivo de nacionalidad, debe someter el caso a sus propias autoridades para procesarlo como cualquier otro delito grave conforme a su ley interna.", nota: "NA", mexico: "Secretaría de Relaciones Exteriores (autoridad central para trámites de extradición); Código Penal Federal" },
+  40: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben asegurar que sus autoridades competentes puedan, rápida, constructiva y eficazmente, prestar el mayor rango de cooperación internacional relacionada con el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo, de forma espontánea o a solicitud, contando con base legal para ello. Cuando se requieran acuerdos bilaterales o multilaterales, como un Memorando de Entendimiento (MOU) —un acuerdo formal entre autoridades que fija los términos y el alcance de su cooperación e intercambio de información, sin constituir un tratado internacional vinculante—, éstos deben negociarse y firmarse oportunamente con la más amplia gama de contrapartes extranjeras.", nota: "Al emitir solicitudes de cooperación, las autoridades competentes deben ofrecer información completa de los hechos y, cuando corresponda, información legal —incluyendo la urgencia del caso— para una ejecución oportuna y eficaz. No deben imponerse condiciones poco razonables o indebidamente restrictivas al intercambio de información, y ésta debe usarse solo para el propósito por el que fue solicitada. Las autoridades competentes deben poder realizar investigaciones preliminares en nombre de una contraparte extranjera, e intercambiar información entre UIF, entre supervisores financieros, y entre autoridades del orden público.", mexico: "Disposiciones de Carácter General (DCG) en materia de intercambio de información; facultades de la Unidad de Inteligencia Financiera (UIF) para la cooperación internacional espontánea o a solicitud." },
+};
+
+const categories = [
+  {key:"A", range:[1,2],   color:"var(--A)", hex:"#57c7d4", name:"Políticas y Coordinación ALA/CFT"},
+  {key:"B", range:[3,4],   color:"var(--B)", hex:"#e2585a", name:"Lavado de Activos y Decomiso"},
+  {key:"C", range:[5,8],   color:"var(--C)", hex:"#f0a24a", name:"Financiamiento del Terrorismo y de la Proliferación"},
+  {key:"D", range:[9,23],  color:"var(--D)", hex:"#5b8ef2", name:"Medidas Preventivas"},
+  {key:"E", range:[24,25], color:"var(--E)", hex:"#b47ee0", name:"Transparencia y Beneficiario Final de Personas Jurídicas y Estructuras Jurídicas"},
+  {key:"F", range:[26,35], color:"var(--F)", hex:"#4fbf82", name:"Facultades y Responsabilidades de Autoridades Competentes y Otras Medidas Institucionales"},
+  {key:"G", range:[36,40], color:"var(--G)", hex:"#e3c548", name:"Cooperación Internacional"}
+];
+
+function catOf(n){
+  return categories.find(c => n >= c.range[0] && n <= c.range[1]);
+}
+
+/* ---------- Relaciones explícitas citadas en el documento ----------
+   type "directa": la Recomendación (o su Nota Interpretativa) cita expresamente
+   el número de la otra Recomendación.
+   type "rango":   la cita es a un rango ("Recomendaciones 10 a 21", "8 a la 23", etc.)
+------------------------------------------------------------------------ */
+const directEdges = [
+  [1,2,  "El alcance de las obligaciones de riesgo de financiamiento de la proliferación (FP) bajo la R1 se limita únicamente a las Recomendaciones 1, 2, 7 y 15."],
+  [1,7,  "El «riesgo de financiamiento de la proliferación» de la R1 remite estricta y exclusivamente a las sanciones financieras dirigidas de la R7."],
+  [1,15, "El alcance de FP de la R1 se limita a las Recomendaciones 1, 2, 7 y 15 únicamente."],
+  [1,11, "Los requisitos de conservación de información de la R11 se aplican con independencia del nivel de riesgo determinado bajo el enfoque basado en riesgo de la R1."],
+  [8,1,  "Las medidas para las OSFL de la R8 se aplican sin perjuicio del enfoque basado en riesgo de la R1."],
+  [2,4,  "El decomiso y las medidas provisionales de la R4 exigen contar con los mecanismos de cooperación y coordinación nacional de la R2."],
+  [3,4,  "El decomiso ampliado y el decomiso no basado en condena de la R4 deben ser consistentes con la tipificación de delitos graves de la R3."],
+  [3,20, "El reporte de operaciones sospechosas de la R20 exige que la actividad reportada constituya un delito determinante conforme a la R3."],
+  [4,6,  "Las obligaciones de la R6 (sanciones financieras dirigidas) no sustituyen el decomiso y las medidas provisionales que exige la R4."],
+  [4,32, "El decomiso de moneda o instrumentos negociables detectados en el transporte transfronterizo (R32) debe realizarse de acuerdo con la R4."],
+  [4,38, "La asistencia legal mutua para congelar y decomisar bienes (R38) remite a las medidas establecidas en la R4."],
+  [10,11,"La información de debida diligencia del cliente obtenida bajo la R10 debe conservarse conforme al plazo y forma que exige la R11."],
+  [10,12,"Las medidas adicionales para PEP de la R12 se aplican junto con la debida diligencia del cliente de la R10."],
+  [10,13,"La banca corresponsal (R13) exige, además de la DDC normal de la R10, medidas reforzadas propias."],
+  [10,14,"Los servicios de transferencia de dinero o valores (R14) están sujetos a las medidas de la R10."],
+  [10,15,"Las nuevas tecnologías y activos virtuales (R15) requieren aplicar los elementos de DDC de la R10."],
+  [10,16,"La transparencia de pagos (R16) exige conservar y transmitir información sobre el cliente conforme a la R10."],
+  [10,17,"La dependencia en terceros (R17) se basa en delegar los elementos (a)-(c) de la DDC definidos en la R10."],
+  [10,19,"Las medidas de debida diligencia intensificada para países de mayor riesgo (R19) se apoyan en los factores de riesgo del cliente definidos en la Nota de la R10."],
+  [10,20,"El reporte de operaciones sospechosas (R20) se presenta a la UIF conforme a lo señalado en la Nota Interpretativa de la R10."],
+  [10,21,"La prohibición de revelación o «tipping-off» de la R21 protege la confidencialidad de la información obtenida bajo la R10."],
+  [10,22,"Las APNFD deben aplicar los requisitos de debida diligencia del cliente de la R10 (R22)."],
+  [10,24,"El acceso a la información sobre beneficiario final (R24) facilita el cumplimiento de los requisitos de DDC de la R10."],
+  [10,25,"El acceso a la información sobre beneficiario final de estructuras jurídicas (R25) facilita el cumplimiento de la R10."],
+  [10,29,"El acceso de la UIF (R29) a la información sigue, entre otras, las Recomendaciones pertinentes 10, 11 y 22."],
+  [11,16,"La información sobre el ordenante y el beneficiario en los pagos (R16) debe conservarse conforme a la R11."],
+  [14,16,"La Nota de la R16 exige a los proveedores de STDV (R14) —directamente o a través de sus agentes— cumplir con todos los requisitos de la R16 en cada país donde operan."],
+  [11,17,"La dependencia en terceros (R17) exige que el tercero cumpla con los requisitos de conservación de registros de la R11."],
+  [11,22,"Las APNFD deben aplicar los requisitos de mantenimiento de registros de la R11 (R22)."],
+  [11,29,"El acceso de la UIF (R29) a la información sigue, entre otras, las Recomendaciones 10, 11 y 22."],
+  [12,17,"El programa de grupo bajo la R17 exige cumplir la DDC y el mantenimiento de registros de acuerdo con las Recomendaciones 10, 11 y 12."],
+  [12,22,"Las APNFD deben aplicar las medidas sobre personas expuestas políticamente de la R12 (R22)."],
+  [15,22,"Las APNFD deben aplicar las medidas sobre nuevas tecnologías de la R15 (R22)."],
+  [15,35,"Los proveedores de servicios de activos virtuales que incumplan deben quedar sujetos a sanciones conforme a la R35."],
+  [16,18,"La información sobre el ordenante y el beneficiario (R16) puede estar disponible por otros medios conforme al intercambio de información dentro del grupo que exige la R18."],
+  [17,18,"La dependencia dentro de un grupo financiero (R17) se relaciona con los programas de controles internos y el intercambio de información que exige la R18."],
+  [17,22,"Las APNFD deben poder aplicar la dependencia en terceros de la R17 (R22)."],
+  [18,21,"La prohibición de revelación de la R21 no busca inhibir el intercambio de información dentro del grupo que exige la R18."],
+  [20,29,"La UIF (R29) recibe los reportes de operaciones sospechosas que exige presentar la R20."],
+  [22,23,"Las medidas adicionales para APNFD de la R23 remiten a las actividades descritas en los párrafos (d) y (e) de la R22."],
+  [22,24,"El acceso a la información de beneficiario final (R24) facilita el cumplimiento de la R22 por las APNFD."],
+  [22,25,"El acceso a la información de beneficiario final de estructuras jurídicas (R25) facilita el cumplimiento de la R22 por las APNFD."],
+  [22,29,"El acceso de la UIF (R29) a la información sigue, entre otras, las Recomendaciones 10, 11 y 22."],
+  [23,29,"La UIF (R29) recibe también los reportes de operaciones sospechosas que exige presentar la R23 (APNFD)."],
+  [24,37,"La cooperación internacional sobre beneficiario final de personas jurídicas (R24) se basa en las Recomendaciones 37 y 40."],
+  [24,40,"Ídem: la R24 remite a la cooperación internacional de las Recomendaciones 37 y 40."],
+  [25,37,"La cooperación internacional sobre beneficiario final de estructuras jurídicas (R25) se basa en las Recomendaciones 37 y 40."],
+  [25,40,"Ídem: la R25 remite a la cooperación internacional de las Recomendaciones 37 y 40."],
+  [27,35,"Los supervisores deben poder imponer sanciones conforme a la R35 por incumplimiento (R27)."],
+  [28,35,"El supervisor u OAR de las APNFD debe contar con sanciones conforme a la R35 (R28)."],
+  [29,31,"Las autoridades competentes que ejercen las facultades de la R31 pueden solicitar toda la información en poder de la UIF (R29)."],
+  [31,37,"La asistencia legal mutua (R37) debe permitir usar las facultades y técnicas investigativas que exige la R31."],
+  [29,40,"La cooperación internacional (R40) hace referencia particular a la Recomendación 29 (UIF)."],
+  [6,35,"Las sanciones (R35) deben estar disponibles para las personas cubiertas en la R6."]
+];
+
+const rangeEdges = [
+  [1,26,"Nota de la R1: la supervisión del riesgo remite a las Notas Interpretativas de las Recomendaciones 26 a la 28."],
+  [1,27,"Ídem, rango 26 a 28."],
+  [1,28,"Ídem, rango 26 a 28."],
+  [15,10,"La R15 dispone que los requisitos de medidas preventivas (Recomendaciones 10 a 21) se aplican a los proveedores de servicios de activos virtuales."],
+  [15,11,"Ídem, rango 10 a 21."],[15,12,"Ídem, rango 10 a 21."],[15,13,"Ídem, rango 10 a 21."],
+  [15,14,"Ídem, rango 10 a 21."],[15,16,"Ídem, rango 10 a 21."],[15,17,"Ídem, rango 10 a 21."],
+  [15,18,"Ídem, rango 10 a 21."],[15,19,"Ídem, rango 10 a 21."],[15,20,"Ídem, rango 10 a 21."],
+  [15,21,"Ídem, rango 10 a 21."],
+  [15,37,"La cooperación entre supervisores de activos virtuales (R15) se basa en las Recomendaciones 37 a 40."],
+  [15,38,"Ídem, rango 37 a 40."],[15,39,"Ídem, rango 37 a 40."],[15,40,"Ídem, rango 37 a 40."],
+  [23,18,"La R23 (APNFD: otras medidas) aplica a las APNFD los requisitos de las Recomendaciones 18 a 21."],
+  [23,19,"Ídem, rango 18 a 21."],[23,20,"Ídem, rango 18 a 21."],[23,21,"Ídem, rango 18 a 21."],
+  [35,8,"La R35 exige sanciones disponibles para las personas cubiertas en las Recomendaciones 6 y 8 a la 23."],
+  [35,9,"Ídem, rango 8 a 23."],[35,10,"Ídem, rango 8 a 23."],[35,11,"Ídem, rango 8 a 23."],
+  [35,12,"Ídem, rango 8 a 23."],[35,13,"Ídem, rango 8 a 23."],[35,14,"Ídem, rango 8 a 23."],
+  [35,16,"Ídem, rango 8 a 23."],[35,17,"Ídem, rango 8 a 23."],[35,18,"Ídem, rango 8 a 23."],
+  [35,19,"Ídem, rango 8 a 23."],[35,20,"Ídem, rango 8 a 23."],[35,21,"Ídem, rango 8 a 23."],
+  [35,22,"Ídem, rango 8 a 23."],[35,23,"Ídem, rango 8 a 23."],
+  [32,36,"La R32 (transporte de efectivo) exige facilitar la cooperación internacional de acuerdo con las Recomendaciones 36 a 40."],
+  [32,37,"Ídem, rango 36 a 40."],[32,38,"Ídem, rango 36 a 40."],[32,39,"Ídem, rango 36 a 40."],[32,40,"Ídem, rango 36 a 40."]
+];
+
+/* ---------- Layout circular agrupado por categoría ---------- */
+const W = 1040, H = 1040, CX = W/2, CY = H/2;
+const R_NODE = 330, R_LABEL = 352, R_ARC = 372, R_DOT = 6.6;
+const GAP_DEG = 3.4; // separación entre categorías
+
+let order = [];
+categories.forEach(c=>{
+  for(let n=c.range[0]; n<=c.range[1]; n++) order.push(n);
+});
+const totalGaps = categories.length * GAP_DEG;
+const usable = 360 - totalGaps;
+const totalNodes = 40;
+
+const angleOf = {};
+let cursor = -90; // arriba
+categories.forEach(c=>{
+  const span = usable * ( (c.range[1]-c.range[0]+1) / totalNodes );
+  const nInCat = c.range[1]-c.range[0]+1;
+  const step = span / nInCat;
+  for(let i=0;i<nInCat;i++){
+    const n = c.range[0]+i;
+    angleOf[n] = cursor + step*(i+0.5);
+  }
+  c._start = cursor;
+  c._end = cursor + span;
+  cursor += span + GAP_DEG;
+});
+
+function pt(n, r){
+  const a = angleOf[n] * Math.PI/180;
+  return [CX + r*Math.cos(a), CY + r*Math.sin(a)];
+}
+
+/* ---------- Render ---------- */
+const svg = document.getElementById("chart");
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs){
+  const e = document.createElementNS(NS, tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+const gArcs = el("g",{}); svg.appendChild(gArcs);
+const gEdges = el("g",{}); svg.appendChild(gEdges);
+const gNodes = el("g",{}); svg.appendChild(gNodes);
+
+// category arcs + labels
+categories.forEach(c=>{
+  const startA = c._start*Math.PI/180, endA = c._end*Math.PI/180;
+  const large = (c._end-c._start) > 180 ? 1 : 0;
+  const [x1,y1] = [CX+R_ARC*Math.cos(startA), CY+R_ARC*Math.sin(startA)];
+  const [x2,y2] = [CX+R_ARC*Math.cos(endA), CY+R_ARC*Math.sin(endA)];
+  const path = el("path",{
+    d:`M ${x1} ${y1} A ${R_ARC} ${R_ARC} 0 ${large} 1 ${x2} ${y2}`,
+    class:"cat-arc", stroke:c.hex
+  });
+  gArcs.appendChild(path);
+
+  const midA = ((c._start+c._end)/2) * Math.PI/180;
+  const lr = R_ARC + 20;
+  const lx = CX + lr*Math.cos(midA), ly = CY + lr*Math.sin(midA);
+  const label = el("text",{
+    x:lx, y:ly, class:"cat-label", "text-anchor":"middle",
+    "dominant-baseline":"middle"
+  });
+  label.textContent = c.key;
+  gArcs.appendChild(label);
+});
+
+// helper to build a smooth curve between two nodes through reduced radius
+function edgePath(a,b){
+  const [ax,ay] = pt(a, R_NODE);
+  const [bx,by] = pt(b, R_NODE);
+  // control point pulled toward center, amount depends on angular distance
+  let da = angleOf[a], db = angleOf[b];
+  let diff = Math.abs(da-db); if(diff>180) diff = 360-diff;
+  const pull = 0.15 + 0.55*(1 - diff/180); // closer nodes -> straighter through middle-ish
+  const mx = CX + (ax-CX + bx-CX)/2 * pull;
+  const my = CY + (ay-CY + by-CY)/2 * pull;
+  return `M ${ax} ${ay} Q ${mx} ${my} ${bx} ${by}`;
+}
+
+const edgeEls = [];
+function addEdges(list, type){
+  list.forEach(([a,b,label])=>{
+    const c = catOf(a);
+    const path = el("path",{
+      d: edgePath(a,b),
+      class: "edge" + (type==="rango" ? " range":""),
+      stroke: c.hex,
+      "stroke-width": type==="rango" ? 1 : 1.6,
+      "data-a": a, "data-b": b, "data-type": type
+    });
+    path.dataset.label = label;
+    gEdges.appendChild(path);
+    edgeEls.push(path);
+  });
+}
+addEdges(directEdges, "directa");
+addEdges(rangeEdges, "rango");
+
+// build adjacency for the side panel
+const adjacency = {};
+for(let i=1;i<=40;i++) adjacency[i] = [];
+[...directEdges.map(e=>[...e,"directa"]), ...rangeEdges.map(e=>[...e,"rango"])].forEach(([a,b,label,type])=>{
+  adjacency[a].push({to:b, label, type, dir:"→"});
+  adjacency[b].push({to:a, label, type, dir:"←"});
+});
+
+// nodes
+let selected = null;
+const nodeEls = {};
+order.forEach(n=>{
+  const c = catOf(n);
+  const [x,y] = pt(n, R_NODE);
+  const g = el("g",{});
+  const dot = el("circle",{cx:x, cy:y, r:R_DOT, fill:c.hex, class:"node-dot"});
+  g.appendChild(dot);
+  const num = el("text",{x:x, y:y+3.6, class:"node-num", "text-anchor":"middle"});
+  num.textContent = n;
+  g.appendChild(num);
+
+  // outward label
+  const [lx,ly] = pt(n, R_LABEL);
+  const ang = angleOf[n];
+  const flip = ang > 90 && ang < 270;
+  const label = el("text",{
+    x:lx, y:ly, class:"node-label",
+    "text-anchor": flip ? "end":"start",
+    transform: `rotate(${flip? ang+180 : ang}, ${lx}, ${ly})`
+  });
+  label.textContent = titles[n].length>26 ? titles[n].slice(0,24)+"…" : titles[n];
+  g.appendChild(label);
+
+  g.style.cursor = "pointer";
+  g.addEventListener("mouseenter", ()=>{ if(!selected) focusNode(n); });
+  g.addEventListener("mouseleave", ()=>{ if(!selected) clearFocus(); });
+  g.addEventListener("click", ()=>{
+    selected = (selected===n) ? null : n;
+    if(selected) focusNode(n); else clearFocus();
+  });
+
+  gNodes.appendChild(g);
+  nodeEls[n] = {g, dot};
+});
+
+function showRangesState(){ return document.getElementById("toggleRanges").checked; }
+
+function focusNode(n){
+  const conn = new Set(adjacency[n].map(x=>x.to));
+  conn.add(n);
+  edgeEls.forEach(p=>{
+    const a = +p.dataset.a, b = +p.dataset.b;
+    const involved = (a===n || b===n);
+    p.classList.toggle("hi", involved);
+    p.classList.toggle("dim", !involved);
+  });
+  Object.entries(nodeEls).forEach(([id,{dot}])=>{
+    dot.setAttribute("opacity", conn.has(+id) ? 1 : 0.25);
+  });
+  renderDetail(n);
+}
+function clearFocus(){
+  edgeEls.forEach(p=>{ p.classList.remove("hi"); p.classList.remove("dim"); });
+  Object.values(nodeEls).forEach(({dot})=> dot.setAttribute("opacity",1));
+  if(!selected) renderDetailEmpty();
+}
+
+document.getElementById("toggleRanges").addEventListener("change",()=>{
+  const show = showRangesState();
+  edgeEls.forEach(p=>{
+    if(p.dataset.type==="rango") p.style.display = show ? "" : "none";
+  });
+  if(selected) focusNode(selected);
+});
+// hide ranges by default
+edgeEls.forEach(p=>{ if(p.dataset.type==="rango") p.style.display="none"; });
+
+function renderDetailEmpty(){
+  document.getElementById("detail").innerHTML =
+    `<div class="placeholder">Selecciona un número en el gráfico para ver su título completo y con qué otras Recomendaciones se relaciona según el documento.</div>`;
+}
+
+const verifNotes = {
+  6: "Esta Recomendación forma parte de las «big six» del GAFI: R3, R5, R6, R10, R11 y R20 — las seis Recomendaciones consideradas fundamentales dentro del sistema de evaluación."
+};
+
+function renderDetail(n){
+  const c = catOf(n);
+  const rels = adjacency[n].slice().sort((a,b)=>a.to-b.to);
+  const show = showRangesState();
+  const visibleRels = rels.filter(r => show || r.type==="directa");
+  const mx = mxData[n];
+
+  let html = `<div class="rec-head">
+    <div class="rec-bignum" style="color:${c.hex}">${n}</div>
+    <div class="rec-head-text">
+      <div class="rec-cat">Recomendación · Categoría ${c.key}</div>
+      <div class="rec-title">${titles[n]}</div>
+    </div>
+  </div>`;
+
+  if(mx){
+    const tipoClass = mx.tipo.toLowerCase().replace(/\s+/g,"");
+    html += `<div class="tipo-row">
+      <span class="tipo-badge ${tipoClass}">${mx.tipo}</span>
+      <span class="tipo-badge">${mx.grupo}</span>
+    </div>`;
+
+    html += `<div class="mx-section">
+      <div class="mx-label">Puntos principales</div>
+      <div class="mx-body">${mx.puntos}</div>
+    </div>`;
+
+    html += `<div class="mx-section">
+      <div class="mx-label">Nota interpretativa (resumen)</div>
+      <div class="mx-body">${mx.nota}</div>
+      ${verifNotes[n] ? `<div class="verif-note">${verifNotes[n]}</div>` : ""}
+    </div>`;
+
+    html += `<div class="mx-section">
+      <div class="mx-label">Aplicación práctica en México</div>
+      <div class="mx-mexico">${mx.mexico}</div>
+    </div>`;
+  }
+
+  html += `<div class="rel-heading">Se relaciona con</div>`;
+  if(visibleRels.length===0){
+    html += `<div class="placeholder">No se identificaron referencias cruzadas explícitas a otras Recomendaciones en el texto principal o en la Nota Interpretativa de esta Recomendación${show? "" : " (activa las referencias de rango para ver más)"}.</div>`;
+  } else {
+    html += `<ul class="rel-list">`;
+    visibleRels.forEach(r=>{
+      const tc = catOf(r.to);
+      html += `<li class="rel-item">
+        <span class="rel-tag" style="background:${tc.hex}">R${r.to}</span>
+        <span class="rel-target">${titles[r.to]}</span><br>
+        <span style="color:var(--ink-dim)">${r.label}</span>
+      </li>`;
+    });
+    html += `</ul>`;
+  }
+  document.getElementById("detail").innerHTML = html;
+}
+renderDetailEmpty();
+
+/* ---------- Legend ---------- */
+const legend = document.getElementById("legend");
+categories.forEach(c=>{
+  const li = document.createElement("li");
+  li.innerHTML = `<span class="swatch" style="background:${c.hex}"></span>
+    <span><b>${c.key}.</b> ${c.name} <span class="range-note">(R${c.range[0]}${c.range[1]>c.range[0] ? "–"+c.range[1] : ""})</span></span>`;
+  legend.appendChild(li);
+});
+</script>
+</body>
+</html>
