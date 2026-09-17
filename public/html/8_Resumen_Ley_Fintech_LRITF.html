@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ley Fintech (LRITF) — Resumen</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --teal:#0f7d82;
+    --gold:#c99a3b;
+    --purple:#5c4a8a;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:Georgia,serif; line-height:1.6;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px;}
+  header h1{font-family:'Helvetica Neue',Arial,sans-serif; font-size:clamp(24px,4vw,36px); margin:0 0 10px;}
+  header p{font-family:'Helvetica Neue',Arial,sans-serif; color:#c7d2e0; max-width:70ch; margin:0; font-size:15px;}
+  main{max-width:980px; margin:0 auto; padding:40px 5vw 90px;}
+  section{margin-bottom:48px;}
+  h2{font-family:'Helvetica Neue',Arial,sans-serif; font-size:20px; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; margin-bottom:20px; display:flex; align-items:baseline; gap:10px;}
+  h2 span.num{font-style:italic; color:var(--gold); font-size:15px;}
+  p{margin:0 0 14px; font-size:15.5px; text-align:justify;}
+  .lead{font-family:'Helvetica Neue',Arial,sans-serif; font-size:14px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--teal); padding:12px 16px; border-radius:3px; margin-bottom:20px;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+
+  .fig-card{
+    background:#fff; border:1px solid var(--line); border-top:6px solid var(--c);
+    border-radius:6px; padding:20px 22px;
+  }
+  .fig-card h3{font-family:'Helvetica Neue',Arial,sans-serif; color:var(--c); margin:0 0 4px; font-size:17px;}
+  .fig-card .art{font-family:'Helvetica Neue',Arial,sans-serif; font-size:11.5px; color:#8b8570; margin-bottom:12px;}
+  .fig-card ul{margin:0; padding-left:20px; font-size:14px;}
+  .fig-card li{margin-bottom:6px;}
+
+  table{width:100%; border-collapse:collapse; font-size:14.5px; background:#fff;}
+  th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--navy); background:#f0ece0;}
+  .amount{font-family:'Helvetica Neue',Arial,sans-serif; font-weight:700; color:var(--navy);}
+
+  .timeline{
+    display:flex; flex-wrap:wrap; gap:0; align-items:stretch;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  .tstep{
+    flex:1 1 150px; background:#fff; border:1px solid var(--line); border-top:5px solid var(--purple);
+    padding:14px 16px; font-size:13px; position:relative;
+  }
+  .tstep .n{font-weight:700; color:var(--purple); font-size:12px; margin-bottom:4px;}
+
+  .note{font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;}
+  .trap{font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5c2418; background:#fbeae4; border-left:4px solid #b5432b; padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap b{color:#b5432b;}
+
+  footer{text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:#8b8570; padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ley Fintech (LRITF) — Resumen</h1>
+  <p>Ley para Regular las Instituciones de Tecnología Financiera. Publicada el 9 de marzo de 2018, última reforma el 14 de noviembre de 2025. Corresponde a los temas 2.1.11 (Modelos Novedosos) y 2.1.14 (Instituciones de Tecnología Financiera) del temario oficial de la CNBV/Ceneval.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2><span class="num">I.</span> Qué regula y quién la vigila</h2>
+    <p>
+      La LRITF regula los servicios financieros que prestan las Instituciones de Tecnología Financiera (ITF), así como su organización, operación y funcionamiento. Se basa en seis principios: inclusión e innovación financiera, promoción de la competencia, protección al consumidor, preservación de la estabilidad financiera, <b>prevención de operaciones ilícitas</b> y neutralidad tecnológica.
+    </p>
+    <p>
+      La supervisión corresponde a la <b>CNBV</b> y al <b>Banco de México</b>, cada uno en el ámbito de su competencia. Cuando se trata de autorizar a una nueva ITF o un Modelo Novedoso, interviene el <b>Comité Interinstitucional</b>: una instancia colegiada integrada por servidores públicos de la <b>Secretaría de Hacienda, el Banco de México y la CNBV</b>.
+    </p>
+    <div class="trap">
+      <b>No confundas:</b> el Comité Interinstitucional (SHCP + Banxico + CNBV) autoriza la constitución de ITF y Modelos Novedosos. El Comité de Comunicación y Control es una figura interna de cada Entidad, para PLD/FT — son cosas completamente distintas.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">II.</span> Las dos figuras de ITF</h2>
+    <div class="two-col">
+      <div class="fig-card" style="--c:#0f7d82">
+        <h3>Instituciones de Financiamiento Colectivo (ICF)</h3>
+        <div class="art">Art. 15–16 · "Crowdfunding"</div>
+        <p style="text-align:left; font-size:14px;">Ponen en contacto a <b>inversionistas</b> y <b>solicitantes</b> para que entre ellos se otorguen financiamientos, mediante aplicaciones informáticas o plataformas digitales.</p>
+        <ul>
+          <li><b>Deuda:</b> los inversionistas otorgan préstamos o créditos a los solicitantes</li>
+          <li><b>Capital:</b> los inversionistas compran títulos representativos del capital social del solicitante</li>
+          <li><b>Copropiedad o regalías:</b> el inversionista adquiere una parte de un bien, ingreso o utilidad futura</li>
+        </ul>
+      </div>
+      <div class="fig-card" style="--c:#5c4a8a">
+        <h3>Instituciones de Fondos de Pago Electrónico (IFPE)</h3>
+        <div class="art">Art. 22 · "Wallets" / dinero electrónico</div>
+        <p style="text-align:left; font-size:14px;">Prestan servicios de emisión, administración, redención y transmisión de fondos de pago electrónico.</p>
+        <ul>
+          <li>Abren y llevan cuentas de fondos de pago electrónico por cliente</li>
+          <li>Realizan transferencias entre las cuentas de sus propios Clientes</li>
+          <li>Pueden manejar moneda nacional, extranjera o <b>activos virtuales determinados</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">III.</span> Modelos Novedosos — el proceso paso a paso</h2>
+    <p>Una figura para quien quiere ofrecer un servicio financiero con tecnología que no encaja en ninguna categoría regulada existente. Es una autorización temporal, tipo "sandbox regulatorio".</p>
+    <div class="timeline">
+      <div class="tstep"><div class="n">1</div>Persona moral solicita autorización a la Autoridad Financiera competente (según el ámbito de la actividad)</div>
+      <div class="tstep"><div class="n">2</div>Se revisan los criterios y condiciones del Art. 82</div>
+      <div class="tstep"><div class="n">3</div>Se otorga <span class="amount">autorización temporal</span>, máximo <span class="amount">2 años</span></div>
+      <div class="tstep"><div class="n">4</div>Prórroga posible: <span class="amount">+1 año</span> adicional</div>
+      <div class="tstep"><div class="n">5</div>Al vencer, debe obtener autorización, registro o concesión definitivos — o dejar de operar</div>
+    </div>
+    <div class="note"><b>Dato clave:</b> si la actividad la autoriza una Comisión Supervisora (CNBV, CNSF, CONSAR), se requiere <b>previo acuerdo de la Junta de Gobierno</b> respectiva.</div>
+  </section>
+
+  <section>
+    <h2><span class="num">IV.</span> Obligaciones PLD/FT de las ITF (Art. 58)</h2>
+    <p>Las ITF deben cumplir prácticamente el mismo esquema que las demás Entidades Financieras, pero con su propio artículo dedicado:</p>
+    <table>
+      <tr><th>Obligación</th><th>Detalle</th></tr>
+      <tr><td>Medidas y procedimientos</td><td>Prevenir y detectar actos ubicables en los Art. 139 Quáter o 400 Bis del CPF; documentarlos y presentarlos a la CNBV</td></tr>
+      <tr><td>Metodología de evaluación de riesgos</td><td>Diseñada e implementada según los productos, servicios, prácticas o tecnologías propias de la ITF</td></tr>
+      <tr><td>Reportes</td><td>A la Secretaría, por conducto de la CNBV: Relevantes, Internas Preocupantes, Inusuales, transferencias internacionales y operaciones en efectivo en moneda extranjera</td></tr>
+      <tr><td>Conocimiento del cliente</td><td>Considerar antecedentes, condiciones específicas, actividad económica/profesional y zonas geográficas</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">V.</span> Sanciones específicas del Art. 58 (Art. 105 LRITF)</h2>
+    <table>
+      <tr><th>Incumplimiento</th><th>Sanción</th></tr>
+      <tr><td>Operar con Cliente en Lista de Personas Bloqueadas</td><td class="amount">10% a 100% del monto del acto u Operación</td></tr>
+      <tr><td>No reportar una Operación Inusual</td><td class="amount">10% a 100% del monto de la Operación</td></tr>
+      <tr><td>Cualquier otro incumplimiento al Art. 58</td><td class="amount">10,000 a 100,000 veces el valor de la UMA</td></tr>
+      <tr><td>No responder requerimientos de información</td><td class="amount">1 a 15,000 UMA</td></tr>
+    </table>
+    <div class="note">Las sanciones pueden aplicarse tanto a la ITF como a sus consejeros, directivos, empleados o apoderados que hayan intervenido en la irregularidad — igual que en el esquema de la LIC.</div>
+  </section>
+
+</main>
+
+<footer>
+  Basado en el texto vigente de la LRITF (última reforma DOF 14-11-2025) que subiste. Complementa tu documento de "Comparativo por Sector" — ahí verás cómo encaja la ITF frente a los demás tipos de entidad.
+</footer>
+
+</body>
+</html>

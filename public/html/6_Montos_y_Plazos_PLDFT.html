@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Montos y Plazos — PLD/FT</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --navy-2:#1c3a63;
+    --teal:#0f7d82;
+    --gold:#c99a3b;
+    --red:#b5432b;
+    --purple:#5c4a8a;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Georgia','Iowan Old Style',serif;
+    line-height:1.55;
+  }
+  header{
+    background:var(--navy);
+    color:#f3efe4;
+    padding:48px 8vw 36px;
+  }
+  header h1{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    color:#c7d2e0;
+    max-width:60ch;
+    margin:0;
+    font-size:15px;
+  }
+  main{
+    max-width:980px;
+    margin:0 auto;
+    padding:40px 6vw 90px;
+  }
+  section{margin-bottom:56px;}
+  h2{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy);
+    border-bottom:3px solid var(--navy);
+    padding-bottom:10px;
+    margin-bottom:22px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  h2 span.num{
+    font-family:Georgia,serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:16px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:6px solid var(--teal);
+    border-radius:4px;
+    padding:18px 20px;
+  }
+  .card.relevante{border-left-color:var(--teal);}
+  .card.inusual{border-left-color:var(--red);}
+  .card.interna{border-left-color:var(--purple);}
+  .card.h24{border-left-color:#8a1f1f; background:#fdf3f0;}
+  .card.usd{border-left-color:var(--gold);}
+  .card.av{border-left-color:#2f6b4f;}
+
+  .card h3{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:16px;
+    margin:0 0 10px;
+    color:var(--navy);
+  }
+  .badge{
+    display:inline-block;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.02em;
+    padding:2px 9px;
+    border-radius:20px;
+    margin-bottom:10px;
+    color:#fff;
+  }
+  .relevante .badge{background:var(--teal);}
+  .inusual .badge{background:var(--red);}
+  .interna .badge{background:var(--purple);}
+  .h24 .badge{background:#8a1f1f;}
+  .usd .badge{background:var(--gold); color:#3a2c05;}
+  .av .badge{background:#2f6b4f;}
+
+  .card dl{margin:0; font-size:14.5px;}
+  .card dt{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:#7a7362;
+    margin-top:10px;
+  }
+  .card dt:first-child{margin-top:0;}
+  .card dd{margin:2px 0 0;}
+  .amount{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-weight:700;
+    font-size:17px;
+    color:var(--navy);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14.5px;
+    background:#fff;
+  }
+  th,td{
+    text-align:left;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  th{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--navy);
+    background:#f0ece0;
+  }
+  tr:hover td{background:#fbf9f2;}
+  .note{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:13px;
+    color:#5a5545;
+    background:#f0ece0;
+    border-left:4px solid var(--gold);
+    padding:12px 16px;
+    margin-top:14px;
+    border-radius:3px;
+  }
+  .trap{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:13px;
+    color:#5c2418;
+    background:#fbeae4;
+    border-left:4px solid var(--red);
+    padding:12px 16px;
+    margin-top:10px;
+    border-radius:3px;
+  }
+  .trap b{color:var(--red);}
+  footer{
+    text-align:center;
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:12px;
+    color:#8b8570;
+    padding:30px;
+  }
+  .source{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:11.5px;
+    color:#9a927a;
+    margin-top:6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Montos y Plazos — PLD/FT</h1>
+  <p>Hoja de referencia con los umbrales, fechas de reporte y datos clave verificados contra la DCG Art. 115 de la LIC, la LFPIORPI y el Reglamento de Supervisión de la CNBV.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2><span class="num">I.</span> Restricciones de dólares en efectivo (DCG 115)</h2>
+    <div class="grid">
+      <div class="card usd">
+        <span class="badge">USUARIO · PF MEXICANA</span>
+        <h3>Límite diario y mensual</h3>
+        <dl>
+          <dt>Diario</dt><dd class="amount">300 USD</dd>
+          <dt>Acumulado mensual</dt><dd class="amount">1,500 USD</dd>
+        </dl>
+      </div>
+      <div class="card usd">
+        <span class="badge">USUARIO · PF EXTRANJERA</span>
+        <h3>Exención del límite diario</h3>
+        <dl>
+          <dt>Diario</dt><dd class="amount">Sin límite diario específico</dd>
+          <dt>Acumulado mensual</dt><dd class="amount">1,500 USD (sí aplica)</dd>
+        </dl>
+        <div class="trap">⚠ Trampa común: no confundir "sin límite diario" con "sin límite". El tope mensual de 1,500 USD sigue aplicando.</div>
+      </div>
+      <div class="card usd">
+        <span class="badge">CLIENTE · PERSONA MORAL</span>
+        <h3>Excepción zona fronteriza / alto flujo remesas</h3>
+        <dl>
+          <dt>Tope mensual</dt><dd class="amount">14,000 USD</dd>
+          <dt>Requisito de antigüedad</dt><dd class="amount">Mínimo 3 años constituida</dd>
+          <dt>Otros requisitos</dt><dd>Justificar necesidad de operar en USD, estados financieros de 2 ejercicios, últimas 2 declaraciones anuales SAT</dd>
+        </dl>
+        <div class="trap"><b>Dato que suele venir mal en exámenes de práctica:</b> el requisito de antigüedad es de <b>3 años</b>, no 5.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">II.</span> Tipos de reporte y sus plazos</h2>
+    <div class="grid">
+
+      <div class="card relevante">
+        <span class="badge">OPERACIÓN RELEVANTE</span>
+        <h3>Efectivo por montos altos</h3>
+        <dl>
+          <dt>Umbral</dt><dd class="amount">≥ 7,500 USD, en una sola exhibición</dd>
+          <dt>Periodicidad de envío</dt><dd>Trimestral</dd>
+          <dt>Fecha límite</dt><dd>Primeros <b>10 días hábiles</b> de enero, abril, julio y octubre (cubre los 3 meses anteriores)</dd>
+          <dt>A quién</dt><dd>Secretaría, por conducto de la CNBV</dd>
+        </dl>
+      </div>
+
+      <div class="card usd">
+        <span class="badge">CHEQUES DE CAJA</span>
+        <h3>Solicitud en efectivo</h3>
+        <dl>
+          <dt>Umbral</dt><dd class="amount">≥ 10,000 USD</dd>
+          <dt>Naturaleza</dt><dd>Reportable como parte del monitoreo de operaciones en efectivo</dd>
+        </dl>
+      </div>
+
+      <div class="card av">
+        <span class="badge">ACTIVOS VIRTUALES</span>
+        <h3>Compra y venta</h3>
+        <dl>
+          <dt>Compra</dt><dd class="amount">Sin importar el monto</dd>
+          <dt>Venta</dt><dd class="amount">≥ 2,250 USD</dd>
+          <dt>Periodicidad</dt><dd>Trimestral (enero, abril, julio, octubre)</dd>
+        </dl>
+      </div>
+
+      <div class="card av">
+        <span class="badge">TIF — TRANSFERENCIAS INTERNACIONALES</span>
+        <h3>Envío o recepción de fondos</h3>
+        <dl>
+          <dt>Umbral</dt><dd class="amount">≥ 1,000 USD</dd>
+          <dt>Fecha límite</dt><dd>Dentro de los <b>15 días hábiles</b> siguientes al mes que se reporta</dd>
+          <dt>Nota</dt><dd>Aplica también a remesas recibidas vía Transmisores de Dinero cuando el banco es pagador directo</dd>
+        </dl>
+      </div>
+
+      <div class="card inusual">
+        <span class="badge">OPERACIÓN INUSUAL (ROI)</span>
+        <h3>Proceso completo</h3>
+        <dl>
+          <dt>Plazo del Comité para dictaminar</dt><dd class="amount">60 días naturales</dd>
+          <dt>Prórroga posible</dt><dd>+30 días naturales, si el Manual de Cumplimiento lo prevé</dd>
+          <dt>Plazo para remitir el reporte</dt><dd class="amount">3 días hábiles</dd> 
+          <dd>siguientes a la sesión del Comité que dictaminó la operación</dd>
+        </dl>
+      </div>
+
+      <div class="card interna">
+        <span class="badge">OPERACIÓN INTERNA PREOCUPANTE</span>
+        <h3>Conducta de empleados/directivos</h3>
+        <dl>
+          <dt>Quién la genera</dt><dd>Consejeros, directivos, apoderados o empleados de la propia Entidad</dd>
+          <dt>Tratamiento</dt><dd>Mismo proceso que la Operación Inusual (dictamen del Comité + envío)</dd>
+        </dl>
+      </div>
+
+      <div class="card h24">
+        <span class="badge">⏱ REPORTE DE 24 HORAS (LD o FT)</span>
+        <h3>Sospecha fundada — máxima urgencia</h3>
+        <dl>
+          <dt>Cuándo aplica</dt><dd>Sospecha fundada de que los recursos provienen de LD o se destinan a FT, y la Entidad decide <b>no realizar</b> la operación (o la acepta y de todos modos reporta)</dd>
+          <dt>Plazo</dt><dd class="amount">24 horas</dd> 
+          <dd>a partir de que la Entidad conoce la información</dd>
+          <dt>Leyenda en el reporte</dt><dd>"Reporte de 24 horas LD" o "Reporte de 24 horas FT"</dd>
+          <dt>También aplica a</dt><dd>Cliente en Lista de Personas Bloqueadas (antes, en, o después de la notificación de la Lista)</dd>
+        </dl>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>Para recordar la jerarquía de plazos:</b> 24 horas (urgente) → 3 días hábiles (tras dictamen del Comité, para Inusuales/Internas) → 10 días hábiles (primeros del mes, Relevantes/AV trimestral) → 15 días hábiles (TIF).
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">III.</span> Otros números clave que aparecen en el temario</h2>
+    <table>
+      <tr><th>Concepto</th><th>Cifra</th><th>Fuente</th></tr>
+      <tr><td>Exención del Comité de Comunicación y Control</td><td class="amount">&lt; 25 personas al servicio de la Entidad</td><td>DCG 115, Disposición 44ª</td></tr>
+      <tr><td>Umbral de Propietario Real (Control accionario)</td><td class="amount">≥ 25% de la composición accionaria</td><td>Lineamientos Propietario Real</td></tr>
+      <tr><td>Antigüedad para PM que reciben hasta 14,000 USD/mes</td><td class="amount">3 años</td><td>DCG 115, Disposición 33ª Bis 1</td></tr>
+      <tr><td>Duración máx. autorización de Modelo Novedoso</td><td class="amount">2 años (prorrogable +1 año)</td><td>LRITF, Art. 80</td></tr>
+      <tr><td>Entidades que requieren Dictamen Técnico</td><td class="amount">Centros Cambiarios, Transmisores de Dinero, SOFOM ENR</td><td>LGOAAC, Art. 86 Bis y 87-P</td></tr>
+      <tr><td>Sanciones Art. 115 LIC (rango porcentual)</td><td class="amount">10% – 100%</td><td>Art. 115 LIC</td></tr>
+      <tr><td>Notificación de visita de inspección CNBV</td><td class="amount">2 días hábiles de anticipación</td><td>Reglamento de Supervisión, Art. 21</td></tr>
+      <tr><td>Tipos de visita de inspección CNBV</td><td class="amount">Ordinaria, Especial, de Investigación</td><td>Reglamento de Supervisión</td></tr>
+      <tr><td>Experiencia mínima del auditor PLD/FT (sin estudios requeridos)</td><td class="amount">5 años</td><td>Lineamientos Informe de Auditoría</td></tr>
+      <tr><td>Conservación de expedientes (Entidades Financieras)</td><td class="amount">10 años</td><td>Art. 15 LIC / DCG 115</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">IV.</span> LFPIORPI — Actividades Vulnerables (umbrales UMA)</h2>
+    <table>
+      <tr><th>Actividad</th><th>Umbral de Aviso</th><th>Fracción</th></tr>
+      <tr><td>Mutuo, garantía, préstamo o crédito</td><td class="amount">1,605 veces la UMA</td><td>Art. 17-IV</td></tr>
+      <tr><td>Construcción / desarrollo de inmuebles</td><td class="amount">8,025 veces la UMA</td><td>Art. 17-V</td></tr>
+      <tr><td>Metales/piedras preciosas, joyas, relojes</td><td class="amount">1,605 veces la UMA</td><td>Art. 17-VI</td></tr>
+      <tr><td>Obras de arte</td><td class="amount">4,815 veces la UMA</td><td>Art. 17-VII</td></tr>
+      <tr><td>Traslado o custodia de dinero/valores</td><td class="amount">3,210 veces la UMA</td><td>Art. 17-X</td></tr>
+    </table>
+    <div class="note">
+      <b>UMA vigente 2026:</b> $117.31 pesos diarios (INEGI, vigente desde el 1° de febrero de 2026).
+    </div>
+    <div class="note">
+      <b>Conservación de expedientes (LFPIORPI):</b> 10 años contados a partir de la realización de la Actividad Vulnerable (Art. 18-IV) — no confundir con "desde que termina la relación comercial".
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Fuentes: DCG Art. 115 LIC, LFPIORPI, LGOAAC, LRITF, Reglamento de Supervisión CNBV, Lineamientos de Auditoría.
+</footer>
+
+</body>
+</html>

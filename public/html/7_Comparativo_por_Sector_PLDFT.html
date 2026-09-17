@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comparativo por Sector — PLD/FT</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --teal:#0f7d82;
+    --gold:#c99a3b;
+    --red:#b5432b;
+    --green:#2f6b4f;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:Georgia,serif; line-height:1.6;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px;}
+  header h1{font-family:'Helvetica Neue',Arial,sans-serif; font-size:clamp(26px,4vw,38px); margin:0 0 10px;}
+  header p{font-family:'Helvetica Neue',Arial,sans-serif; color:#c7d2e0; max-width:70ch; margin:0; font-size:15px;}
+  main{max-width:1150px; margin:0 auto; padding:40px 4vw 90px;}
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:#fff;}
+  table{border-collapse:collapse; width:100%; min-width:900px; font-size:14px;}
+  th,td{padding:12px 14px; border-bottom:1px solid var(--line); border-right:1px solid var(--line); text-align:left; vertical-align:top;}
+  th:last-child, td:last-child{border-right:none;}
+  thead th{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    background:var(--navy); color:#fff; font-size:13px;
+    position:sticky; top:0;
+  }
+  tbody th{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    background:#f0ece0; font-size:12.5px; color:var(--navy);
+    white-space:nowrap;
+  }
+  .yes{color:var(--green); font-weight:700; font-family:'Helvetica Neue',Arial,sans-serif;}
+  .no{color:#999; font-family:'Helvetica Neue',Arial,sans-serif;}
+  .amt{font-weight:700; color:var(--navy); font-family:'Helvetica Neue',Arial,sans-serif;}
+  section{margin-top:48px;}
+  h2{font-family:'Helvetica Neue',Arial,sans-serif; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; font-size:20px;}
+  .note{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5a5545;
+    background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;
+  }
+  footer{text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:#8b8570; padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Comparativo por Sector — PLD/FT</h1>
+  <p>La estructura general (Comité, Oficial de Cumplimiento, reportes) se repite en casi todos los sectores, pero cada uno tiene diferencias puntuales. Aquí están una al lado de la otra para que dejes de confundirlas.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>Obligaciones estructurales por tipo de entidad</h2>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Obligación / Dato</th>
+          <th>Bancos<br>(Instituciones de Crédito)</th>
+          <th>Casas de Bolsa</th>
+          <th>Casas de Cambio</th>
+          <th>Centros Cambiarios</th>
+          <th>Transmisores de Dinero</th>
+          <th>SOFOM ENR</th>
+          <th>ITF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Ley / DCG base</th>
+          <td>Art. 115 LIC</td>
+          <td>Art. 212 LMV</td>
+          <td>Art. 95 LGOAAC</td>
+          <td>Art. 95 Bis LGOAAC</td>
+          <td>Art. 95 Bis LGOAAC</td>
+          <td>Art. 87-D / 87-P LGOAAC</td>
+          <td>Art. 58 LRITF</td>
+        </tr>
+        <tr>
+          <th>Comité de Comunicación y Control</th>
+          <td><span class="yes">Sí</span> (exento &lt;25 empleados)</td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+        </tr>
+        <tr>
+          <th>Dictamen Técnico previo (CNBV)</th>
+          <td><span class="no">No aplica</span></td>
+          <td><span class="no">No aplica</span></td>
+          <td><span class="no">No aplica</span></td>
+          <td class="amt">Sí (Art. 86 Bis LGOAAC)</td>
+          <td class="amt">Sí (Art. 86 Bis LGOAAC)</td>
+          <td class="amt">Sí (Art. 87-P LGOAAC)</td>
+          <td><span class="no">No aplica</span></td>
+        </tr>
+        <tr>
+          <th>Oficial de Cumplimiento certificado</th>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+        </tr>
+        <tr>
+          <th>Restricción USD efectivo (Usuario PF)</th>
+          <td class="amt">300 USD/día · 1,500 USD/mes</td>
+          <td>Reglas propias, mismo esquema base</td>
+          <td>Reglas propias, mismo esquema base</td>
+          <td>Reglas propias (límites operativos específicos)</td>
+          <td>Reglas propias (límites operativos específicos)</td>
+          <td>No opera divisas en efectivo de forma típica</td>
+          <td>No aplica (no maneja efectivo físico)</td>
+        </tr>
+        <tr>
+          <th>Reporta a</th>
+          <td colspan="7" style="text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; color:var(--navy); font-weight:700;">
+            Todos: Secretaría de Hacienda, por conducto de la CNBV
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note">
+      <b>El dato que más se presta a confusión:</b> el Dictamen Técnico <u>no</u> es un requisito general de "todas las entidades financieras" — es específico de <b>Centros Cambiarios, Transmisores de Dinero y SOFOM No Reguladas (ENR)</b>. Ni los bancos, ni las casas de bolsa, ni las Casas de Cambio (que se regulan aparte, bajo el Art. 95 simple, no el 95 Bis) lo requieren.
+    </div>
+  </section>
+
+  <section>
+    <h2>Régimen LFPIORPI vs. Régimen DCG Art. 115 — la otra gran comparación</h2>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Aspecto</th>
+          <th>Entidades Financieras (DCG 115 / LIC)</th>
+          <th>Sujetos Obligados (LFPIORPI)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Quién regula</th>
+          <td>CNBV (supervisión) / SHCP-UBVA (normativa)</td>
+          <td>Secretaría de Hacienda, directamente</td>
+        </tr>
+        <tr>
+          <th>A quién se reporta</th>
+          <td>A la Secretaría, por conducto de la CNBV</td>
+          <td>Directo a la Secretaría (sin pasar por la CNBV)</td>
+        </tr>
+        <tr>
+          <th>Figura responsable</th>
+          <td>Oficial de Cumplimiento</td>
+          <td>Representante Encargado del Cumplimiento</td>
+        </tr>
+        <tr>
+          <th>Tipo de documento que se presenta</th>
+          <td>Reportes (Relevante, Inusual, Interna Preocupante, 24h)</td>
+          <td>Avisos</td>
+        </tr>
+        <tr>
+          <th>Plazo típico de envío</th>
+          <td>Variable: 24h / 3 días hábiles / 10 días hábiles trimestral / 15 días hábiles</td>
+          <td>Día 17 del mes siguiente a la operación</td>
+        </tr>
+        <tr>
+          <th>Conservación de expedientes</th>
+          <td class="amt">10 años</td>
+          <td class="amt">10 años (desde la realización de la actividad)</td>
+        </tr>
+        <tr>
+          <th>Ejemplos de sujetos</th>
+          <td>Bancos, casas de bolsa, SOFOM, centros cambiarios...</td>
+          <td>Joyerías, inmobiliarias, notarios, casinos, comerciantes de arte...</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Basado en tus documentos oficiales (DCG 115, LGOAAC, LRITF, LFPIORPI). Algunas celdas resumen "el mismo esquema base" cuando la Entidad tiene su propia DCG casi idéntica a la del Art. 115 — para el detalle numérico exacto de cada una, revisa siempre la DCG específica de ese sector.
+</footer>
+
+</body>
+</html>

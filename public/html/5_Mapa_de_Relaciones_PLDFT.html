@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mapa de Relaciones — PLD/FT</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --teal:#0f7d82;
+    --red:#b5432b;
+    --purple:#5c4a8a;
+    --darkred:#8a1f1f;
+    --gold:#c99a3b;
+    --green:#2f6b4f;
+    --line:#b9b198;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+  }
+  header{
+    background:var(--navy);
+    color:#f3efe4;
+    padding:40px 6vw 28px;
+    text-align:center;
+  }
+  header h1{
+    font-size:clamp(24px,3.6vw,36px);
+    margin:0 0 8px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    color:#c7d2e0;
+    max-width:65ch;
+    margin:0 auto;
+    font-size:14.5px;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:36px 4vw 70px;
+  }
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+    justify-content:center;
+    margin-bottom:30px;
+    font-size:13px;
+  }
+  .legend span{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+  }
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .diagram-frame{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:10px;
+    overflow-x:auto;
+  }
+  svg{display:block; min-width:1100px;}
+  text{font-family:'Helvetica Neue',Arial,sans-serif;}
+  .box-label{font-size:13px; font-weight:700; fill:#fff;}
+  .box-sub{font-size:10.5px; fill:#eee;}
+  .flow-label{font-size:10.5px; fill:#55503f; font-style:italic;}
+  .flow-green{font-size:10.5px; fill:#2f6b4f; font-style:italic; font-weight:600;}
+  .flow-red{font-size:10.5px; fill:#8a1f1f; font-style:italic; font-weight:600;}
+  .section-title{font-size:12px; fill:#8b8570; letter-spacing:.06em; text-transform:uppercase; font-weight:700;}
+  .label-dark{font-size:12px; font-weight:700;}
+  .sub-dark{font-size:9.5px; fill:#333;}
+
+  .callouts{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+  }
+  .callout{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:5px solid var(--teal);
+    border-radius:4px;
+    padding:16px 18px;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .callout h3{margin:0 0 6px; font-size:14.5px; color:var(--navy);}
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:#8b8570;
+    padding:26px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mapa de Relaciones — Sistema PLD/FT en México</h1>
+  <p>Quién hace qué, quién reporta a quién, y por dónde corre la información — de un vistazo. Dos circuitos paralelos: el de las Entidades Financieras (DCG Art. 115) y el de las Actividades Vulnerables (LFPIORPI).</p>
+</header>
+
+<div class="wrap">
+
+  <div class="legend">
+    <span><i class="dot" style="background:#12233d"></i>Autoridades</span>
+    <span><i class="dot" style="background:#0f7d82"></i>Circuito Entidades Financieras (DCG 115)</span>
+    <span><i class="dot" style="background:#2f6b4f"></i>Circuito Actividades Vulnerables (LFPIORPI)</span>
+    <span><i class="dot" style="background:#b5432b"></i>Reportes ordinarios</span>
+    <span><i class="dot" style="background:#8a1f1f"></i>Reporte urgente (24h)</span>
+    <span><i class="dot" style="background:#c99a3b"></i>Estándares internacionales</span>
+  </div>
+
+  <div class="diagram-frame">
+  <svg viewBox="0 0 1180 920" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L0,6 L9,3 z" fill="#55503f"/>
+      </marker>
+      <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L0,6 L9,3 z" fill="#8a1f1f"/>
+      </marker>
+    </defs>
+
+    <!-- ===== ROW 0: GAFI / estándares internacionales ===== -->
+    <text x="590" y="26" text-anchor="middle" class="section-title">Estándares internacionales</text>
+    <rect x="440" y="36" width="300" height="46" rx="6" fill="#c99a3b"/>
+    <text x="590" y="56" text-anchor="middle" class="label-dark" fill="#3a2c05">GAFI · Comité de Basilea · Egmont · Wolfsberg</text>
+    <text x="590" y="72" text-anchor="middle" class="sub-dark" fill="#4a3a10">Recomendaciones, guías EBR, tipologías</text>
+
+    <line x1="590" y1="82" x2="590" y2="112" stroke="#55503f" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- ===== ROW 1: SHCP ===== -->
+    <rect x="465" y="114" width="250" height="50" rx="6" fill="#12233d"/>
+    <text x="590" y="136" text-anchor="middle" class="box-label">Secretaría de Hacienda</text>
+    <text x="590" y="152" text-anchor="middle" class="box-sub">(SHCP) — autoridad rectora</text>
+
+    <!-- lines down to UIF, CNBV, FGR -->
+    <line x1="530" y1="164" x2="300" y2="210" stroke="#55503f" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="590" y1="164" x2="590" y2="210" stroke="#55503f" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="650" y1="164" x2="880" y2="210" stroke="#55503f" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- ===== ROW 2: UIF / CNBV / FGR ===== -->
+    <rect x="200" y="212" width="200" height="50" rx="6" fill="#12233d"/>
+    <text x="300" y="233" text-anchor="middle" class="box-label">UIF</text>
+    <text x="300" y="249" text-anchor="middle" class="box-sub">Analiza, detecta, denuncia</text>
+
+    <rect x="490" y="212" width="200" height="50" rx="6" fill="#12233d"/>
+    <text x="590" y="233" text-anchor="middle" class="box-label">CNBV</text>
+    <text x="590" y="249" text-anchor="middle" class="box-sub">Supervisa, sanciona, certifica</text>
+
+    <rect x="780" y="212" width="200" height="50" rx="6" fill="#12233d"/>
+    <text x="880" y="233" text-anchor="middle" class="box-label">FGR</text>
+    <text x="880" y="249" text-anchor="middle" class="box-sub">Investiga y persigue el delito</text>
+
+    <!-- CNBV down to Entidad Financiera -->
+    <line x1="590" y1="262" x2="300" y2="320" stroke="#0f7d82" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="440" y="290" class="flow-label">supervisa</text>
+
+    <!-- SHCP direct to Sujeto Obligado (LFPIORPI track), bypassing CNBV -->
+    <path d="M 715,140 C 1000,160 1040,260 900,318" fill="none" stroke="#2f6b4f" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="985" y="185" text-anchor="middle" class="flow-green">recibe Avisos directo</text>
+    <text x="985" y="198" text-anchor="middle" class="flow-green">(sin pasar por la CNBV)</text>
+
+    <!-- ===== ROW 3: Entidad Financiera / Sujeto Obligado ===== -->
+    <text x="300" y="308" text-anchor="middle" class="section-title" fill="#0f7d82">Circuito DCG 115 (LIC)</text>
+    <rect x="150" y="320" width="300" height="52" rx="6" fill="#0f7d82"/>
+    <text x="300" y="342" text-anchor="middle" class="box-label">Entidad Financiera</text>
+    <text x="300" y="358" text-anchor="middle" class="box-sub">banco, casa de bolsa, SOFOM, etc.</text>
+
+    <text x="880" y="308" text-anchor="middle" class="section-title" fill="#2f6b4f">Circuito LFPIORPI</text>
+    <rect x="730" y="320" width="300" height="52" rx="6" fill="#2f6b4f"/>
+    <text x="880" y="342" text-anchor="middle" class="box-label">Sujeto Obligado</text>
+    <text x="880" y="358" text-anchor="middle" class="box-sub">realiza una Actividad Vulnerable</text>
+
+    <!-- Entidad -> Comite -->
+    <line x1="300" y1="372" x2="300" y2="410" stroke="#0f7d82" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="150" y="412" width="300" height="52" rx="6" fill="#0f7d82"/>
+    <text x="300" y="434" text-anchor="middle" class="box-label">Comité de Comunicación y Control</text>
+    <text x="300" y="450" text-anchor="middle" class="box-sub">&lt;25 empleados = exento · dictamina Op. Inusuales</text>
+
+    <!-- Comite -> Oficial de Cumplimiento -->
+    <line x1="220" y1="464" x2="160" y2="500" stroke="#0f7d82" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="30" y="502" width="200" height="46" rx="6" fill="#0f7d82" opacity="0.85"/>
+    <text x="130" y="522" text-anchor="middle" class="box-label">Oficial de Cumplimiento</text>
+    <text x="130" y="537" text-anchor="middle" class="box-sub">designado por el Comité</text>
+
+    <!-- Comite -> Auditor interno (voz sin voto) -->
+    <line x1="380" y1="464" x2="440" y2="500" stroke="#0f7d82" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    <rect x="360" y="502" width="200" height="46" rx="6" fill="#8a8065"/>
+    <text x="460" y="522" text-anchor="middle" class="box-label">Auditor Interno</text>
+    <text x="460" y="537" text-anchor="middle" class="box-sub">participa con voz, SIN voto</text>
+
+    <!-- Entidad -> Cliente/Usuario -->
+    <line x1="150" y1="350" x2="70" y2="410" stroke="#0f7d82" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="0" y="412" width="132" height="52" rx="6" fill="#0f7d82" opacity="0.7"/>
+    <text x="66" y="434" text-anchor="middle" class="box-label" font-size="11">Cliente / Usuario</text>
+    <text x="66" y="450" text-anchor="middle" class="box-sub" font-size="9">se verifica en Lista de</text>
+    <text x="66" y="461" text-anchor="middle" class="box-sub" font-size="9">Personas Bloqueadas</text>
+
+    <!-- Sujeto Obligado -> Representante -->
+    <line x1="850" y1="372" x2="850" y2="410" stroke="#2f6b4f" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="700" y="412" width="260" height="52" rx="6" fill="#2f6b4f"/>
+    <text x="830" y="430" text-anchor="middle" class="box-label" font-size="11.5">Representante Encargado</text>
+    <text x="830" y="445" text-anchor="middle" class="box-label" font-size="11.5">de Cumplimiento</text>
+    <text x="830" y="459" text-anchor="middle" class="box-sub" font-size="9">designado ante la Secretaría</text>
+
+    <!-- Sujeto Obligado -> Aviso -->
+    <line x1="990" y1="360" x2="1050" y2="410" stroke="#2f6b4f" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="985" y="412" width="150" height="52" rx="6" fill="#2f6b4f" opacity="0.75"/>
+    <text x="1060" y="434" text-anchor="middle" class="box-label" font-size="11">Aviso</text>
+    <text x="1060" y="450" text-anchor="middle" class="box-sub" font-size="9">día 17 del mes</text>
+    <text x="1060" y="461" text-anchor="middle" class="box-sub" font-size="9">siguiente</text>
+
+    <!-- ===== ROW 4: Reportes (from Comite) ===== -->
+    <text x="300" y="580" text-anchor="middle" class="section-title">Reportes que genera el Comité</text>
+
+    <line x1="230" y1="464" x2="90" y2="600" stroke="#0f7d82" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="10" y="602" width="160" height="48" rx="6" fill="#0f7d82"/>
+    <text x="90" y="622" text-anchor="middle" class="box-label" font-size="11.5">Relevante</text>
+    <text x="90" y="638" text-anchor="middle" class="box-sub" font-size="9.5">≥7,500 USD · trimestral</text>
+
+    <line x1="270" y1="464" x2="270" y2="600" stroke="#b5432b" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="190" y="602" width="160" height="48" rx="6" fill="#b5432b"/>
+    <text x="270" y="622" text-anchor="middle" class="box-label" font-size="11.5">Inusual</text>
+    <text x="270" y="638" text-anchor="middle" class="box-sub" font-size="9.5">3 días hábiles post-dictamen</text>
+
+    <line x1="330" y1="464" x2="450" y2="600" stroke="#5c4a8a" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="370" y="602" width="160" height="48" rx="6" fill="#5c4a8a"/>
+    <text x="450" y="622" text-anchor="middle" class="box-label" font-size="11.5">Interna Preocupante</text>
+    <text x="450" y="638" text-anchor="middle" class="box-sub" font-size="9.5">conducta de empleados</text>
+
+    <line x1="380" y1="440" x2="570" y2="600" stroke="#8a1f1f" stroke-width="2" marker-end="url(#arrowRed)"/>
+    <rect x="550" y="602" width="160" height="48" rx="6" fill="#8a1f1f"/>
+    <text x="630" y="622" text-anchor="middle" class="box-label" font-size="11.5">⏱ 24 Horas</text>
+    <text x="630" y="638" text-anchor="middle" class="box-sub" font-size="9.5">sospecha fundada LD/FT</text>
+
+    <!-- reportes -> back up to CNBV -->
+    <path d="M 90,602 C 90,530 250,300 550,235" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+    <path d="M 630,602 C 700,500 640,320 590,264" fill="none" stroke="#8a1f1f" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#arrowRed)"/>
+    <text x="640" y="480" text-anchor="middle" class="flow-red">Todos los reportes llegan a la Secretaría, por conducto de la CNBV</text>
+
+    <!-- ===== ROW 5: Lista de Personas Bloqueadas detail ===== -->
+    <line x1="66" y1="464" x2="120" y2="700" stroke="#0f7d82" stroke-width="1.2" stroke-dasharray="2 2"/>
+    <rect x="10" y="702" width="220" height="70" rx="6" fill="#fff" stroke="#0f7d82" stroke-width="1.5"/>
+    <text x="120" y="722" text-anchor="middle" class="label-dark" fill="#0f7d82">Lista de Personas Bloqueadas</text>
+    <text x="120" y="738" text-anchor="middle" class="sub-dark">1) Suspende la operación</text>
+    <text x="120" y="751" text-anchor="middle" class="sub-dark">2) SÍ informa al cliente (por escrito)</text>
+    <text x="120" y="764" text-anchor="middle" class="sub-dark">3) Reporte de 24h a la CNBV</text>
+
+    <!-- ===== ROW 6: Auditoría / Supervisión loop ===== -->
+    <line x1="590" y1="262" x2="750" y2="700" stroke="#c99a3b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+    <rect x="620" y="702" width="280" height="80" rx="6" fill="#fff" stroke="#c99a3b" stroke-width="1.5"/>
+    <text x="760" y="722" text-anchor="middle" class="label-dark" fill="#8a6a10">CNBV supervisa a la Entidad</text>
+    <text x="760" y="740" text-anchor="middle" class="sub-dark">Visitas: Ordinaria / Especial / Investigación</text>
+    <text x="760" y="753" text-anchor="middle" class="sub-dark">Notificación: 2 días hábiles (regla general)</text>
+    <text x="760" y="766" text-anchor="middle" class="sub-dark">Informe de Auditoría anual (auditor externo/interno)</text>
+
+    <!-- ===== ROW 7: EBR loop ===== -->
+    <rect x="960" y="702" width="200" height="80" rx="6" fill="#fff" stroke="#2f6b4f" stroke-width="1.5"/>
+    <text x="1060" y="722" text-anchor="middle" class="label-dark" fill="#2f6b4f">Enfoque Basado en Riesgo</text>
+    <text x="1060" y="740" text-anchor="middle" class="sub-dark">Diseño → Implementación → Valoración</text>
+    <text x="1060" y="753" text-anchor="middle" class="sub-dark">Base: ENR nacional + metodología propia</text>
+    <line x1="880" y1="464" x2="1000" y2="700" stroke="#2f6b4f" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#arrow)"/>
+
+  </svg>
+  </div>
+
+  <div class="callouts">
+    <div class="callout" style="border-left-color:#0f7d82">
+      <h3>Dos circuitos, no uno solo</h3>
+      Las <b>Entidades Financieras</b> (bancos, casas de bolsa, SOFOM...) reportan a través de la CNBV, bajo la DCG Art. 115. Los <b>Sujetos Obligados por Actividades Vulnerables</b> (joyerías, inmobiliarias, notarios...) envían sus Avisos <b>directo a la Secretaría de Hacienda y Crédito Público (SHCP)</b>, sin pasar por la CNBV — son regímenes distintos con la LFPIORPI.
+    </div>
+    <div class="callout" style="border-left-color:#8a8065">
+      <h3>El Auditor Interno no es miembro del Comité</h3>
+      Participa en las sesiones <b>con voz, pero sin voto</b>. Es un dato que suele usarse como distractor en el examen.
+    </div>
+    <div class="callout" style="border-left-color:#8a1f1f">
+      <h3>Lista de Personas Bloqueadas: la excepción a "no avisar al cliente"</h3>
+      A diferencia de un Reporte de Operación Inusual normal (confidencial), aquí la Entidad <b>sí debe informar por escrito</b> al cliente los motivos de su inclusión, porque tiene derecho a impugnarla ante la autoridad en 10 días hábiles.
+    </div>
+    <div class="callout" style="border-left-color:#c99a3b">
+      <h3>Todo termina en la Secretaría de Hacienda</h3>
+      Sin importar el tipo de reporte o el circuito, la información converge finalmente en la Secretaría de Hacienda (por conducto de la CNBV, en el caso de Entidades Financieras).
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Fuentes: DCG Art. 115 LIC, LFPIORPI, Reglamento de Supervisión CNBV, Guía CNBV de Metodología de Riesgos.
+</footer>
+
+</body>
+</html>
