@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ficha de estudio — Las 40 Recomendaciones del GAFI</title>
 <style>
   :root{
@@ -38,8 +37,7 @@
     font-family:"Inter",sans-serif; font-size:14px; text-transform:uppercase;
     letter-spacing:0.6px; color:var(--ink-dim); margin:0 0 14px 0; font-weight:700;
   }
-  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  table.amounts{ width:100%; min-width:520px; border-collapse:collapse; font-family:"Inter",sans-serif; font-size:13.5px; }
+  table.amounts{ width:100%; border-collapse:collapse; font-family:"Inter",sans-serif; font-size:13.5px; }
   table.amounts th{
     text-align:left; color:var(--ink-dim); font-weight:600; font-size:11.5px;
     text-transform:uppercase; letter-spacing:0.3px; padding: 6px 10px; border-bottom:1px solid var(--line);
@@ -88,14 +86,6 @@
   }
 
   footer{ padding: 8px 40px 30px 40px; color:var(--ink-dim); font-family:"Inter",sans-serif; font-size:11.5px; line-height:1.5; border-top:1px solid var(--line); }
-
-  @media (max-width: 640px){
-    header{ padding: 20px 18px 14px 18px; }
-    header h1{ font-size: 21px; }
-    main{ padding: 18px 14px 40px 14px; }
-    .cheatsheet{ padding: 14px 14px; }
-    footer{ padding: 8px 18px 24px 18px; }
-  }
 </style>
 </head>
 <body>
@@ -108,7 +98,6 @@
 <main>
   <div class="cheatsheet">
     <h2 class="ui">📌 Tabla rápida de montos y plazos (lo primero que hay que memorizar)</h2>
-    <div class="table-scroll">
     <table class="amounts">
       <thead>
         <tr><th>Recomendación</th><th>Umbral / plazo</th><th>¿Para qué aplica?</th></tr>
@@ -123,7 +112,30 @@
         <tr><td><span class="rec-tag" style="background:var(--F)">R32</span></td><td class="amt">USD/EUR 15,000</td><td>Umbral para exigir declaración de transporte físico transfronterizo de efectivo o instrumentos negociables al portador.</td></tr>
       </tbody>
     </table>
-    </div>
+  </div>
+
+  <div class="cheatsheet">
+    <h2 class="ui">🔤 Glosario de siglas (para no perderte en las tarjetas)</h2>
+    <table class="amounts">
+      <tbody>
+        <tr><td><span class="rec-tag" style="background:var(--A)">ALA/CFT</span></td><td colspan="2">Anti-Lavado de Activos / Combate al Financiamiento del Terrorismo</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--B)">LA</span></td><td colspan="2">Lavado de Activos</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--C)">FT</span></td><td colspan="2">Financiamiento del Terrorismo</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--C)">FP</span></td><td colspan="2">Financiamiento de la Proliferación (de armas de destrucción masiva)</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--A)">EBR</span></td><td colspan="2">Enfoque Basado en Riesgo</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">DDC</span></td><td colspan="2">Debida Diligencia del Cliente</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">PEP</span></td><td colspan="2">Persona(s) Expuesta(s) Políticamente</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">STDV</span></td><td colspan="2">Servicios de Transferencia de Dinero o Valores</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">PSAV</span></td><td colspan="2">Proveedor(es) de Servicios de Activos Virtuales</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--C)">OSFL</span></td><td colspan="2">Organización(es) Sin Fines de Lucro</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">APNFD</span></td><td colspan="2">Actividades y Profesiones No Financieras Designadas</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--D)">ROS</span></td><td colspan="2">Reporte de Operación Sospechosa</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--F)">UIF</span></td><td colspan="2">Unidad de Inteligencia Financiera</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--F)">OAR</span></td><td colspan="2">Organismo Autorregulador</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--G)">MOU</span></td><td colspan="2">Memorando de Entendimiento</td></tr>
+        <tr><td><span class="rec-tag" style="background:var(--G)">ONU</span></td><td colspan="2">Organización de las Naciones Unidas</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- A -->
@@ -202,7 +214,7 @@
       <div class="card"><div class="card-top"><span class="card-num">R17</span><span class="card-title">Dependencia en terceros</span></div>
         <div class="card-body">Permite delegar ciertos elementos de la DDC en un tercero, pero la responsabilidad final sigue siendo de la institución que delega.</div></div>
 
-      <div class="card"><div class="card-top"><span class="card-num">R18</span><span class="card-title">Controles internos y filiales y subsidiarias</span></div>
+      <div class="card"><div class="card-top"><span class="card-num">R18</span><span class="card-title">Controles internos y sucursales y filiales extranjeras</span></div>
         <div class="card-body">Programas ALA/CFT a nivel de todo el grupo financiero, con intercambio de información entre sucursales/filiales, incluidas las del extranjero.</div></div>
 
       <div class="card"><div class="card-top"><span class="card-num">R19</span><span class="card-title">Países de mayor riesgo</span></div>
@@ -214,7 +226,7 @@
       <div class="card"><div class="card-top"><span class="card-num">R21</span><span class="card-title">Revelación (tipping-off) y confidencialidad</span></div>
         <div class="card-body">Proteger legalmente a quien reporta de buena fe (aunque no conociera el delito subyacente) y prohibir revelar que se presentó un ROS.</div></div>
 
-      <div class="card"><div class="card-top"><span class="card-num">R22</span><span class="card-title">APNFD: debida diligencia del cliente</span></div>
+      <div class="card"><div class="card-top"><span class="card-num">R22</span><span class="card-title">APNFD: Debida diligencia del cliente</span></div>
         <div class="card-body">Aplicar DDC/registro a casinos, agentes inmobiliarios, comerciantes de metales/piedras preciosas, abogados/notarios/contadores y proveedores de servicios societarios y fiduciarios, en las actividades específicas listadas.</div>
         <span class="badge">Casinos: USD/EUR 3,000 · Metales/piedras preciosas: USD/EUR 15,000</span></div>
 
