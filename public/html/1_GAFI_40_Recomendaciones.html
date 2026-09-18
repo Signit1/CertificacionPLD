@@ -546,6 +546,7 @@ for(let i=1;i<=40;i++) adjacency[i] = [];
 // nodes
 let selected = null;
 const nodeEls = {};
+let hoverTimer = null;
 order.forEach(n=>{
   const c = catOf(n);
   const [x,y] = pt(n, R_NODE);
@@ -568,13 +569,25 @@ order.forEach(n=>{
   label.textContent = titles[n].length>26 ? titles[n].slice(0,24)+"…" : titles[n];
   g.appendChild(label);
 
-  g.style.cursor = "pointer";
-  g.addEventListener("mouseenter", ()=>{ if(!selected) focusNode(n); });
-  g.addEventListener("mouseleave", ()=>{ if(!selected) clearFocus(); });
-  g.addEventListener("click", ()=>{
+  // invisible, larger hit-target: the visible dot is only ~6.6px, too small to
+  // hover/click precisely when nodes are close together. This transparent circle
+  // gives a comfortable ~18px hit radius without changing how anything looks.
+  const hit = el("circle",{cx:x, cy:y, r:16, fill:"transparent", stroke:"none"});
+  hit.style.cursor = "pointer";
+  hit.addEventListener("mouseenter", ()=>{
+    clearTimeout(hoverTimer);
+    hoverTimer = setTimeout(()=>{ if(!selected) focusNode(n); }, 120);
+  });
+  hit.addEventListener("mouseleave", ()=>{
+    clearTimeout(hoverTimer);
+    if(!selected) clearFocus();
+  });
+  hit.addEventListener("click", ()=>{
+    clearTimeout(hoverTimer);
     selected = (selected===n) ? null : n;
     if(selected) focusNode(n); else clearFocus();
   });
+  g.appendChild(hit);
 
   gNodes.appendChild(g);
   nodeEls[n] = {g, dot};
