@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LD vs. FT — Artículos del Código Penal Federal</title>
+<style>
+  :root{
+    --navy:#12233d; --teal:#0f7d82; --gold:#c99a3b; --red:#b5432b; --darkred:#8a1f1f; --purple:#5c4a8a;
+    --paper:#faf8f4; --ink:#1c1c1c; --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.55;}
+  header{background:var(--navy); color:#f3efe4; padding:40px 6vw 28px;}
+  header h1{font-size:clamp(22px,4vw,32px); margin:0 0 8px;}
+  header p{color:#c7d2e0; max-width:70ch; margin:0; font-size:14.5px;}
+  main{max-width:1080px; margin:0 auto; padding:36px 5vw 80px;}
+  section{margin-bottom:40px;}
+  h2{font-size:19px; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; margin-bottom:18px;}
+
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:0; border-radius:10px; overflow:hidden; border:1px solid var(--line);}
+  @media(max-width:760px){.split{grid-template-columns:1fr;}}
+  .side{padding:26px 26px;}
+  .side.ld{background:#eaf5f5; border-right:2px dashed var(--line);}
+  .side.ft{background:#fbeeea;}
+  .side h2{border:none; padding:0; margin:0 0 4px; font-size:22px;}
+  .side.ld h2{color:var(--teal);}
+  .side.ft h2{color:var(--darkred);}
+  .side .sub{font-size:12.5px; color:#5a5545; margin-bottom:16px;}
+  .side .big{font-size:13px; text-align:center; padding:10px; background:#fff; border-radius:6px; margin-bottom:4px; font-weight:700;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;}
+  .card{background:#fff; border:1px solid var(--line); border-top:7px solid var(--c); border-radius:8px; padding:20px 22px;}
+  .card h3{margin:0 0 3px; font-size:17px; color:var(--c);}
+  .card .art{font-size:11.5px; color:#8b8570; margin-bottom:12px; font-weight:600; letter-spacing:.02em;}
+  .card dl{margin:0; font-size:14px;}
+  .card dt{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:#7a7362; margin-top:10px;}
+  .card dt:first-child{margin-top:0;}
+  .card dd{margin:2px 0 0;}
+  .amount{font-weight:700; color:var(--navy); font-size:15px;}
+
+  table{width:100%; border-collapse:collapse; font-size:14px; background:#fff;}
+  th,td{text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--navy); background:#f0ece0;}
+
+  .note{font-size:13px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;}
+  .trap{font-size:13px; color:#5c2418; background:#fbeae4; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap b{color:var(--red);}
+  footer{text-align:center; font-size:12px; color:#8b8570; padding:26px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Lavado de Dinero vs. Financiamiento al Terrorismo — Código Penal Federal</h1>
+  <p>Dos delitos distintos, con sus propios artículos y sus propias penas. Aquí están separados con claridad, para que nunca se te mezclen.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2 style="border:none; padding:0;">Primero, lo esencial: dos familias de artículos, no una</h2>
+    <div class="split">
+      <div class="side ld">
+        <h2>Lavado de Dinero (LD)</h2>
+        <div class="sub">Familia del "400" — Art. 400 Bis y 400 Bis 1</div>
+        <div class="big">Pena base: 5 a 15 años · 1,000 a 5,000 UMA</div>
+      </div>
+      <div class="side ft">
+        <h2>Financiamiento al Terrorismo (FT)</h2>
+        <div class="sub">Familia del "139" — Art. 139, 148 Bis y 139 Quáter</div>
+        <div class="big">Pena base: 15 a 40 años · 400 a 1,200 UMA</div>
+      </div>
+    </div>
+    <div class="note"><b>La regla de oro:</b> si el número del artículo empieza con <b>400</b>, es de la familia de Lavado de Dinero. Si empieza con <b>139</b> (o es el 148 Bis, que remite a la pena del 139), es de la familia de Financiamiento al Terrorismo / Terrorismo. Son dos capítulos distintos del Código Penal Federal, con penas distintas.</div>
+  </section>
+
+  <section>
+    <h2>Familia LD — los tres artículos del "400"</h2>
+    <div class="grid">
+
+      <div class="card" style="--c:#8b8570">
+        <h3>Encubrimiento</h3>
+        <div class="art">Artículo 400 (sin "Bis")</div>
+        <dl>
+          <dt>Conducta</dt><dd>Con ánimo de lucro, después de un delito ajeno y sin haber participado, adquirir, recibir u ocultar el producto de ese delito; o ayudar a ocultar al responsable</dd>
+          <dt>Pena</dt><dd class="amount">3 meses a 3 años prisión · 15 a 60 días multa</dd>
+          <dt>Naturaleza</dt><dd><b>NO es Lavado de Dinero</b> — es un delito general de encubrimiento, mucho más leve</dd>
+        </dl>
+      </div>
+
+      <div class="card" style="--c:#0f7d82">
+        <h3>Lavado de Dinero</h3>
+        <div class="art">Artículo 400 Bis</div>
+        <dl>
+          <dt>Conducta</dt><dd>Administrar, adquirir, cambiar, convertir, custodiar, depositar, enajenar, invertir, poseer, transferir, transportar recursos de procedencia ilícita</dd>
+          <dt>Pena</dt><dd class="amount">5 a 15 años prisión · 1,000 a 5,000 UMA multa</dd>
+          <dt>Naturaleza</dt><dd>Este es "el" delito de Lavado de Dinero — el que da nombre a todo el tema PLD/FT</dd>
+        </dl>
+      </div>
+
+      <div class="card" style="--c:var(--red)">
+        <h3>Agravantes del LD</h3>
+        <div class="art">Artículo 400 Bis 1</div>
+        <dl>
+          <dt>No es un delito nuevo</dt><dd>Toma la pena del 400 Bis y la incrementa, según quién lo cometió</dd>
+          <dt>3 supuestos distintos</dt><dd>Ver tabla abajo</dd>
+        </dl>
+      </div>
+
+    </div>
+    <div class="trap"><b>El error más común:</b> pensar que el Art. 400 (sin "Bis") es una versión "leve" del Lavado de Dinero. No lo es — es un delito totalmente distinto (encubrimiento), sin relación directa con el régimen de PLD/FT.</div>
+  </section>
+
+  <section>
+    <h2>Los tres agravantes del 400 Bis 1, con ejemplo numérico</h2>
+    <table>
+      <tr><th>Quién</th><th>Agravante</th><th>Ejemplo (si la pena base fuera 6 años)</th></tr>
+      <tr>
+        <td>Consejero, administrador, funcionario, empleado, apoderado o prestador de servicios de un Sujeto/Entidad del régimen PLD/FT (o hasta 2 años después de dejar el puesto)</td>
+        <td class="amount">+1/3 a +1/2 de la pena</td>
+        <td>6 + 2 (un tercio) = <b>8 años</b><br>6 + 3 (una mitad) = <b>9 años</b><br><span style="font-size:12px; color:#8b8570;">+ inhabilitación igual al tiempo de prisión</span></td>
+      </tr>
+      <tr>
+        <td>Servidor público encargado de prevenir/detectar/denunciar/investigar/juzgar delitos (o ex servidor, hasta 2 años después)</td>
+        <td class="amount">Se duplica (×2)</td>
+        <td>6 años × 2 = <b>12 años</b><br><span style="font-size:12px; color:#8b8570;">+ inhabilitación igual al tiempo de prisión</span></td>
+      </tr>
+      <tr>
+        <td>Quien, en las fracciones I y II del 400 Bis, utiliza a un menor de 18 años o a alguien sin capacidad de entender o resistir</td>
+        <td class="amount">+ hasta 1/2 de la pena</td>
+        <td>6 + 3 (máximo, una mitad) = <b>9 años</b></td>
+      </tr>
+    </table>
+    <div class="note">Los tres agravantes son <b>independientes</b>: cada uno aplica a un perfil de responsable distinto, no se suman entre sí en el mismo cálculo.</div>
+  </section>
+
+  <section>
+    <h2>La inhabilitación — cuánto dura y cuándo empieza a contar</h2>
+    <p style="font-size:14.5px; margin:0 0 14px;">Los agravantes 1 y 2 (empleado/consejero del régimen PLD/FT, y servidor público) traen además una <b>inhabilitación</b> para volver a ocupar empleo, cargo o comisión. El agravante 3 (usar a un menor o incapaz) no trae inhabilitación.</p>
+    <table>
+      <tr><th>Elemento</th><th>Regla</th></tr>
+      <tr><td>Duración de la inhabilitación</td><td class="amount">Hasta por un tiempo IGUAL al de la pena de prisión impuesta</td></tr>
+      <tr><td>¿Para qué queda inhabilitado?</td><td>Consejero/empleado del régimen PLD/FT: para desempeñar empleo, cargo o comisión en <b>personas morales sujetas al régimen de prevención</b>. Servidor público: para desempeñar empleo, cargo o comisión <b>en general</b></td></tr>
+      <tr><td>¿Cuándo empieza a correr?</td><td class="amount">Hasta que se haya cumplido por completo la pena de prisión — NO es simultánea a la cárcel</td></tr>
+    </table>
+    <div class="note">
+      <b>Ejemplo con el caso del agravante 1 (empleado de banco, 8 años de prisión):</b><br>
+      Primero cumple los <b>8 años de prisión</b>. Cuando sale, empieza a correr la inhabilitación, que puede durar hasta <b>8 años más</b> (el mismo número que la pena de prisión). En el peor escenario, esta persona puede pasar hasta <b>16 años</b> en total sin poder trabajar en el sector — 8 en la cárcel, y hasta 8 más inhabilitado después de salir.<br><br>
+      <b>Ejemplo con el caso del agravante 2 (servidor público, pena duplicada a 12 años):</b><br>
+      Cumple los <b>12 años de prisión</b>, y después puede quedar inhabilitado hasta <b>12 años más</b> — hasta 24 años en total entre cárcel e inhabilitación.
+    </div>
+  </section>
+
+  <section>
+    <h2>Familia FT — los tres artículos del "139"</h2>
+    <div class="grid">
+      <div class="card" style="--c:var(--darkred)">
+        <h3>Terrorismo</h3>
+        <div class="art">Artículo 139</div>
+        <dl>
+          <dt>Conducta</dt><dd>Actos con sustancias tóxicas, armas, explosivos, etc. contra instituciones, el Estado o la paz pública</dd>
+          <dt>Pena</dt><dd class="amount">15 a 40 años prisión · 400 a 1,200 UMA multa</dd>
+        </dl>
+      </div>
+      <div class="card" style="--c:var(--purple)">
+        <h3>Terrorismo Internacional</h3>
+        <div class="art">Artículo 148 Bis</div>
+        <dl>
+          <dt>Conducta</dt><dd>Misma naturaleza que el 139, cuando involucra a más de un país</dd>
+          <dt>Pena</dt><dd class="amount">15 a 40 años prisión · 400 a 1,200 UMA multa (idéntica al 139)</dd>
+        </dl>
+      </div>
+      <div class="card" style="--c:var(--gold)">
+        <h3>Financiamiento al Terrorismo</h3>
+        <div class="art">Artículo 139 Quáter</div>
+        <dl>
+          <dt>Conducta</dt><dd>Financiar, por cualquier medio, actos u organizaciones terroristas</dd>
+          <dt>Pena</dt><dd class="amount">Idéntica a la del Art. 139 (15 a 40 años · 400 a 1,200 UMA)</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="note">A diferencia de la familia LD, aquí <b>los tres artículos comparten la misma pena</b> — no hay un artículo "leve" como el 400 (encubrimiento) del otro lado.</div>
+  </section>
+
+  <section>
+    <h2>LD vs. FT — la comparación directa</h2>
+    <table>
+      <tr><th>Comparación</th><th>Respuesta</th></tr>
+      <tr><td>¿LD (400 Bis) tiene la misma pena que FT (139 Quáter)?</td><td><b>No.</b> El 400 Bis (LD) es más leve (5-15 años) que el 139 Quáter (FT, 15-40 años)</td></tr>
+      <tr><td>¿Por qué el FT tiene pena más alta que el LD?</td><td>El FT se considera una amenaza más grave a la seguridad del Estado y la paz pública que el LD</td></tr>
+      <tr><td>¿139 Quáter y 148 Bis (ambos de FT) tienen penas distintas?</td><td><b>No, son idénticas</b> — ambos remiten a la pena del Art. 139</td></tr>
+      <tr><td>¿El Art. 400 (encubrimiento) es parte del LD?</td><td><b>No</b> — es un delito distinto y mucho más leve; el LD "de verdad" es el 400 Bis</td></tr>
+      <tr><td>¿El 400 Bis 1 es un delito aparte del LD?</td><td><b>No</b> — solo agrava la pena del 400 Bis según quién lo cometió; no existe un agravante equivalente numerado para la familia FT en tu temario</td></tr>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  Fuente: Código Penal Federal vigente (Arts. 139, 139 Quáter, 148 Bis, 400, 400 Bis, 400 Bis 1).
+</footer>
+
+</body>
+</html>

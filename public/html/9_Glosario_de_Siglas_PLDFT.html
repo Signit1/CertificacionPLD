@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Glosario de Siglas — PLD/FT</title>
+<style>
+  :root{--navy:#12233d; --teal:#0f7d82; --gold:#c99a3b; --red:#b5432b; --purple:#5c4a8a; --green:#2f6b4f; --paper:#faf8f4; --ink:#1c1c1c; --line:#dcd6c8;}
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.55;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px;}
+  header h1{font-size:clamp(24px,4vw,36px); margin:0 0 10px;}
+  header p{color:#c7d2e0; max-width:70ch; margin:0; font-size:15px;}
+  main{max-width:1000px; margin:0 auto; padding:40px 5vw 90px;}
+  section{margin-bottom:44px;}
+  h2{font-size:18px; color:var(--navy); border-bottom:3px solid var(--c); padding-bottom:8px; margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  h2 .dot{width:14px; height:14px; border-radius:50%; background:var(--c); display:inline-block;}
+
+  .entries{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:10px;
+  }
+  .entry{
+    background:#fff; border:1px solid var(--line); border-left:5px solid var(--c);
+    border-radius:4px; padding:12px 16px;
+  }
+  .entry .sigla{font-weight:700; color:var(--c); font-size:15px;}
+  .entry .full{font-size:13.5px; color:#333; margin-top:2px;}
+  .entry .extra{font-size:12px; color:#8b8570; margin-top:3px; font-style:italic;}
+
+  .search{
+    width:100%; padding:12px 16px; font-size:15px; border:1px solid var(--line);
+    border-radius:6px; margin-bottom:30px; font-family:'Helvetica Neue',Arial,sans-serif;
+    box-sizing:border-box;
+  }
+  .search:focus{outline:2px solid var(--teal);}
+  footer{text-align:center; font-size:12px; color:#8b8570; padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Glosario de Siglas — PLD/FT</h1>
+  <p>Todas las siglas que aparecen en tus documentos oficiales, agrupadas por categoría. Usa el buscador para encontrar una rápido.</p>
+</header>
+
+<main>
+
+  <input type="text" class="search" id="searchBox" placeholder="Buscar una sigla o palabra (ej. UIF, GAFI, propietario real)...">
+
+  <section data-cat="1" style="--c:#12233d">
+    <h2><span class="dot"></span>Autoridades y organismos mexicanos</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">SHCP</div><div class="full">Secretaría de Hacienda y Crédito Público</div><div class="extra">Autoridad rectora del sistema PLD/FT en México</div></div>
+      <div class="entry"><div class="sigla">CNBV</div><div class="full">Comisión Nacional Bancaria y de Valores</div><div class="extra">Órgano desconcentrado de la SHCP; supervisa y certifica</div></div>
+      <div class="entry"><div class="sigla">UIF</div><div class="full">Unidad de Inteligencia Financiera</div><div class="extra">Analiza reportes, detecta operaciones sospechosas, denuncia</div></div>
+      <div class="entry"><div class="sigla">FGR</div><div class="full">Fiscalía General de la República</div><div class="extra">Investiga y persigue los delitos de LD/FT</div></div>
+      <div class="entry"><div class="sigla">SAT</div><div class="full">Servicio de Administración Tributaria</div></div>
+      <div class="entry"><div class="sigla">UBVA</div><div class="full">Unidad de Banca, Valores y Ahorro</div><div class="extra">Área de la SHCP que emite las DCG del Art. 115 LIC</div></div>
+      <div class="entry"><div class="sigla">CNSF</div><div class="full">Comisión Nacional de Seguros y Fianzas</div></div>
+      <div class="entry"><div class="sigla">CONSAR</div><div class="full">Comisión Nacional del Sistema de Ahorro para el Retiro</div></div>
+      <div class="entry"><div class="sigla">CONDUSEF</div><div class="full">Comisión Nacional para la Protección y Defensa de los Usuarios de Servicios Financieros</div></div>
+      <div class="entry"><div class="sigla">ASF</div><div class="full">Auditoría Superior de la Federación</div></div>
+      <div class="entry"><div class="sigla">SFP</div><div class="full">Secretaría de la Función Pública</div></div>
+      <div class="entry"><div class="sigla">SNA</div><div class="full">Sistema Nacional Anticorrupción</div></div>
+      <div class="entry"><div class="sigla">INAI</div><div class="full">Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales</div></div>
+      <div class="entry"><div class="sigla">TFJA</div><div class="full">Tribunal Federal de Justicia Administrativa</div></div>
+    </div>
+  </section>
+
+  <section data-cat="2" style="--c:#0f7d82">
+    <h2><span class="dot"></span>Organismos internacionales</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">GAFI</div><div class="full">Grupo de Acción Financiera Internacional</div><div class="extra">En inglés: FATF (Financial Action Task Force). Creado en 1989 por el G7</div></div>
+      <div class="entry"><div class="sigla">GAFILAT</div><div class="full">Grupo de Acción Financiera de Latinoamérica</div><div class="extra">Organismo regional tipo GAFI (FSRB) para la región</div></div>
+      <div class="entry"><div class="sigla">BCBS</div><div class="full">Comité de Supervisión Bancaria de Basilea</div><div class="extra">Creado en 1974 por los gobernadores de bancos centrales del G10</div></div>
+      <div class="entry"><div class="sigla">ONU</div><div class="full">Organización de las Naciones Unidas</div></div>
+      <div class="entry"><div class="sigla">OEA</div><div class="full">Organización de Estados Americanos</div><div class="extra">Adoptó la Convención Interamericana contra la Corrupción (Caracas)</div></div>
+      <div class="entry"><div class="sigla">OCDE</div><div class="full">Organización para la Cooperación y el Desarrollo Económicos</div></div>
+      <div class="entry"><div class="sigla">UNCAC</div><div class="full">United Nations Convention against Corruption</div><div class="extra">Convención de las Naciones Unidas contra la Corrupción, o "Convención de Mérida"</div></div>
+      <div class="entry"><div class="sigla">G7</div><div class="full">Grupo de los 7</div><div class="extra">Fundó al GAFI en 1989</div></div>
+      <div class="entry"><div class="sigla">G20</div><div class="full">Grupo de los 20</div><div class="extra">Pidió al GAFI abordar el tema de la corrupción</div></div>
+      <div class="entry"><div class="sigla">FSRB</div><div class="full">FATF-Style Regional Body</div><div class="extra">Organismo regional "tipo GAFI" (ej. GAFILAT, CFATF, MONEYVAL)</div></div>
+      <div class="entry"><div class="sigla">ESW</div><div class="full">Egmont Secure Web</div><div class="extra">Plataforma de intercambio entre Unidades de Inteligencia Financiera del mundo</div></div>
+      <div class="entry"><div class="sigla">CFATF</div><div class="full">Grupo de Acción Financiera del Caribe</div></div>
+      <div class="entry"><div class="sigla">MONEYVAL</div><div class="full">Comité de Expertos del Consejo de Europa sobre Lavado de Activos</div></div>
+      <div class="entry"><div class="sigla">GIABA</div><div class="full">Grupo de Acción Intergubernamental contra el Lavado de Activos en África Occidental</div></div>
+      <div class="entry"><div class="sigla">ESAAMLG</div><div class="full">Grupo Anti Lavado de Dinero del África del Este y del Sur</div></div>
+      <div class="entry"><div class="sigla">EAG</div><div class="full">Grupo Euroasiático de Lucha contra el Lavado de Activos y el Financiamiento del Terrorismo</div></div>
+      <div class="entry"><div class="sigla">MENAGAFI</div><div class="full">Grupo de Acción Financiera del Medio Oriente y Norte de África</div></div>
+      <div class="entry"><div class="sigla">APG</div><div class="full">Grupo sobre Lavado de Activos de Asia y Pacífico</div></div>
+      <div class="entry"><div class="sigla">FMI</div><div class="full">Fondo Monetario Internacional</div><div class="extra">Apoya al GAFI: contribuye a sus estándares, evalúa países y da asistencia técnica — no emite sus propias Recomendaciones</div></div>
+      <div class="entry"><div class="sigla">Banco Mundial</div><div class="full">Banco Mundial</div><div class="extra">Mismo rol de apoyo que el FMI ante el GAFI (Art. 13 del Mandato del GAFI)</div></div>
+      <div class="entry"><div class="sigla">UNODC</div><div class="full">Oficina de las Naciones Unidas contra la Droga y el Delito</div><div class="extra">Observador oficial del GAFI; autora de estudios de tipologías (ej. "Tipologías de Corrupción")</div></div>
+    </div>
+  </section>
+
+  <section data-cat="3" style="--c:#5c4a8a">
+    <h2><span class="dot"></span>Leyes y regulación</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">CPF</div><div class="full">Código Penal Federal</div></div>
+      <div class="entry"><div class="sigla">DCG</div><div class="full">Disposiciones de Carácter General</div><div class="extra">Ej. "DCG Art. 115" = las que emanan del Art. 115 de la LIC</div></div>
+      <div class="entry"><div class="sigla">LIC</div><div class="full">Ley de Instituciones de Crédito</div></div>
+      <div class="entry"><div class="sigla">LMV</div><div class="full">Ley del Mercado de Valores</div></div>
+      <div class="entry"><div class="sigla">LGOAAC</div><div class="full">Ley General de Organizaciones y Actividades Auxiliares del Crédito</div></div>
+      <div class="entry"><div class="sigla">LRITF</div><div class="full">Ley para Regular las Instituciones de Tecnología Financiera</div><div class="extra">"Ley Fintech"</div></div>
+      <div class="entry"><div class="sigla">LFPIORPI</div><div class="full">Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita</div><div class="extra">Regula las Actividades Vulnerables</div></div>
+      <div class="entry"><div class="sigla">DOF</div><div class="full">Diario Oficial de la Federación</div></div>
+    </div>
+  </section>
+
+  <section data-cat="4" style="--c:#c99a3b">
+    <h2><span class="dot"></span>Tipos de entidad</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">ITF</div><div class="full">Instituciones de Tecnología Financiera</div></div>
+      <div class="entry"><div class="sigla">ICF</div><div class="full">Instituciones de Financiamiento Colectivo</div><div class="extra">"Crowdfunding"</div></div>
+      <div class="entry"><div class="sigla">IFPE</div><div class="full">Instituciones de Fondos de Pago Electrónico</div><div class="extra">"Wallets" digitales</div></div>
+      <div class="entry"><div class="sigla">SOFOM</div><div class="full">Sociedad Financiera de Objeto Múltiple</div></div>
+      <div class="entry"><div class="sigla">SOFOM ER</div><div class="full">SOFOM Entidad Regulada</div><div class="extra">Vínculo patrimonial con una Entidad Financiera</div></div>
+      <div class="entry"><div class="sigla">SOFOM ENR</div><div class="full">SOFOM Entidad No Regulada</div><div class="extra">Requiere Dictamen Técnico</div></div>
+      <div class="entry"><div class="sigla">SOFIPO</div><div class="full">Sociedad Financiera Popular</div></div>
+      <div class="entry"><div class="sigla">CC</div><div class="full">Centro Cambiario</div></div>
+      <div class="entry"><div class="sigla">TD</div><div class="full">Transmisor de Dinero</div></div>
+    </div>
+  </section>
+
+  <section data-cat="5" style="--c:#b5432b">
+    <h2><span class="dot"></span>Delitos y riesgos</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">PLD/FT</div><div class="full">Prevención de Lavado de Dinero y Financiamiento al Terrorismo</div></div>
+      <div class="entry"><div class="sigla">LD</div><div class="full">Lavado de Dinero</div><div class="extra">Legalmente: "Operaciones con Recursos de Procedencia Ilícita", Art. 400 Bis CPF</div></div>
+      <div class="entry"><div class="sigla">FT</div><div class="full">Financiamiento al Terrorismo</div><div class="extra">Art. 139 Quáter CPF</div></div>
+      <div class="entry"><div class="sigla">FPADM</div><div class="full">Financiamiento a la Proliferación de Armas de Destrucción Masiva</div></div>
+      <div class="entry"><div class="sigla">AML</div><div class="full">Anti-Money Laundering</div><div class="extra">Equivalente en inglés a ALD (Anti Lavado de Dinero)</div></div>
+      <div class="entry"><div class="sigla">CFT</div><div class="full">Combating the Financing of Terrorism</div></div>
+      <div class="entry"><div class="sigla">ALD/CFT</div><div class="full">Anti Lavado de Dinero / Combate al Financiamiento al Terrorismo</div><div class="extra">Como aparece en documentos del GAFI</div></div>
+    </div>
+  </section>
+
+  <section data-cat="6" style="--c:#2f6b4f">
+    <h2><span class="dot"></span>Procesos, reportes y términos técnicos</h2>
+    <div class="entries">
+      <div class="entry"><div class="sigla">EBR</div><div class="full">Enfoque Basado en Riesgo</div></div>
+      <div class="entry"><div class="sigla">ENR</div><div class="full">Evaluación Nacional de Riesgos</div><div class="extra">De LD/FT en México; ediciones 2016, 2019 y 2023</div></div>
+      <div class="entry"><div class="sigla">ROI</div><div class="full">Reporte de Operación Inusual</div></div>
+      <div class="entry"><div class="sigla">TIF</div><div class="full">Transferencias Internacionales de Fondos</div></div>
+      <div class="entry"><div class="sigla">PEP</div><div class="full">Persona Políticamente Expuesta</div></div>
+      <div class="entry"><div class="sigla">AV</div><div class="full">Actividad(es) Vulnerable(s)</div><div class="extra">Régimen de la LFPIORPI</div></div>
+      <div class="entry"><div class="sigla">APNFD</div><div class="full">Actividades y Profesiones No Financieras Designadas</div><div class="extra">En inglés: DNFBP. Recomendación 22 del GAFI</div></div>
+      <div class="entry"><div class="sigla">OSFL</div><div class="full">Organizaciones Sin Fines de Lucro</div></div>
+      <div class="entry"><div class="sigla">KYC</div><div class="full">Know Your Customer</div><div class="extra">"Conozca a su Cliente" — debida diligencia del cliente</div></div>
+      <div class="entry"><div class="sigla">UMA</div><div class="full">Unidad de Medida y Actualización</div><div class="extra">Unidad para calcular multas y umbrales. 2026: $117.31 diarios</div></div>
+      <div class="entry"><div class="sigla">RFC</div><div class="full">Registro Federal de Contribuyentes</div></div>
+      <div class="entry"><div class="sigla">CURP</div><div class="full">Clave Única de Registro de Población</div></div>
+      <div class="entry"><div class="sigla">SPEI</div><div class="full">Sistema de Pagos Electrónicos Interbancarios</div></div>
+      <div class="entry"><div class="sigla">COMPRANET</div><div class="full">Sistema electrónico de información pública gubernamental sobre adquisiciones</div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Compilado a partir de las siglas usadas en tus documentos oficiales (DCG 115, LFPIORPI, LIC, LGOAAC, LRITF, CPF, Mandato GAFI, ENR 2023, Guía Anticorrupción CNBV).
+</footer>
+
+<script>
+  const box = document.getElementById('searchBox');
+  box.addEventListener('input', () => {
+    const q = box.value.toLowerCase().trim();
+    document.querySelectorAll('section').forEach(sec => {
+      let visibleCount = 0;
+      sec.querySelectorAll('.entry').forEach(entry => {
+        const text = entry.textContent.toLowerCase();
+        const match = text.includes(q);
+        entry.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+      sec.style.display = (q === '' || visibleCount > 0) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
