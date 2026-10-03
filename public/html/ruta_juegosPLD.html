@@ -1,0 +1,1058 @@
+<title>Juegos PLD/FT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Spectral:wght@600;700&display=swap');
+/* Layout: una pantalla de navegación en 3 niveles (ley -> juego -> partida), tarjetas tipo fichero/expediente */
+:root{
+  --bg:#faf8f4; --panel:#ffffff; --ink:#1c1c1c; --muted:#6b6652; --line:#dcd6c8;
+  --navy:#12233d; --teal:#0f7d82; --gold:#c99a3b; --red:#b5432b; --green:#2f6b4f;
+  --accent:#0f7d82; --accent-ink:#ffffff; --good:#2f6b4f; --bad:#b5432b; --shadow:0 2px 10px rgba(20,20,10,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15140f; --panel:#1f1d17; --ink:#f2efe6; --muted:#a39d88; --line:#3a382e;
+    --navy:#8fb3e8; --teal:#5fd4d9; --gold:#e6bf6b; --red:#ef8468; --green:#7fcba3;
+    --accent:#5fd4d9; --accent-ink:#0d1a1a; --shadow:0 2px 14px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15140f; --panel:#1f1d17; --ink:#f2efe6; --muted:#a39d88; --line:#3a382e;
+  --navy:#8fb3e8; --teal:#5fd4d9; --gold:#e6bf6b; --red:#ef8468; --green:#7fcba3;
+  --accent:#5fd4d9; --accent-ink:#0d1a1a; --shadow:0 2px 14px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:'Source Sans 3','Helvetica Neue',Arial,sans-serif; -webkit-tap-highlight-color:transparent;}
+h1,h2,h3,.disp{font-family:'Spectral',Georgia,serif;}
+#app{max-width:980px; margin:0 auto; padding:18px 16px 48px; padding-block:18px 48px;}
+header.top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+header.top h1{font-size:clamp(20px,4vw,28px); margin:0; color:var(--navy);}
+header.top .tag{font-size:12.5px; color:var(--muted);}
+.crumbs{display:flex; gap:6px; align-items:center; font-size:13px; color:var(--muted); margin-bottom:14px; flex-wrap:wrap;}
+.crumbs button{background:none; border:none; color:var(--teal); cursor:pointer; font-size:13px; padding:2px 0; text-decoration:underline; font-family:inherit;}
+.crumbs span.sep{color:var(--line);}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px;}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; cursor:pointer; box-shadow:var(--shadow); transition:transform .12s ease, border-color .12s ease; text-align:left;}
+.card:hover{transform:translateY(-2px); border-color:var(--accent);}
+.card .icon{font-size:28px; display:block; margin-bottom:8px;}
+.card h3{margin:0 0 4px; font-size:16px; color:var(--ink);}
+.card p{margin:0; font-size:12.5px; color:var(--muted); line-height:1.4;}
+.card .count{display:inline-block; margin-top:8px; font-size:11px; font-weight:700; letter-spacing:.03em; padding:3px 9px; border-radius:20px; background:color-mix(in srgb, var(--accent) 16%, transparent); color:var(--accent);}
+.card.mixed{background:linear-gradient(135deg, color-mix(in srgb, var(--navy) 90%, transparent), color-mix(in srgb, var(--teal) 70%, var(--navy)));}
+.card.mixed h3, .card.mixed p, .card.mixed .icon{color:#fff;}
+.card.mixed .count{background:rgba(255,255,255,.22); color:#fff;}
+
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; box-shadow:var(--shadow);}
+.btn{font-family:inherit; font-size:14px; font-weight:600; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--ink); padding:9px 16px; cursor:pointer;}
+.btn:hover{border-color:var(--accent);}
+.btn.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+.btn:disabled{opacity:.45; cursor:default;}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.rowbetween{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-bottom:14px;}
+
+.clues{display:grid; gap:7px; margin-top:14px;}
+.clue-item{display:flex; gap:9px; align-items:baseline; font-size:13.5px; padding:8px 10px; border:1px solid var(--line); border-radius:7px; background:color-mix(in srgb, var(--panel) 85%, var(--bg));}
+.clue-item.found{opacity:.55; text-decoration:line-through; border-color:var(--good);}
+.clue-item b{color:var(--teal); white-space:nowrap;}
+
+/* Sopa de letras */
+.wsgrid{display:grid; gap:2px; user-select:none; margin:0 auto; touch-action:none;}
+.wsgrid .cell{display:flex; align-items:center; justify-content:center; aspect-ratio:1; font-size:13px; font-weight:700; background:color-mix(in srgb, var(--bg) 60%, var(--panel)); border-radius:3px; cursor:pointer;}
+.wsgrid .cell.sel{background:color-mix(in srgb, var(--gold) 55%, var(--panel));}
+.wsgrid .cell.found{background:color-mix(in srgb, var(--good) 45%, var(--panel)); color:var(--good);}
+
+/* Crucigrama */
+.cwwrap{overflow-x:auto; padding-bottom:6px;}
+.cwgrid{display:grid; gap:1px; background:var(--line); border:1px solid var(--line); width:max-content; margin:0 auto;}
+.cwcell{width:30px; height:30px; position:relative; background:var(--panel);}
+.cwcell.block{background:transparent;}
+.cwcell input{width:100%; height:100%; border:none; background:transparent; text-align:center; font-size:14px; font-weight:700; text-transform:uppercase; color:var(--ink); font-family:inherit;}
+.cwcell input:focus{outline:2px solid var(--accent); outline-offset:-2px;}
+.cwcell input.ok{color:var(--good);}
+.cwcell input.bad{color:var(--bad);}
+.cwcell .num{position:absolute; top:1px; left:2px; font-size:8px; color:var(--muted); font-weight:700;}
+.cluecols{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:16px;}
+@media (max-width:560px){.cluecols{grid-template-columns:1fr;}}
+.cluecols h4{margin:0 0 6px; font-size:13px; color:var(--teal); text-transform:uppercase; letter-spacing:.04em;}
+.cluecols ul{margin:0; padding-left:0; list-style:none; font-size:13px; display:grid; gap:7px;}
+.cluecols li{line-height:1.4;}
+
+/* Memorama */
+.memgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:9px;}
+@media (max-width:480px){.memgrid{grid-template-columns:repeat(3,1fr);}}
+.memcard{aspect-ratio:3/4; border-radius:8px; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:6px; font-size:12px; font-weight:600; cursor:pointer; box-shadow:var(--shadow); line-height:1.25;}
+.memcard.flip{background:var(--panel); color:var(--ink); border:1px solid var(--accent);}
+.memcard.num{font-family:'Spectral',serif; font-size:15px;}
+.memcard.matched{background:color-mix(in srgb, var(--good) 30%, var(--panel)); color:var(--good); cursor:default; border:1px solid var(--good);}
+.memcard.mismatch{background:color-mix(in srgb, var(--bad) 16%, var(--panel)); color:var(--ink); border:1px solid var(--bad);}
+
+/* Relaciona las columnas */
+.matchwrap{display:grid; grid-template-columns:1.4fr 1fr; gap:16px;}
+@media (max-width:560px){.matchwrap{grid-template-columns:1fr;}}
+.matchcol{display:grid; gap:10px; align-content:start;}
+.matchcard{padding:12px 14px; border-radius:9px; border:1px solid var(--line); background:var(--panel); font-size:13.5px; line-height:1.4; transition:border-color .15s, background .15s;}
+.matchcard.left{cursor:grab; cursor:pointer;}
+.matchcard.left.sel{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 16%, var(--panel));}
+.matchcard.right{text-align:center; font-weight:700; font-family:'Spectral',serif; font-size:16px; display:flex; align-items:center; justify-content:center; min-height:88px; padding:16px; border-width:2px; cursor:pointer;}
+.matchcard.matched{cursor:default; font-weight:600; border-width:2px;}
+.matchcard.right.dragover{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 18%, var(--panel)); transform:scale(1.04);}
+.matchcard.shake{animation:shake .4s;}
+@keyframes shake{ 10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(3px);} 30%,50%,70%{transform:translateX(-5px);} 40%,60%{transform:translateX(5px);} }
+
+/* VF / trampa / completa */
+.statement{font-size:16.5px; line-height:1.5; padding:18px; border-radius:9px; background:color-mix(in srgb, var(--bg) 60%, var(--panel)); border:1px solid var(--line); margin-bottom:16px;}
+.opt{display:block; width:100%; text-align:left; padding:11px 14px; margin-bottom:8px; border-radius:8px; border:1px solid var(--line); background:var(--panel); font-family:inherit; font-size:14px; cursor:pointer; color:var(--ink);}
+.opt:hover{border-color:var(--accent);}
+.opt.correct{background:color-mix(in srgb, var(--good) 22%, var(--panel)); border-color:var(--good);}
+.opt.wrong{background:color-mix(in srgb, var(--bad) 22%, var(--panel)); border-color:var(--bad);}
+.opt:disabled{cursor:default;}
+.feedback{margin-top:10px; padding:12px 14px; border-radius:8px; font-size:13.5px; line-height:1.45;}
+.feedback.good{background:color-mix(in srgb, var(--good) 18%, var(--panel)); color:var(--good);}
+.feedback.bad{background:color-mix(in srgb, var(--bad) 18%, var(--panel)); color:var(--bad);}
+.hud{display:flex; gap:18px; font-size:13px; color:var(--muted); margin-bottom:14px; flex-wrap:wrap;}
+.hud b{color:var(--ink); font-variant-numeric:tabular-nums;}
+.timerbar{height:6px; background:var(--line); border-radius:4px; overflow:hidden; margin-bottom:16px;}
+.timerbar div{height:100%; background:var(--accent); transition:width 1s linear;}
+
+/* Trivia */
+.jboard{display:grid; gap:6px; overflow-x:auto;}
+.jcat{font-size:11.5px; font-weight:700; text-align:center; padding:8px 4px; background:var(--navy); color:#fff; border-radius:6px; text-transform:uppercase; letter-spacing:.02em;}
+.jcell{aspect-ratio:1.3; display:flex; align-items:center; justify-content:center; background:var(--teal); color:#fff; font-weight:700; font-size:15px; border-radius:6px; cursor:pointer; font-family:'Spectral',serif;}
+.jcell.used{background:var(--line); color:var(--muted); cursor:default;}
+.jmodal{position:fixed; inset:0; background:rgba(10,10,8,.55); display:flex; align-items:center; justify-content:center; padding:20px; z-index:10;}
+.jmodal .box{background:var(--panel); border-radius:12px; padding:28px; max-width:480px; width:100%; text-align:center; box-shadow:var(--shadow);}
+.jmodal .box .q{font-size:18px; margin-bottom:18px; line-height:1.4;}
+.jmodal .box .a{font-size:20px; font-weight:700; color:var(--teal); margin-bottom:18px; font-family:'Spectral',serif;}
+
+footer.foot{text-align:center; font-size:12px; color:var(--muted); padding:24px 0 6px;}
+.empty{text-align:center; padding:30px; color:var(--muted); font-size:14px;}
+</style>
+
+<div id="app"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= DATA ================= */
+const LAWS = [
+  { id:'cpf', label:'CPF', full:'Código Penal Federal (CPF)', icon:'⚖️', color:'#b5432b', items:[
+    {num:'400 Bis', topic:'Lavado de Dinero (LD) — pena de 5 a 15 años y 1,000 a 5,000 días multa', word:'LAVADODEDINERO', clue:'Delito de adquirir, administrar, ocultar o transferir recursos sabiendo que provienen de una actividad ilícita (Art. 400 Bis)',
+      detail:'Tipifica el delito de Lavado de Dinero (LD): sanciona a quien adquiere, enajena, administra, custodia, cambia, deposita, invierte, transporta o transfiere recursos, derechos o bienes de cualquier naturaleza, o bien oculta o encubre su naturaleza, origen, ubicación o titularidad, sabiendo que proceden de una actividad ilícita. La pena es de 5 a 15 años de prisión y de 1,000 a 5,000 días multa. Para ejercer la acción penal se requiere la denuncia previa de la Secretaría de Hacienda y Crédito Público (SHCP), que tiene el carácter de víctima u ofendida.'},
+    {num:'400 Bis 1', topic:'Agravantes del Lavado de Dinero (LD) — hasta +50%, duplicada o inhabilitación', word:'AGRAVANTES', clue:'Artículo que aumenta hasta en una mitad, o duplica, la pena del Art. 400 Bis según quién cometa el delito',
+      detail:'No tiene pena propia: aumenta de un tercio hasta en una mitad la pena del Art. 400 Bis cuando lo comete un consejero, administrador, funcionario, empleado o prestador de servicios de una persona sujeta al régimen de PLD/FT (o lo fue en los 2 años anteriores), con inhabilitación adicional por un tiempo igual al de la prisión. Duplica la pena si lo comete un servidor público —o ex servidor público, dentro de los 2 años posteriores— encargado de prevenir, detectar, denunciar, investigar o juzgar estos delitos. También la aumenta hasta en una mitad si se utilizan menores de edad o personas sin capacidad de comprender el hecho.'},
+    {num:'400', topic:'Encubrimiento — pena de 3 meses a 3 años y 15 a 60 días multa (menor que la de LD)', word:'ENCUBRIMIENTO', clue:'Ayudar a quien ya cometió un delito a ocultarse o beneficiarse, sin haber participado en él (Art. 400, distinto del Lavado de Dinero)',
+      detail:'Tipifica el Encubrimiento: ayudar a alguien que ya cometió un delito a ocultar pruebas, a huir o a aprovechar lo obtenido, sin haber participado en el delito original. Su pena es de 3 meses a 3 años de prisión y de 15 a 60 días multa, notablemente menor a la de Lavado de Dinero (LD): el encubrimiento no requiere que el recurso se intente reinsertar en la economía formal, basta con ocultarlo o ayudar a quien delinquió.'},
+    {num:'139', topic:'Terrorismo — pena de 15 a 40 años y multa de 400 a 1,200 UMA', word:'TERRORISMO', clue:'Delito de realizar actos violentos contra bienes, servicios o personas para causar alarma o terror y presionar a la autoridad (Art. 139)',
+      detail:'Tipifica el delito de Terrorismo: usar sustancias tóxicas, armas, explosivos, incendio, inundación o cualquier medio violento para realizar actos contra bienes, servicios o la vida de las personas, que produzcan alarma, temor o terror en la población o en un sector de ella, para atentar contra la seguridad nacional o presionar a la autoridad. Pena: 15 a 40 años de prisión y multa de 400 a 1,200 veces el valor diario de la Unidad de Medida y Actualización (UMA). La pena aumenta en una mitad si el delito es contra un inmueble de acceso público, genera daño a la economía nacional, o se toma un rehén.'},
+    {num:'139 Bis', topic:'Encubrir a un terrorista — pena de 1 a 9 años', word:'ENCUBRETERRORISTA', clue:'Conducta de quien encubre a un terrorista conociendo sus actividades o su identidad (Art. 139 Bis)',
+      detail:'Sanciona con 1 a 9 años de prisión y 100 a 300 días multa a quien encubra a un terrorista, teniendo conocimiento de sus actividades o de su identidad.'},
+    {num:'139 Ter', topic:'Amenazar con cometer terrorismo — pena de 5 a 15 años', word:'AMENAZATERRORISTA', clue:'Conducta de quien amenaza con cometer el delito de terrorismo del Art. 139 (Art. 139 Ter)',
+      detail:'Sanciona con 5 a 15 años de prisión y 200 a 600 días multa a quien amenace con cometer el delito de terrorismo a que se refiere el primer párrafo del Art. 139.'},
+    {num:'139 Quáter', topic:'Financiamiento al Terrorismo (FT) — misma pena que el Art. 139', word:'FINANCIAMIENTOTERRORISMO', clue:'Delito de aportar o recaudar fondos sabiendo que se usarán para financiar actividades terroristas (Art. 139 Quáter, FT)',
+      detail:'Tipifica el Financiamiento al Terrorismo (FT): aportar o recaudar fondos o recursos de cualquier naturaleza, por cualquier medio, directa o indirectamente, con conocimiento de que se destinarán a financiar o apoyar a individuos u organizaciones terroristas, o para cometer terrorismo, sabotaje, terrorismo internacional, ataques a vías de comunicación o robo. Se impone la misma pena que el Art. 139: 15 a 40 años de prisión y multa de 400 a 1,200 UMA. Es, junto con el Art. 400 Bis, el fundamento penal del régimen de PLD/FT.'},
+    {num:'139 Quinquies', topic:'Encubrir el financiamiento al terrorismo — pena de 1 a 9 años', word:'ENCUBREFINANCIAMIENTO', clue:'Conducta de quien encubre a una persona que participó en el delito del Art. 139 Quáter (Art. 139 Quinquies)',
+      detail:'Sanciona con 1 a 9 años de prisión y 100 a 300 días multa a quien encubra a una persona que haya participado en el delito de Financiamiento al Terrorismo (FT) previsto en el Art. 139 Quáter.'},
+    {num:'148 Bis', topic:'Terrorismo Internacional — pena de 15 a 40 años (contra bienes o personas de otro Estado)', word:'TERRORISMOINTERNACIONAL', clue:'Delito similar al Art. 139, pero contra bienes, personas o funcionarios de un Estado extranjero u organismo internacional (Art. 148 Bis)',
+      detail:'Tipifica el Terrorismo Internacional: realizar en territorio mexicano actos violentos contra bienes, personas o servicios de un Estado extranjero o de un organismo internacional, o contra una "persona internacionalmente protegida" (jefes de Estado o de gobierno, ministros de relaciones exteriores, diplomáticos y sus familias). Pena: 15 a 40 años de prisión y multa de 400 a 1,200 días multa, la misma del Art. 139 pero para actos con proyección internacional. Es, junto con los Arts. 139 y 400 Bis, uno de los tres delitos para los que la Ley de la CNBV (Art. 4, fracc. X) exige certificar a los auditores y oficiales de cumplimiento.'},
+    {num:'29', topic:'Definición de "día multa" — tope de 1,000 días multa salvo que la ley diga otra cosa', word:'DIAMULTA', clue:'Unidad con la que el CPF calcula multas, basada en el ingreso diario del sentenciado (Art. 29)',
+      detail:'Define qué es un "día multa": equivale a la percepción neta diaria de la persona sentenciada al momento de cometer el delito, considerando todos sus ingresos, con un límite inferior igual al salario mínimo diario vigente donde se cometió el delito. Por regla general, los días multa de una sanción no pueden exceder de 1,000, salvo que la propia ley señale otra cosa. No debe confundirse con la Unidad de Medida y Actualización (UMA), que es la referencia que sí usan la LFPIORPI y otras leyes administrativas para fijar montos y umbrales.'},
+  ]},
+  { id:'lic', label:'LIC', full:'Ley de Instituciones de Crédito (LIC)', icon:'🏦', color:'#12233d', items:[
+    {num:'1', topic:'Objeto de la Ley de Instituciones de Crédito (LIC)', word:'SANOYEQUILIBRADO', clue:'Lo que, junto con la protección de los intereses del público, busca el objeto de la LIC (Art. 1)',
+      detail:'Establece el objeto de la Ley de Instituciones de Crédito (LIC): regular el servicio de banca y crédito, la organización y funcionamiento de las instituciones de crédito (bancos) y las actividades y operaciones que pueden realizar, buscando su sano y equilibrado desarrollo, la protección de los intereses del público, y los términos en que el Estado ejercerá la rectoría financiera del Sistema Bancario Mexicano.'},
+    {num:'2', topic:'Qué es el "servicio de banca y crédito" y quién puede prestarlo', word:'CAPTACION', clue:'Lo que hace una institución al recibir recursos del público para después colocarlos (Art. 2 LIC, servicio de banca y crédito)',
+      detail:'No repite el objeto de la ley (eso es el Art. 1): define qué se considera "servicio de banca y crédito" —la captación de recursos del público en el mercado nacional para su colocación entre el público, mediante operaciones de pasivo directo o contingente— y aclara que solo pueden prestarlo las instituciones de banca múltiple y de banca de desarrollo.'},
+    {num:'115', topic:'Sostiene todo el régimen de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) bancario', word:'REGIMENPLDFT', clue:'Conjunto de medidas que deben seguir los bancos para prevenir el lavado de dinero y el financiamiento al terrorismo (Art. 115 LIC)',
+      detail:'Es el artículo que sostiene todo el régimen de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) de la banca: obliga a las instituciones de crédito a establecer medidas y procedimientos para prevenir y detectar actos que pudieran favorecer el lavado de dinero, y faculta a la autoridad para desarrollar esas obligaciones en detalle mediante disposiciones de carácter general — de ahí nace la DCG 115.'},
+    {num:'109', topic:'Multa "cajón de sastre" — 2,000 a 10,000 días de salario o 0.1% a 1% del capital', word:'CAJONDESASTRE', clue:'Artículo que sanciona cualquier incumplimiento de la LIC o sus disposiciones (como la DCG 115) que no tenga una multa específica en otro artículo (Art. 109)',
+      detail:'Es la sanción "cajón de sastre" de la LIC: castiga la infracción a cualquier precepto de la Ley o de las disposiciones que de ella deriven —incluida la DCG 115, por ejemplo no presentar a tiempo el reporte trimestral de operaciones con Activos Virtuales (Disposición 34ª Quáter)— que no tenga una sanción específica señalada en otro artículo. La multa es de 2,000 a 10,000 días de salario, o del 0.1% al 1% del capital pagado y reservas de capital de la institución, según la gravedad de la infracción. La CNBV puede solo amonestar cuando la conducta no sea grave, no haya reincidencia y no ponga en riesgo a terceros o al sistema financiero.'},
+  ]},
+  { id:'dcg115', label:'DCG 115', full:'Disposiciones de Carácter General Art. 115 LIC (DCG 115)', icon:'📜', color:'#0f7d82', items:[
+    {num:'2ª', topic:'Definiciones — "Control" y 25% del Propietario Real', word:'PROPIETARIOREAL', clue:'Quien, sin aparecer como dueño formal, controla o se beneficia en última instancia de una operación (Disposición 2ª DCG 115)',
+      detail:'Contiene las definiciones que se usan en toda la DCG 115, incluida la de "Control": se considera que una persona tiene el control de una sociedad cuando posee más del 50% de su capital, puede nombrar a la mayoría de sus consejeros, o puede dirigir sus decisiones. De aquí sale también la referencia al 25% para identificar al Propietario Real: quien, sin aparecer como dueño formal, obtiene en última instancia el beneficio de una operación o controla a un cliente persona moral.'},
+    {num:'4ª', topic:'Expediente de identificación del Cliente', word:'IDENTIFICACION', clue:'Conjunto de datos y documentos que la institución debe integrar y conservar de cada Cliente antes de abrir una cuenta (Disposición 4ª)',
+      detail:'Obliga a las instituciones a integrar y conservar un expediente de identificación de cada uno de sus Clientes antes de que, de manera presencial, abran una cuenta o celebren un contrato para realizar operaciones: nombre completo sin abreviaturas, género, fecha y entidad de nacimiento, identificación oficial, Registro Federal de Contribuyentes (RFC), comprobante de domicilio, entre otros datos.'},
+    {num:'4ª Bis', topic:'Identificación cuando el Usuario es un Fideicomiso', word:'FIDEICOMISOUSUARIO', clue:'Datos adicionales que se recaban cuando quien participa en la operación es un Fideicomiso, no una persona física (Disposición 4ª Bis)',
+      detail:'Regula qué datos adicionales deben recabar las instituciones cuando los Fideicomisos actúan como Usuarios en una operación: el número o referencia del Fideicomiso, su Registro Federal de Contribuyentes (RFC), la denominación de la fiduciaria, y el nombre completo del representante legal, apoderado o delegado fiduciario.'},
+    {num:'4ª Ter', topic:'Identificación no presencial (a distancia)', word:'NOPRESENCIAL', clue:'Modalidad de apertura de cuenta a distancia que exige, además de los datos de la 4ª, la Geolocalización del Dispositivo (Disposición 4ª Ter)',
+      detail:'Regula bajo qué condiciones se permite la identificación no presencial: cuando una institución abre una cuenta o celebra un contrato a través de Dispositivos, sin que el Cliente acuda físicamente, debe requerir y obtener —además de los datos de identificación de la Disposición 4ª— la Geolocalización del Dispositivo desde el cual se realiza la apertura, así como el consentimiento del Cliente mediante Firma Electrónica o Firma Electrónica Avanzada.'},
+    {num:'14ª Bis', topic:'Cuentas Nivel 1 a 4 (montos en Unidades de Inversión, UDI)', word:'NIVELESCUENTA', clue:'Clasificación de cuentas en 4 categorías según el monto mensual permitido (Disposición 14ª Bis)',
+      detail:'Clasifica las cuentas en cuatro niveles (Nivel 1 a Nivel 4) según el monto máximo mensual de abonos permitido, expresado en Unidades de Inversión (UDI). A menor nivel, menos documentación de identificación se exige al Cliente, pero también es menor el monto que puede manejar; los cuatro niveles son fracciones de esta misma disposición, no cuatro reglas distintas.'},
+    {num:'24ª', topic:'Conocimiento del Cliente y perfil transaccional', word:'PERFILCLIENTE', clue:'Expectativa de comportamiento transaccional que se construye para cada Cliente (Disposición 24ª)',
+      detail:'Obliga a las instituciones a construir un perfil transaccional de cada Cliente, con base en su actividad, sus ingresos declarados y su comportamiento esperado, para poder comparar sus operaciones reales contra ese perfil y detectar cuándo algo se sale de lo normal — la base técnica del Conocimiento del Cliente.'},
+    {num:'33ª', topic:'Dólares en efectivo — tope mensual Persona Física/Moral (PF/PM)', word:'DOLARESEFECTIVO', clue:'Depósitos en moneda extranjera que la Disposición 33ª limita mensualmente por Cliente PF/PM',
+      detail:'Fija el tope mensual que una institución puede recibir en dólares en efectivo de un mismo Cliente, sea Persona Física o Persona Moral (PF/PM), antes de requerir alguno de los regímenes reforzados de las disposiciones siguientes (33ª Bis o 33ª Bis 1).'},
+    {num:'33ª Bis', topic:'Dólares en efectivo — régimen de 14,000 USD al mes', word:'LIMITEMENSUAL', clue:'Tope de 14,000 USD al mes en depósitos de dólares en efectivo, sin exigir antigüedad (Disposición 33ª Bis)',
+      detail:'Crea el régimen de dólares en efectivo con un límite de 14,000 USD al mes por Cliente, que no exige que la empresa tenga una antigüedad mínima: es el régimen "estándar" para operar en efectivo en dólares dentro de ese tope.'},
+    {num:'33ª Bis 1', topic:'Dólares en efectivo — régimen sin límite (requiere 3 años de constituida)', word:'SINLIMITE', clue:'Régimen de dólares en efectivo sin tope mensual, que exige 3 años de constituida entre sus 6 requisitos (Disposición 33ª Bis 1)',
+      detail:'Crea el régimen de dólares en efectivo SIN límite mensual, pero a cambio exige cumplir 6 requisitos reforzados, entre ellos que la empresa tenga al menos 3 años de constituida. Este es el dato que suele confundirse en el examen: el requisito de los 3 años es de este régimen sin límite (33ª Bis 1), no del tope de 14,000 USD de la 33ª Bis.'},
+    {num:'33ª Ter', topic:'Dólares en efectivo — régimen para Usuarios (no Clientes)', word:'USUARIOS', clue:'Personas que reciben un servicio puntual, como cambiar dólares, sin ser Clientes formales (Disposición 33ª Ter)',
+      detail:'Regula el régimen de dólares en efectivo aplicable a los Usuarios: personas que reciben un servicio puntual, como cambiar dólares, sin ser Clientes formales de la institución, con montos distintos a los que aplican cuando sí hay una relación de Cliente.'},
+    {num:'34ª', topic:'Operaciones Relevantes', word:'RELEVANTES', clue:'Tipo de operación que se reporta por superar un monto, sin que sea necesariamente sospechosa (Disposición 34ª)',
+      detail:'Define qué es una Operación Relevante: aquella que, por superar cierto monto en efectivo, debe reportarse a la autoridad aunque no tenga nada de sospechoso — es un reporte que se dispara por el monto, no por sospecha.'},
+    {num:'34ª Quáter', topic:'Activos Virtuales', word:'ACTIVOVIRTUAL', clue:'Lo que comúnmente se conoce como criptomoneda (Disposición 34ª Quáter)',
+      detail:'Extiende las obligaciones de identificación y reporte a las operaciones con Activos Virtuales (lo que comúnmente se conoce como criptomonedas) cuando una institución financiera las ofrece a sus Clientes.'},
+    {num:'35ª', topic:'Reporte mensual de Transferencias Internacionales de Fondos (TIF)', word:'TRANSFERENCIAS', clue:'Reporte mensual que se envía por cada transferencia internacional igual o superior a 1,000 USD (Disposición 35ª, TIF)',
+      detail:'Obliga a las instituciones a remitir mensualmente, dentro de los 15 días hábiles siguientes, un reporte por cada Transferencia Internacional de Fondos (TIF) que un Cliente o Usuario haya recibido o enviado por un monto igual o superior a 1,000 dólares de los Estados Unidos de América (o su equivalente), señalando los países o jurisdicciones involucrados.'},
+    {num:'36ª', topic:'Datos adicionales en TIF para pago de remesas', word:'REMESAS', clue:'Información adicional sobre el Destinatario que deben especificar las instituciones que pagan remesas del extranjero (Disposición 36ª)',
+      detail:'Complementa a la Disposición 35ª: cuando la Transferencia Internacional de Fondos (TIF) es para pago de remesas que la institución recibe directamente del extranjero o a través de Transmisores de Dinero, por montos iguales o superiores a 1,000 USD, debe especificar datos adicionales del Destinatario —nombre completo, fecha de nacimiento, Clave Única de Registro de Población (CURP) o Registro Federal de Contribuyentes (RFC) si es persona física, o denominación y giro mercantil si es persona moral.'},
+    {num:'37ª', topic:'Operación Inusual — plazo de 3 días hábiles', word:'INUSUAL', clue:'Operación que no coincide con el perfil del Cliente ni tiene justificación aparente (Disposición 37ª)',
+      detail:'Define la Operación Inusual: una operación que no coincide con el perfil transaccional del Cliente, o que no tiene una justificación económica o lícita aparente. La institución tiene un plazo de 3 días hábiles, contados desde que la detecta internamente, para analizarla y decidir si debe reportarse.'},
+    {num:'41ª', topic:'Reporte de 24 horas (Lavado de Dinero, LD, y Financiamiento al Terrorismo, FT)', word:'REPORTEURGENTE', clue:'Aviso que debe enviarse en 24 horas al detectar un vínculo claro con LD o FT (Disposición 41ª)',
+      detail:'Crea el Reporte de 24 horas: cuando una institución detecta una operación que relaciona claramente a un cliente con posibles recursos de Lavado de Dinero (LD) o Financiamiento al Terrorismo (FT) —por ejemplo, al aparecer en una lista de personas vinculadas al crimen organizado— debe reportarlo a la autoridad en ese plazo tan corto, sin esperar al reporte mensual ordinario.'},
+    {num:'43ª', topic:'Funciones del Comité de Comunicación y Control', word:'COMITECONTROL', clue:'Órgano interno que aprueba el Manual de Cumplimiento y dictamina qué operaciones se reportan como inusuales (Disposición 43ª)',
+      detail:'Crea al Comité de Comunicación y Control y enlista sus funciones: aprobar el Manual de Cumplimiento, conocer los resultados de auditoría, clasificar a los Clientes de alto riesgo, dictaminar qué Operaciones deben reportarse como Inusuales u Operaciones Internas Preocupantes, y aprobar los programas de capacitación en materia de los Arts. 139 Quáter o 400 Bis del Código Penal Federal (CPF).'},
+    {num:'44ª', topic:'Integración del Comité — mínimo 3 miembros, Auditor Interno solo con voz', word:'INTEGRACIONCOMITE', clue:'Número mínimo de miembros que debe tener el Comité de Comunicación y Control, y cómo participa el Auditor Interno (Disposición 44ª)',
+      detail:'Regula la integración del Comité: debe tener al menos 3 miembros titulares de las áreas designadas por el consejo de administración, y sesionar al menos una vez al mes. El Auditor Interno no forma parte del Comité, pero debe participar en sus sesiones con voz, sin voto. Las Entidades con menos de 25 personas a su servicio no están obligadas a constituir el Comité; sus funciones las asume el Oficial de Cumplimiento.'},
+    {num:'45ª', topic:'Votación y actas del Comité', word:'VOTACIONCOMITE', clue:'Mayoría necesaria para que el Comité tome decisiones, y qué documento debe levantarse de cada sesión (Disposición 45ª)',
+      detail:'Fija cómo decide el Comité de Comunicación y Control: por voto favorable de la mayoría de los miembros presentes, con voto de calidad del presidente en caso de empate; de cada sesión debe levantarse un acta firmada por el presidente y el secretario, y conservarse la documentación que justifique por qué se reportó o no cada Operación analizada.'},
+    {num:'72ª', topic:'Qué hacer al encontrar a un Cliente en la Lista de Personas Bloqueadas', word:'LISTABLOQUEADA', clue:'Medida inmediata que debe tomar la institución al identificar a un Cliente en la Lista de Personas Bloqueadas (Disposición 72ª)',
+      detail:'Obliga a la institución, al identificar que un Cliente o Usuario está en la Lista de Personas Bloqueadas, a: (I) suspender de inmediato cualquier acto u operación con esa persona, y (II) remitir a la autoridad, dentro de 24 horas, un reporte de Operación Inusual con la leyenda "Lista de Personas Bloqueadas". Debe además notificar por escrito al Cliente la causa de su inclusión.'},
+    {num:'73ª', topic:'Derecho de audiencia de la persona incluida en la Lista', word:'AUDIENCIABLOQUEADA', clue:'Procedimiento ante la UIF que puede seguir una persona para impugnar su inclusión en la Lista de Personas Bloqueadas (Disposición 73ª)',
+      detail:'Da a la persona incluida en la Lista de Personas Bloqueadas el derecho de audiencia ante el Titular de la Unidad de Inteligencia Financiera (UIF): tiene 10 días hábiles para manifestar lo que a su derecho convenga y aportar pruebas, y la UIF debe resolver si procede o no su eliminación de la Lista dentro de los 10 días hábiles siguientes.'},
+  ]},
+  { id:'lgoaac', label:'LGOAAC', full:'Ley General de Organizaciones y Actividades Auxiliares del Crédito (LGOAAC)', icon:'💱', color:'#5c4a8a', items:[
+    {num:'3o.', topic:'Único que sigue vigente como organización auxiliar del crédito: Almacenes Generales de Depósito', word:'ALMACENES', clue:'Única organización auxiliar del crédito que sigue vigente bajo este artículo (Art. 3o. LGOAAC)',
+      detail:'Establece qué entidades siguen reguladas como "organización auxiliar del crédito" bajo esta ley. En la práctica, casi todas las demás figuras que históricamente estaban aquí ya migraron a otras leyes, y la única que sigue verdaderamente vigente bajo este artículo son los Almacenes Generales de Depósito: empresas que guardan mercancía y emiten certificados que sirven como garantía para créditos.'},
+    {num:'81-A', topic:'Qué es un Centro Cambiario', word:'CENTROCAMBIARIO', clue:'Empresa que compra y vende divisas al menudeo sin poder captar recursos del público (Art. 81-A LGOAAC)',
+      detail:'Define qué es un Centro Cambiario: una empresa que se dedica, de manera profesional, a la compra y venta de divisas (cambio de moneda extranjera) en operaciones al menudeo, pero que no puede captar recursos del público como lo hace un banco.'},
+    {num:'81-A Bis', topic:'Qué es un Transmisor de Dinero', word:'TRANSMISOR', clue:'Empresa que recibe dinero en un lugar para entregarlo en otro, por cuenta del cliente (Art. 81-A Bis LGOAAC)',
+      detail:'Define qué es un Transmisor de Dinero: una empresa que se dedica a recibir dinero en un lugar para entregarlo, por cuenta del cliente, a otra persona en un lugar distinto —por ejemplo, remesas— sin que medie una cuenta bancaria del cliente ni una operación de cambio de divisas por sí misma.'},
+    {num:'86 Bis', topic:'Dictamen Técnico de Centros Cambiarios y Transmisores de Dinero', word:'DICTAMENTECNICO', clue:'Documento de un auditor externo que certifica el cumplimiento operativo de Centros Cambiarios y Transmisores (Art. 86 Bis)',
+      detail:'Obliga a los Centros Cambiarios y a los Transmisores de Dinero a presentar, ante la Comisión Nacional Bancaria y de Valores (CNBV), un Dictamen Técnico elaborado por un auditor externo que certifique que cumplen con los requisitos operativos y de control que exige la ley para poder funcionar.'},
+    {num:'87-C', topic:'Vínculo patrimonial — distingue Sociedad Financiera de Objeto Múltiple Entidad Regulada (SOFOM ER) de Entidad No Regulada (SOFOM ENR)', word:'PATRIMONIAL', clue:'Tipo de vínculo que distingue a una SOFOM ER de una SOFOM ENR (Art. 87-C LGOAAC)',
+      detail:'Distingue, por su vínculo patrimonial con un banco u otra entidad financiera regulada, a la Sociedad Financiera de Objeto Múltiple Entidad Regulada (SOFOM ER) de la Entidad No Regulada (SOFOM ENR): si la SOFOM tiene una relación accionaria o patrimonial con una institución de crédito o entidad financiera regulada, es ER; si opera de forma totalmente independiente, es ENR.'},
+    {num:'87-P', topic:'Dictamen Técnico de la Sociedad Financiera de Objeto Múltiple Entidad No Regulada (SOFOM ENR)', word:'SOFOMENR', clue:'Sociedad Financiera de Objeto Múltiple que presenta su propio Dictamen Técnico ante la CNBV (Art. 87-P LGOAAC)',
+      detail:'Exige a la Sociedad Financiera de Objeto Múltiple Entidad No Regulada (SOFOM ENR) presentar su propio Dictamen Técnico ante la Comisión Nacional Bancaria y de Valores (CNBV), de forma paralela al que deben presentar los Centros Cambiarios y Transmisores de Dinero bajo el Art. 86 Bis.'},
+    {num:'95 Bis', topic:'Obligaciones de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) conjuntas de Centros Cambiarios, Transmisores de Dinero y SOFOM ENR', word:'OBLIGACIONES', clue:'Lo que el Art. 95 Bis impone de forma conjunta a Centros Cambiarios, Transmisores de Dinero y SOFOM ENR',
+      detail:'Impone, de manera conjunta, las obligaciones de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) —identificación de clientes, conservación de expedientes, reportes a la autoridad, etc.— a los Centros Cambiarios, los Transmisores de Dinero y las SOFOM ENR. Es la "trampa clásica" del examen: el Art. 95 (sin "Bis") NO regula esto, solo es un requisito de querella penal para poder perseguir ciertos delitos.'},
+  ]},
+  { id:'lfpiorpi', label:'LFPIORPI', full:'Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita (LFPIORPI)', icon:'🕵️', color:'#2f6b4f', items:[
+    {num:'3, fracc. III', topic:'Definición de Beneficiario Controlador', word:'CONTROLADORDEF', clue:'Persona física que, sin aparecer como titular, obtiene en última instancia el beneficio de un bien o servicio, o controla a un Cliente (Art. 3, fracc. III)',
+      detail:'Define al Beneficiario Controlador: la persona física o grupo de personas físicas que, directamente o por medio de otra persona, obtiene en última instancia el beneficio del uso o aprovechamiento de un bien o servicio, o ejerce el control de un Cliente o Usuario, aunque no aparezca formalmente como titular.'},
+    {num:'3, fracc. IX Bis', topic:'Definición de Persona Políticamente Expuesta (PEP)', word:'PEP', clue:'Quien desempeña o desempeñó un cargo público de alto nivel, en México o en el extranjero (Art. 3, fracc. IX Bis, LFPIORPI)',
+      detail:'Define a la Persona Políticamente Expuesta (PEP), fracción adicionada en la reforma DOF 16-07-2025: quien desempeña o ha desempeñado funciones públicas destacadas en territorio nacional o en un país extranjero.'},
+    {num:'5', topic:'Autoridad competente: la Secretaría de Hacienda y Crédito Público (SHCP)', word:'HACIENDA', clue:'Secretaría que es la autoridad competente para aplicar la LFPIORPI, a través de la UIF (Art. 5)',
+      detail:'Señala que la autoridad competente para aplicar esta ley es la Secretaría de Hacienda y Crédito Público (SHCP), a través de la Unidad de Inteligencia Financiera (UIF) — a diferencia del régimen bancario de la DCG 115, donde la autoridad supervisora directa es la Comisión Nacional Bancaria y de Valores (CNBV).'},
+    {num:'17', topic:'Actividades Vulnerables (AV) y sus umbrales en Unidad de Medida y Actualización (UMA)', word:'VULNERABLES', clue:'Actividades enlistadas una por una, cada una con su propio umbral en UMA (Art. 17 LFPIORPI)',
+      detail:'Es el artículo más extenso y más preguntado del examen en esta ley: enumera, una por una, todas las Actividades Vulnerables (AV) —por ejemplo, venta de inmuebles, de vehículos, de obras de arte, de metales preciosos, servicios de blindaje, juegos con apuesta, entre muchas otras— junto con el umbral de monto, en Unidades de Medida y Actualización (UMA), a partir del cual cada actividad genera obligaciones de identificación y, en su caso, de Aviso.'},
+    {num:'18', topic:'Obligaciones del Sujeto Obligado (identificación, conservación 10 años, Enfoque Basado en Riesgo, EBR)', word:'SUJETOOBLIGADO', clue:'Quien realiza una Actividad Vulnerable y debe identificar clientes y conservar expedientes 10 años (Art. 18 LFPIORPI)',
+      detail:'Enlista las obligaciones generales de quien realiza una Actividad Vulnerable, el "Sujeto Obligado": identificar a sus clientes, conservar su información y documentación por al menos 10 años, aplicar un Enfoque Basado en Riesgo (EBR) para saber a quién vigilar más de cerca, y contar con un manual de políticas de cumplimiento.'},
+    {num:'20', topic:'Representante Encargado del Cumplimiento', word:'CUMPLIMIENTO', clue:'Persona designada dentro de la empresa para vigilar que se cumpla la LFPIORPI (Art. 20, Representante Encargado del ___)',
+      detail:'Obliga a designar a un Representante Encargado del Cumplimiento: la persona dentro de la empresa responsable de que se cumplan las obligaciones de esta ley, de capacitar al personal y de ser el enlace con la autoridad.'},
+    {num:'23', topic:'Plazo del Aviso — día 17 del mes siguiente a la operación', word:'AVISO', clue:'Reporte que debe presentarse a más tardar el día 17 del mes siguiente a la operación (Art. 23 LFPIORPI)',
+      detail:'Fija el plazo para presentar el Aviso —el reporte que se envía a la autoridad cuando una operación alcanza el umbral de la actividad vulnerable correspondiente—: a más tardar el día 17 del mes siguiente a aquel en que se realizó la operación.'},
+    {num:'32', topic:'Restricciones de uso de efectivo', word:'EFECTIVO', clue:'Lo que la LFPIORPI restringe como medio de pago en operaciones de alto valor, como inmuebles o vehículos (Art. 32)',
+      detail:'Restringe el uso de dinero en efectivo y de metales preciosos para pagar ciertas operaciones de alto valor, como la compra de inmuebles o de vehículos, obligando a usar medios de pago que dejen rastro (transferencias, cheques, tarjetas) por encima de ciertos montos.'},
+    {num:'33', topic:'Identificación de forma de pago por fedatarios públicos — umbral 8,025 UMA', word:'FEDATARIOPAGO', clue:'Umbral, en veces el valor de la UMA, a partir del cual un fedatario público debe identificar la forma de pago de un acto u operación (Art. 33)',
+      detail:'Exige a los fedatarios públicos identificar la forma de pago cuando el acto u operación sea igual o superior a 8,025 veces el valor diario de la Unidad de Medida y Actualización (UMA).'},
+    {num:'33 Bis', topic:'Obligación de las sociedades mercantiles de atender requerimientos sobre su Beneficiario Controlador', word:'REQUERIMIENTOCONTROLADOR', clue:'Lo que deben atender las sociedades mercantiles cuando la autoridad les pide determinar claramente a su Beneficiario Controlador (Art. 33 Bis)',
+      detail:'Parte del Capítulo IV Bis "Del Beneficiario Controlador" (adicionado DOF 16-07-2025): obliga a las sociedades mercantiles a atender los requerimientos que realicen las autoridades competentes para determinar claramente a su Beneficiario Controlador.'},
+    {num:'33 Ter', topic:'Registro electrónico del Beneficiario Controlador', word:'REGISTROCONTROLADOR', clue:'Sistema donde las sociedades mercantiles deben registrar la información para identificar a su Beneficiario Controlador (Art. 33 Ter)',
+      detail:'Obliga a las sociedades mercantiles a registrar, en el sistema electrónico de la autoridad, la información necesaria para identificar a la persona o grupo de personas que califiquen como su Beneficiario Controlador.'},
+    {num:'33 Quáter', topic:'Promoción de la identificación del Beneficiario Controlador ante entidades federativas', word:'PROMOCIONCONTROLADOR', clue:'A quiénes se promueve, ante las entidades federativas, que identifiquen a su Beneficiario Controlador igual que las sociedades mercantiles (Art. 33 Quáter)',
+      detail:'Faculta a promover ante las entidades federativas que las sociedades y asociaciones civiles cumplan con la misma identificación del Beneficiario Controlador que exigen los Arts. 33 Bis y 33 Ter a las sociedades mercantiles.'},
+    {num:'53', topic:'Supuestos de infracción (sin montos)', word:'SUPUESTOSINFRACCION', clue:'Artículo que enlista las conductas sancionables de la LFPIORPI, sin fijar todavía ningún monto de multa (Art. 53)',
+      detail:'Enlista los supuestos de infracción administrativa de la ley —no incumplir requerimientos, no cumplir las obligaciones del Art. 18, presentar Avisos extemporáneos, omitir Avisos, incumplir la identificación del Beneficiario Controlador, o participar en actos prohibidos de uso de efectivo del Art. 32— sin fijar los montos de las multas, los cuales están en el Art. 54.'},
+    {num:'54', topic:'Montos de las multas — de 200 a 65,000 UMA según la fracción del Art. 53', word:'SANCIONES', clue:'Artículo que fija, en veces el valor de la UMA, los montos de multa para cada supuesto del Art. 53 (Art. 54)',
+      detail:'Fija las multas en veces el valor diario de la Unidad de Medida y Actualización (UMA): de 200 a 2,000 UMA para las fracciones I a IV del Art. 53 (por ejemplo, no atender requerimientos o no cumplir las obligaciones del Art. 18); de 2,000 a 10,000 UMA para la fracción V (Avisos con retraso mayor al permitido); y de 10,000 a 65,000 UMA, o del 10% al 100% del valor del acto u operación —lo que resulte mayor— para las fracciones VI y VII (omitir Avisos del Art. 17 o participar en operaciones prohibidas con efectivo del Art. 32).'},
+    {num:'54 Bis', topic:'Suspensión temporal de operaciones mientras se corrige el incumplimiento', word:'SUSPENSIONTEMPORAL', clue:'Medida que puede ordenar la autoridad mientras un Sujeto Obligado corrige un incumplimiento, antes de multarlo (Art. 54 Bis)',
+      detail:'Faculta a la Secretaría de Hacienda y Crédito Público (SHCP) a suspender temporalmente las operaciones con ciertos clientes mientras el Sujeto Obligado corrige el incumplimiento detectado.'},
+    {num:'55', topic:'Reducción o condonación de la multa por regularización espontánea', word:'REGULARIZACIONESPONTANEA', clue:'Beneficio que recibe quien corrige su incumplimiento por su propia cuenta, antes de que la autoridad lo detecte (Art. 55)',
+      detail:'Permite que la autoridad se abstenga de sancionar, por única ocasión, a quien regularice espontáneamente su incumplimiento antes de que la autoridad lo detecte; en regularizaciones posteriores, puede reducir hasta en un 50% el monto de la multa.'},
+  ]},
+  { id:'cnbv', label:'Ley CNBV', full:'Ley de la Comisión Nacional Bancaria y de Valores (CNBV)', icon:'🏛️', color:'#c99a3b', items:[
+    {num:'1', topic:'Creación de la Comisión Nacional Bancaria y de Valores (CNBV)', word:'COMISION', clue:'Órgano desconcentrado de la SHCP, con autonomía técnica y facultades ejecutivas, que crea el Art. 1 de su propia ley',
+      detail:'Crea a la Comisión Nacional Bancaria y de Valores (CNBV) como un órgano desconcentrado de la Secretaría de Hacienda y Crédito Público (SHCP), con autonomía técnica y facultades ejecutivas en los términos de su ley.'},
+    {num:'2', topic:'Objeto de la CNBV: supervisar y regular el sistema financiero', word:'ESTABILIDADSISTEMA', clue:'Lo que, junto con el correcto funcionamiento del sistema financiero, procura la supervisión de la CNBV (Art. 2 Ley CNBV)',
+      detail:'Establece el objeto de la Comisión Nacional Bancaria y de Valores (CNBV): supervisar y regular, en el ámbito de su competencia, a las entidades del sistema financiero mexicano (bancos, casas de bolsa, SOFOM, entre otras), para procurar su estabilidad y correcto funcionamiento, así como mantener y fomentar su sano y equilibrado desarrollo, en protección de los intereses del público.'},
+    {num:'4, fracc. X', topic:'Certificación de auditores externos y oficiales de cumplimiento de las entidades supervisadas', word:'CERTIFICACION', clue:'Facultad de la CNBV de la que nace el examen que estás estudiando, renovable cada 5 años (Art. 4, fracc. X)',
+      detail:'Otorga a la Comisión Nacional Bancaria y de Valores (CNBV) la facultad de certificar a los auditores externos independientes y demás profesionales —incluidos los oficiales de cumplimiento— que prestan servicios a las entidades y personas que supervisa, para la verificación del cumplimiento en materia de prevención, detección y reporte de los delitos de los Arts. 139, 148 Bis o 400 Bis del Código Penal Federal (CPF). Es la base legal de donde nace el propio examen de certificación que estás estudiando; la certificación debe renovarse cada 5 años.'},
+    {num:'4, fracc. X Bis', topic:'Certificación de profesionales contratados por la propia CNBV', word:'CERTIFICACIONCONTRATADOS', clue:'A diferencia de la fracc. X, a quién certifica la CNBV cuando ELLA MISMA los contrata (Art. 4, fracc. X Bis)',
+      detail:'Otorga a la Comisión Nacional Bancaria y de Valores (CNBV) la facultad de certificar a los auditores y demás profesionales que coadyuven CON la propia Comisión cuando ésta los contrate —a diferencia de la fracc. X, que certifica a quienes prestan servicios a las entidades supervisadas— para la misma verificación de cumplimiento en materia de los Arts. 139, 148 Bis o 400 Bis del Código Penal Federal (CPF), con renovación cada 5 años.'},
+    {num:'11', topic:'Junta de Gobierno de la CNBV — 13 integrantes en total', word:'JUNTAGOBIERNO', clue:'Máximo órgano de decisión de la CNBV, con 13 integrantes (Art. 11 Ley CNBV)',
+      detail:'Regula la Junta de Gobierno, el máximo órgano de decisión de la Comisión Nacional Bancaria y de Valores (CNBV): está integrada por 13 miembros en total —entre ellos el Secretario de Hacienda, quien la preside, representantes de la propia SHCP, del Banco de México y el Presidente de la Comisión— que aprueban las disposiciones generales y las decisiones más importantes.'},
+  ]},
+  { id:'lritf', label:'LRITF', full:'Ley para Regular las Instituciones de Tecnología Financiera (LRITF, "Ley Fintech")', icon:'💳', color:'#1d6f8c', items:[
+    {num:'2', topic:'Los 6 principios de la Ley para Regular las Instituciones de Tecnología Financiera (LRITF)', word:'PRINCIPIOS', clue:'Los 6 valores que deben guiar a toda Institución de Tecnología Financiera (Art. 2 LRITF)',
+      detail:'Establece los 6 principios que deben guiar la actuación de todas las Instituciones de Tecnología Financiera (ITF): inclusión e innovación financiera, protección al consumidor, preservación de la estabilidad financiera, promoción de la sana competencia, prevención de operaciones ilícitas, y neutralidad tecnológica.'},
+    {num:'15', topic:'Qué es una Institución de Financiamiento Colectivo (ICF, "crowdfunding")', word:'CROWDFUNDING', clue:'Nombre común de las Instituciones de Financiamiento Colectivo, ICF, que solo pueden operar con autorización de la CNBV (Art. 15 LRITF)',
+      detail:'Define a las Instituciones de Financiamiento Colectivo (ICF), conocidas comúnmente como plataformas de "crowdfunding": poner en contacto, de forma habitual y profesional y a través de medios electrónicos o digitales, a personas del público en general para que entre ellas se otorguen financiamientos. Esta actividad solo puede realizarse por personas morales autorizadas como ICF por la Comisión Nacional Bancaria y de Valores (CNBV), previo acuerdo del Comité Interinstitucional.'},
+    {num:'16', topic:'Inversionistas, solicitantes y los 3 tipos de Operaciones de una ICF', word:'INVERSIONISTAS', clue:'Nombre que reciben, en una Institución de Financiamiento Colectivo, quienes aportan recursos a quien los solicita (Art. 16 LRITF)',
+      detail:'Nombra a los Clientes de una Institución de Financiamiento Colectivo (ICF): inversionistas (quienes aportan recursos) y solicitantes (quienes los requieren). Define los 3 tipos de Operaciones que pueden realizar entre ellos: financiamiento colectivo de deuda (préstamos o créditos), de capital (compra de títulos representativos del capital social) y de copropiedad o regalías (participación en un bien, ingresos o utilidades futuras). Las Operaciones se denominan en moneda nacional, salvo que el Banco de México autorice moneda extranjera o activos virtuales; los títulos no pueden estar inscritos en el Registro Nacional de Valores.'},
+    {num:'22', topic:'Instituciones de Fondos de Pago Electrónico (IFPE, "wallets")', word:'WALLET', clue:'Nombre común de las Instituciones de Fondos de Pago Electrónico, IFPE (Art. 22 LRITF)',
+      detail:'Regulan a las Instituciones de Fondos de Pago Electrónico (IFPE), conocidas como "wallets" o monederos electrónicos: empresas que emiten, administran y permiten transferir fondos de pago electrónico, es decir, dinero electrónico, a través de aplicaciones o plataformas digitales.'},
+    {num:'35', topic:'Comité Interinstitucional (Secretaría de Hacienda y Crédito Público, Banco de México y Comisión Nacional Bancaria y de Valores)', word:'COMITEFINTECH', clue:'Órgano formado por SHCP, Banxico y CNBV que autoriza nuevas ITF y Modelos Novedosos (Art. 35 LRITF)',
+      detail:'Crea el Comité Interinstitucional, integrado por la Secretaría de Hacienda y Crédito Público (SHCP), el Banco de México y la Comisión Nacional Bancaria y de Valores (CNBV), encargado de autorizar a las nuevas Instituciones de Tecnología Financiera (ITF) y de resolver sobre los Modelos Novedosos.'},
+    {num:'Título IV, Cap. I', topic:'Modelos Novedosos — autorización temporal tipo "sandbox"', word:'SANDBOX', clue:'Mecanismo para probar modelos de negocio financieros innovadores bajo supervisión temporal (Título IV, Cap. I LRITF)',
+      detail:'Regula los Modelos Novedosos: un mecanismo tipo "sandbox" que permite probar, de forma temporal y bajo supervisión de la autoridad, modelos de negocio innovadores que usan tecnología para prestar servicios financieros, incluso si todavía no encajan en ninguna figura regulada existente.'},
+    {num:'58', topic:'Obligaciones de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) de las Instituciones de Tecnología Financiera (ITF)', word:'FINTECH', clue:'A quién le exige el Art. 58 LRITF las mismas obligaciones esenciales de PLD/FT que a un banco',
+      detail:'Impone a las Instituciones de Tecnología Financiera (ITF) las mismas obligaciones esenciales de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) que tienen los bancos bajo el Art. 115 de la Ley de Instituciones de Crédito (LIC): identificar clientes, conservar expedientes y reportar operaciones a la autoridad.'},
+    {num:'66 (DCG ITF)', topic:'Reporte trimestral de Operaciones Relevantes — efectivo igual o mayor a 5,000 USD', word:'RELEVANTEFINTECH', clue:'Reporte trimestral de operaciones en efectivo (billetes y monedas) iguales o superiores a 5,000 USD (Art. 66, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a las Instituciones de Tecnología Financiera (ITF) a remitir, dentro de los primeros 10 días hábiles de enero, abril, julio y octubre, un reporte de todas las Operaciones Relevantes de sus Clientes de los 3 meses anteriores. Una Operación Relevante es la que se realiza con billetes y monedas metálicas por un monto igual o superior al equivalente a 5,000 dólares de los Estados Unidos de América (USD). Si ningún Cliente tuvo Operaciones Relevantes en el trimestre, la ITF debe enviar igual un reporte "en ceros".'},
+    {num:'67 (DCG ITF)', topic:'Reporte trimestral de operaciones en efectivo en moneda extranjera — igual o mayor a 500 USD', word:'EFECTIVOEXTRANJEROFINTECH', clue:'Reporte trimestral de operaciones en efectivo en moneda extranjera iguales o superiores a 500 USD (Art. 67, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a las ITF a remitir, en el mismo calendario trimestral que el Art. 66 (10 primeros días hábiles de enero, abril, julio, octubre), un reporte por cada operación en efectivo en moneda extranjera, entre la ITF y sus Clientes o entre estos, por un monto igual o superior a 500 dólares de los Estados Unidos de América (USD) o su equivalente.'},
+    {num:'68 (DCG ITF)', topic:'Reporte mensual de Transferencias Internacionales de Fondos (TIF)', word:'TIFFINTECH', clue:'Reporte que las ITF envían cada mes por cada transferencia internacional de fondos de sus Clientes (Art. 68, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a las ITF a remitir mensualmente, dentro de los 15 días hábiles siguientes al último día hábil del mes anterior, un reporte por cada operación de Transferencia Internacional de Fondos (TIF) que haya recibido o enviado cualquiera de sus Clientes durante ese mes — el mismo esquema que el Art. 68 de la LRITF establece para la propia ley, replicado aquí para el detalle operativo.'},
+    {num:'69 (DCG ITF)', topic:'Reporte de Operación Inusual — 3 días hábiles tras el dictamen del Comité', word:'INUSUALFINTECH', clue:'Plazo para reportar una Operación Inusual una vez que el Comité de la ITF la dictamina como tal (Art. 69, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a la ITF a remitir el reporte de cada Operación Inusual que detecte, dentro de los 3 días hábiles siguientes a que concluya la sesión del Comité que la dictamine como tal. No tiene un monto mínimo: se dispara por el comportamiento sospechoso del Cliente, no por superar un umbral.'},
+    {num:'74 (DCG ITF)', topic:'Reporte trimestral de Operaciones con Activos Virtuales — venta igual o mayor a 7,500 UDI', word:'ACTIVOVIRTUALFINTECH', clue:'Reporte trimestral de operaciones con criptomonedas que las ITF deben enviar a la autoridad (Art. 74, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a las ITF a remitir, en el mismo calendario trimestral de los Arts. 66 y 67 (10 primeros días hábiles de enero, abril, julio, octubre), un reporte cuando el Cliente compre Activos Virtuales con moneda nacional o cualquier divisa, y cuando venda Activos Virtuales a cambio de moneda de curso legal en territorio nacional por un monto igual o superior al equivalente a 7,500 Unidades de Inversión (UDI) — una referencia distinta a la UMA o al dólar que usan otras leyes de este temario.'},
+    {num:'75 (DCG ITF)', topic:'Reporte de Operación Interna Preocupante — personal de la propia ITF', word:'PREOCUPANTEFINTECH', clue:'Reporte sobre un directivo, funcionario o empleado de la propia ITF con comportamiento sospechoso, no sobre un Cliente (Art. 75, Disposiciones del Art. 58 LRITF)',
+      detail:'Obliga a la ITF a remitir el reporte de cada Operación Interna Preocupante —conducta sospechosa de un consejero, directivo, funcionario, empleado o apoderado de la propia institución, por ejemplo un nivel de vida notoriamente superior al de sus ingresos— dentro de los 3 días hábiles siguientes a que el Comité la dictamine, el cual cuenta con un plazo máximo de 60 días naturales desde su detección para emitir ese dictamen.'},
+    {num:'105', topic:'Sanciones por incumplir las obligaciones de PLD/FT del Art. 58', word:'MULTAFINTECH', clue:'Consecuencia económica por no cumplir las obligaciones de PLD/FT del Art. 58 LRITF (Art. 105)',
+      detail:'Sanciona específicamente la violación a las obligaciones de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) del Art. 58: multa del 10% al 100% del monto del acto u operación cuando se realiza con un Cliente ya señalado en la lista de personas bloqueadas; multa del 10% al 100% del monto de la operación inusual no reportada; o, para cualquier otro incumplimiento del Art. 58, multa de 10,000 a 100,000 veces el valor diario de la Unidad de Medida y Actualización (UMA). Las demás sanciones de la ley (multas que impone la CNBV o el Banco de México por otras faltas) están en los Arts. 97, 103 y 104.'},
+  ]},
+  { id:'comp', label:'Complementarias', full:'Reglamentos y leyes complementarias (Reglamento de Supervisión CNBV, RISHCP, LMV, LACP)', icon:'📎', color:'#8a5a3b', items:[
+    {num:'20 (Regl. Supervisión CNBV)', topic:'Requisitos de la orden de visita', word:'ORDENVISITA', clue:'Documento que debe estar fundado y motivado, con 10 requisitos como lugar, fecha, tipo de visita y nombre de los inspectores (Art. 20, Reglamento de Supervisión)',
+      detail:'Enlista los requisitos que debe cumplir el oficio que contiene la orden de visita de la Comisión Nacional Bancaria y de Valores (CNBV): debe estar fundado y motivado, señalar lugar y fecha, nombre de la entidad y su representante, tipo y objeto de la visita, fecha de inicio y duración (máximo 6 meses, prorrogable una vez por el mismo plazo), lugar donde se efectuará, y el nombre de los inspectores que la practicarán.'},
+    {num:'21 (Regl. Supervisión CNBV)', topic:'Notificación de la orden de visita — 2 días hábiles y sus excepciones', word:'INSPECCION', clue:'Plazo con el que normalmente se avisa una visita de la CNBV antes de realizarla (Art. 21, Reglamento de Supervisión)',
+      detail:'Fija cuándo debe notificarse la orden de visita: por regla general, con al menos 2 días hábiles de anticipación, para visitas ordinarias y especiales. Hay dos excepciones en las que puede notificarse en el acto de inicio: las visitas de investigación, y cualquier visita —ordinaria, especial o de investigación— a Centros Cambiarios, Transmisores de Dinero o Sociedades Financieras de Objeto Múltiple Entidad No Regulada (SOFOM ENR), para verificar el cumplimiento del Art. 95 Bis de la LGOAAC.'},
+    {num:'10 (RISHCP)', topic:'Atribuciones de la Unidad de Inteligencia Financiera (UIF) — vive en el Reglamento Interior de la Secretaría de Hacienda y Crédito Público (RISHCP), no en la Ley CNBV', word:'INTELIGENCIA', clue:'Unidad cuyo fundamento legal real está en el RISHCP y no en la Ley CNBV (Art. 10 RISHCP, Unidad de ___ Financiera)',
+      detail:'Contiene el fundamento legal real de la Unidad de Inteligencia Financiera (UIF): sus atribuciones exactas (recibir avisos y reportes, analizarlos y, en su caso, denunciarlos ante el Ministerio Público) están aquí, en el Reglamento Interior de la Secretaría de Hacienda y Crédito Público (RISHCP) — no en la Ley de la Comisión Nacional Bancaria y de Valores (CNBV), como suele creerse por error.'},
+    {num:'212 (LMV)', topic:'Equivalente al Art. 115 de la Ley de Instituciones de Crédito (LIC), pero para Casas de Bolsa', word:'CASABOLSA', clue:'A quién regula el Art. 212 de la LMV, de forma equivalente al Art. 115 de la LIC',
+      detail:'Es, dentro de la Ley del Mercado de Valores (LMV), el equivalente exacto al Art. 115 de la Ley de Instituciones de Crédito (LIC): sostiene el régimen de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) para las Casas de Bolsa, de la misma manera en que el 115 lo hace para los bancos.'},
+    {num:'124 (LACP)', topic:'Equivalente al Art. 115 de la Ley de Instituciones de Crédito (LIC), pero para Sociedades Financieras Populares (SOFIPOS)', word:'SOFIPOS', clue:'A quién regula el Art. 124 de la LACP, de forma equivalente al Art. 115 de la LIC',
+      detail:'Es, dentro de la Ley de Ahorro y Crédito Popular (LACP), el equivalente al Art. 115 de la Ley de Instituciones de Crédito (LIC), pero para las Sociedades Financieras Populares (SOFIPOS): entidades del sector de ahorro y crédito popular que también deben contar con su propio régimen de prevención.'},
+  ]},
+];
+
+const POOL = LAWS.flatMap(l => l.items.map(it => ({...it, lawId:l.id, lawLabel:l.label, lawColor:l.color})));
+
+// Trampas clásicas curadas (confusiones reales que ya corregimos en tus documentos)
+const TRAMPAS = [
+  { lawId:'lgoaac', wrong:'El Art. 95 de la LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) regula las obligaciones de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) de las Casas de Cambio.', correct:'El Art. 95 (sin "Bis") es un requisito de querella penal, no regula Casas de Cambio. Las obligaciones conjuntas de Centros Cambiarios, Transmisores de Dinero y SOFOM ENR están en el Art. 95 Bis.' },
+  { lawId:'dcg115', wrong:'El requisito de "3 años de constituida" aplica al límite de 14,000 USD al mes de la Disposición 33ª Bis.', correct:'El requisito de 3 años de constituida es uno de los 6 requisitos de la Disposición 33ª Bis 1 (régimen sin límite), no de la 33ª Bis.' },
+  { lawId:'lgoaac', wrong:'El Art. 87-D de la LGOAAC distingue a la Sociedad Financiera de Objeto Múltiple Entidad Regulada (SOFOM ER) de la Entidad No Regulada (SOFOM ENR).', correct:'Es el Art. 87-C el que distingue por vínculo patrimonial; el Art. 87-P es el Dictamen Técnico de la SOFOM ENR.' },
+  { lawId:'cnbv', wrong:'La facultad de certificación de la Comisión Nacional Bancaria y de Valores (CNBV) está en el Art. 4, fracciones XXXVI y XXXVIII.', correct:'Está en el Art. 4, fracciones X y X Bis de la Ley CNBV.' },
+  { lawId:'comp', wrong:'La Unidad de Inteligencia Financiera (UIF) está fundamentada en la Ley de la Comisión Nacional Bancaria y de Valores (CNBV).', correct:'El fundamento de la UIF está en el Art. 10 del Reglamento Interior de la Secretaría de Hacienda y Crédito Público (RISHCP), no en la Ley CNBV.' },
+  { lawId:'dcg115', wrong:'Los 4 niveles de cuenta (Nivel 1 a 4) de la DCG 115 están regulados en 4 Disposiciones distintas.', correct:'Los 4 niveles son las fracciones I a IV de una sola Disposición, la 14ª Bis.' },
+  { lawId:'comp', wrong:'El Grupo Wolfsberg (organismo internacional de referencia) tiene 13 bancos miembros.', correct:'Son 12 bancos miembros, desde la fusión de Credit Suisse con UBS en 2023. (Dato de cultura general PLD/FT, no de una ley específica.)' },
+];
+
+/* ================= UTILIDADES ================= */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function pick(arr,n){ return shuffle(arr).slice(0,n); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function lawById(id){ return LAWS.find(l=>l.id===id); }
+
+/* ================= ESTADO / NAVEGACIÓN ================= */
+const app = document.getElementById('app');
+let state = { screen:'laws' };
+
+const GAMES = [
+  { id:'sopa', name:'Sopa de letras', icon:'🔎', desc:'Encuentra los conceptos clave escondidos en la cuadrícula.' },
+  { id:'cruci', name:'Crucigrama', icon:'✏️', desc:'Completa la palabra a partir de la pista de cada artículo.' },
+  { id:'memorama', name:'Memorama', icon:'🃏', desc:'Empareja cada artículo con su tema.' },
+  { id:'relaciona', name:'Relaciona las columnas', icon:'🔗', desc:'Arrastra o toca para unir cada descripción con su artículo.' },
+  { id:'vf', name:'Verdadero o Falso', icon:'⏱️', desc:'Contrarreloj: ¿la afirmación es correcta?' },
+  { id:'trampa', name:'Detecta la trampa', icon:'🪤', desc:'Encuentra el error en la afirmación — basado en confusiones reales.' },
+  { id:'completa', name:'Completa el enunciado', icon:'📝', desc:'Elige el artículo correcto para cada tema.' },
+  { id:'trivia', name:'Trivia por categorías', icon:'🏆', desc:'Tablero estilo concurso, por puntos.' },
+];
+
+function go(screen, extra){ state = Object.assign({screen}, extra||{}); render(); window.scrollTo({top:0}); }
+
+function crumbsHTML(){
+  const parts = [{label:'Leyes', screen:'laws'}];
+  if(state.lawId){
+    const l = state.lawId==='mixed' ? {label:'Modo Revuelto'} : {label: lawById(state.lawId).label};
+    parts.push({label:l.label, screen:'games', lawId:state.lawId});
+  }
+  if(state.gameId){
+    const g = GAMES.find(g=>g.id===state.gameId);
+    parts.push({label:g.name});
+  }
+  return '<div class="crumbs">' + parts.map((p,i)=>{
+    const isLast = i===parts.length-1;
+    const sep = i>0 ? '<span class="sep">›</span>' : '';
+    if(isLast || !p.screen) return sep + '<span>'+esc(p.label)+'</span>';
+    return sep + '<button data-nav="'+p.screen+'" data-law="'+(p.lawId||'')+'">'+esc(p.label)+'</button>';
+  }).join('') + '</div>';
+}
+
+function render(){
+  app.innerHTML =
+    '<header class="top"><div><h1>Juegos de Repaso PLD/FT</h1><div class="tag">Prevención de Lavado de Dinero y Financiamiento al Terrorismo — práctica ley por ley</div></div></header>'
+    + crumbsHTML()
+    + '<div id="screen"></div>'
+    + '<footer class="foot">Contenido basado en tu checklist "Artículos para Imprimir y Estudiar" — 8 grupos de leyes, '+POOL.length+' artículos en total.</footer>';
+  app.querySelectorAll('[data-nav]').forEach(b=>{
+    b.addEventListener('click', ()=> go(b.dataset.nav, b.dataset.law ? {lawId:b.dataset.law} : null));
+  });
+  const screenEl = document.getElementById('screen');
+  if(state.screen==='laws') renderLaws(screenEl);
+  else if(state.screen==='games') renderGames(screenEl);
+  else if(state.screen==='play') renderPlay(screenEl);
+}
+
+function renderLaws(el){
+  let html = '<div class="grid">';
+  LAWS.forEach(l=>{
+    html += '<button class="card" data-law="'+l.id+'" style="border-top:4px solid '+l.color+'">'
+      + '<span class="icon">'+l.icon+'</span><h3>'+esc(l.label)+'</h3><p>'+esc(l.full)+'</p>'
+      + '<span class="count">'+l.items.length+' artículo'+(l.items.length===1?'':'s')+'</span></button>';
+  });
+  html += '<button class="card mixed" data-law="mixed"><span class="icon">🔀</span><h3>Modo Revuelto</h3>'
+    + '<p>Todas las leyes mezcladas — para tu repaso final.</p><span class="count">'+POOL.length+' artículos</span></button>';
+  html += '</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('[data-law]').forEach(b=> b.addEventListener('click', ()=> go('games', {lawId:b.dataset.law})));
+}
+
+function renderGames(el){
+  const lawId = state.lawId;
+  const items = lawId==='mixed' ? POOL : lawById(lawId).items.map(it=>({...it, lawId}));
+  let html = '<div class="grid">';
+  GAMES.forEach(g=>{
+    html += '<button class="card" data-game="'+g.id+'"><span class="icon">'+g.icon+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.desc)+'</p></button>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+  el.querySelectorAll('[data-game]').forEach(b=> b.addEventListener('click', ()=> go('play', {lawId, gameId:b.dataset.game})));
+}
+
+function renderPlay(el){
+  const lawId = state.lawId;
+  const items = lawId==='mixed' ? POOL : lawById(lawId).items.map(it=>({...it, lawId}));
+  const gameId = state.gameId;
+  el.innerHTML = '<div class="panel" id="gamebox"></div>';
+  const box = document.getElementById('gamebox');
+  if(gameId==='sopa') playSopa(box, items);
+  else if(gameId==='cruci') playCruci(box, items);
+  else if(gameId==='memorama') playMemorama(box, items);
+  else if(gameId==='relaciona') playRelaciona(box, items);
+  else if(gameId==='vf') playVF(box, items);
+  else if(gameId==='trampa') playTrampa(box, items, lawId);
+  else if(gameId==='completa') playCompleta(box, items);
+  else if(gameId==='trivia') playTrivia(box, items, lawId);
+}
+
+/* ================= SOPA DE LETRAS ================= */
+function buildWordSearch(words){
+  const longest = Math.max(...words.map(w=>w.word.length));
+  const size = Math.max(14, longest + 4);
+  const grid = Array.from({length:size}, ()=>Array(size).fill(''));
+  const dirs = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]];
+  const placed = [];
+  for(const w of words){
+    const word = w.word;
+    let ok = false;
+    for(let attempt=0; attempt<400 && !ok; attempt++){
+      const [dr,dc] = dirs[Math.floor(Math.random()*dirs.length)];
+      const maxRow = dr===1 ? size-word.length : (dr===-1 ? word.length-1 : size-1);
+      const minRow = dr===1 ? 0 : (dr===-1 ? word.length-1 : 0);
+      const maxCol = dc===1 ? size-word.length : (dc===-1 ? word.length-1 : size-1);
+      const minCol = dc===1 ? 0 : (dc===-1 ? word.length-1 : 0);
+      if(maxRow<minRow || maxCol<minCol) continue;
+      const row = minRow + Math.floor(Math.random()*(maxRow-minRow+1));
+      const col = minCol + Math.floor(Math.random()*(maxCol-minCol+1));
+      let fits = true;
+      for(let k=0;k<word.length;k++){
+        const r=row+dr*k, c=col+dc*k;
+        if(r<0||r>=size||c<0||c>=size){ fits=false; break; }
+        const cell = grid[r][c];
+        if(cell!=='' && cell!==word[k]){ fits=false; break; }
+      }
+      if(fits){
+        for(let k=0;k<word.length;k++) grid[row+dr*k][col+dc*k] = word[k];
+        placed.push({...w, row, col, dr, dc});
+        ok = true;
+      }
+    }
+  }
+  for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(grid[r][c]==='') grid[r][c]=String.fromCharCode(65+Math.floor(Math.random()*26));
+  return {grid, placed, size};
+}
+
+function playSopa(box, items){
+  const chosen = pick(items, Math.min(10, items.length));
+  const {grid, placed, size} = buildWordSearch(chosen);
+  const foundSet = new Set();
+  let selStart = null;
+
+  function cellsBetween(r1,c1,r2,c2){
+    const dr = Math.sign(r2-r1), dc = Math.sign(c2-c1);
+    const len = Math.max(Math.abs(r2-r1), Math.abs(c2-c1)) + 1;
+    if((r2-r1)!==dr*(len-1) || (c2-c1)!==dc*(len-1)) return null; // no es línea recta válida
+    const cells = [];
+    for(let k=0;k<len;k++) cells.push([r1+dr*k, c1+dc*k]);
+    return cells;
+  }
+
+  function draw(){
+    let html = '<div class="rowbetween"><h2 style="margin:0;">🔎 Sopa de letras</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<p style="color:var(--muted);font-size:13px;margin-top:-6px;">Busca en la cuadrícula cada <b>palabra en mayúsculas</b> de la lista (arrastra desde la primera hasta la última letra, en cualquier dirección — también de derecha a izquierda o al revés).</p>';
+    html += '<div class="wsgrid" id="grid" style="grid-template-columns:repeat('+size+',1fr); max-width:'+Math.min(560,size*34)+'px;">';
+    for(let r=0;r<size;r++) for(let c=0;c<size;c++){
+      html += '<div class="cell" data-r="'+r+'" data-c="'+c+'">'+grid[r][c]+'</div>';
+    }
+    html += '</div>';
+    html += '<div class="clues" id="clues">' + placed.map((p,i)=>
+      '<div class="clue-item" data-w="'+i+'"><b style="font-family:\'Spectral\',serif;letter-spacing:.04em;color:var(--navy);">'+esc(p.word)+'</b><span>Art. '+esc(p.num)+' — '+esc(p.topic)+'</span></div>'
+    ).join('') + '</div>';
+    html += '<p id="winmsg" style="display:none;color:var(--good);font-weight:700;margin-top:14px;">🎉 ¡Encontraste todas las palabras!</p>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    wireGrid();
+  }
+
+  function wireGrid(){
+    const gridEl = document.getElementById('grid');
+    const cells = gridEl.querySelectorAll('.cell');
+    function cellAt(r,c){ return gridEl.querySelector('.cell[data-r="'+r+'"][data-c="'+c+'"]'); }
+    function clearSel(){ cells.forEach(c=>c.classList.remove('sel')); }
+    function highlight(r1,c1,r2,c2){
+      clearSel();
+      const path = cellsBetween(r1,c1,r2,c2);
+      if(path) path.forEach(([r,c])=> cellAt(r,c).classList.add('sel'));
+    }
+    function finish(r1,c1,r2,c2){
+      clearSel();
+      const path = cellsBetween(r1,c1,r2,c2);
+      if(!path) return;
+      const str = path.map(([r,c])=>grid[r][c]).join('');
+      const rev = str.split('').reverse().join('');
+      placed.forEach((p,i)=>{
+        if(foundSet.has(i)) return;
+        if(p.word===str || p.word===rev){
+          foundSet.add(i);
+          path.forEach(([r,c])=> cellAt(r,c).classList.add('found'));
+          document.querySelector('.clue-item[data-w="'+i+'"]').classList.add('found');
+        }
+      });
+      if(foundSet.size===placed.length) document.getElementById('winmsg').style.display='block';
+    }
+    let dragging = false;
+    cells.forEach(cell=>{
+      const r = +cell.dataset.r, c = +cell.dataset.c;
+      cell.addEventListener('mousedown', e=>{ e.preventDefault(); dragging=true; selStart=[r,c]; highlight(r,c,r,c); });
+      cell.addEventListener('mouseenter', ()=>{ if(dragging && selStart) highlight(selStart[0],selStart[1],r,c); });
+      cell.addEventListener('mouseup', ()=>{ if(dragging && selStart){ finish(selStart[0],selStart[1],r,c); } dragging=false; selStart=null; });
+      cell.addEventListener('touchstart', e=>{ e.preventDefault(); dragging=true; selStart=[r,c]; highlight(r,c,r,c); }, {passive:false});
+      cell.addEventListener('touchmove', e=>{
+        e.preventDefault();
+        const t = e.touches[0];
+        const target = document.elementFromPoint(t.clientX, t.clientY);
+        if(target && target.classList.contains('cell') && selStart) highlight(selStart[0],selStart[1], +target.dataset.r, +target.dataset.c);
+      }, {passive:false});
+      cell.addEventListener('touchend', e=>{
+        e.preventDefault();
+        const t = e.changedTouches[0];
+        const target = document.elementFromPoint(t.clientX, t.clientY);
+        if(target && target.classList.contains('cell') && selStart) finish(selStart[0],selStart[1], +target.dataset.r, +target.dataset.c);
+        dragging=false; selStart=null;
+      }, {passive:false});
+    });
+    document.addEventListener('mouseup', ()=>{ dragging=false; selStart=null; });
+  }
+  draw();
+}
+
+/* ================= CRUCIGRAMA ================= */
+function buildCrossword(words){
+  const chosen = words.slice().sort((a,b)=>b.word.length-a.word.length);
+  const SIZE = 44, OFF = 22;
+  const grid = Array.from({length:SIZE}, ()=>Array(SIZE).fill(null));
+  const placedWords = [];
+  function canPlace(word,row,col,dir){
+    for(let k=0;k<word.length;k++){
+      const r = dir==='V' ? row+k : row;
+      const c = dir==='H' ? col+k : col;
+      if(r<0||r>=SIZE||c<0||c>=SIZE) return false;
+      const cell = grid[r][c];
+      if(cell!==null && cell!==word[k]) return false;
+    }
+    return true;
+  }
+  function place(word,row,col,dir,meta){
+    for(let k=0;k<word.length;k++){
+      const r = dir==='V' ? row+k : row;
+      const c = dir==='H' ? col+k : col;
+      grid[r][c] = word[k];
+    }
+    placedWords.push({...meta, word, row, col, dir});
+  }
+  chosen.forEach((item,i)=>{
+    const word = item.word;
+    if(i===0){ place(word, OFF, OFF - Math.floor(word.length/2), 'H', item); return; }
+    let placedOk = false;
+    outer:
+    for(const pw of placedWords){
+      for(let i2=0;i2<pw.word.length;i2++){
+        for(let i1=0;i1<word.length;i1++){
+          if(word[i1]!==pw.word[i2]) continue;
+          const newDir = pw.dir==='H' ? 'V' : 'H';
+          let row,col;
+          if(newDir==='V'){ row = pw.row - i1; col = pw.col + i2; } else { row = pw.row + i2; col = pw.col - i1; }
+          if(canPlace(word,row,col,newDir)){ place(word,row,col,newDir,item); placedOk=true; break outer; }
+        }
+      }
+    }
+    if(!placedOk){ place(word, OFF + 10 + i, 2, 'H', item); }
+  });
+  let minR=SIZE,maxR=0,minC=SIZE,maxC=0;
+  for(let r=0;r<SIZE;r++) for(let c=0;c<SIZE;c++) if(grid[r][c]!==null){
+    minR=Math.min(minR,r); maxR=Math.max(maxR,r); minC=Math.min(minC,c); maxC=Math.max(maxC,c);
+  }
+  // numeración
+  let n = 1;
+  const numbers = {};
+  for(let r=minR;r<=maxR;r++) for(let c=minC;c<=maxC;c++){
+    if(grid[r][c]===null) continue;
+    const startsH = (c===minC || grid[r][c-1]===null) && c+1<=maxC && grid[r][c+1]!==null;
+    const startsV = (r===minR || grid[r-1][c]===null) && r+1<=maxR && grid[r+1][c]!==null;
+    if(startsH || startsV){ numbers[r+','+c] = n++; }
+  }
+  placedWords.forEach(p=>{ p.number = numbers[p.row+','+p.col]; });
+  return {grid, placedWords, bbox:{minR,maxR,minC,maxC}, numbers};
+}
+
+function playCruci(box, items){
+  const chosen = pick(items, Math.min(10, items.length));
+  const {grid, placedWords, bbox} = buildCrossword(chosen);
+  const rows = bbox.maxR-bbox.minR+1, cols = bbox.maxC-bbox.minC+1;
+  const across = placedWords.filter(p=>p.dir==='H').sort((a,b)=>a.number-b.number);
+  const down = placedWords.filter(p=>p.dir==='V').sort((a,b)=>a.number-b.number);
+
+  let html = '<div class="rowbetween"><h2 style="margin:0;">✏️ Crucigrama</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+  html += '<div class="cwwrap"><div class="cwgrid" id="cwgrid" style="grid-template-columns:repeat('+cols+',30px);">';
+  for(let r=bbox.minR;r<=bbox.maxR;r++) for(let c=bbox.minC;c<=bbox.maxC;c++){
+    if(grid[r][c]===null){ html += '<div class="cwcell block"></div>'; continue; }
+    const num = placedWords.find(p=>p.row===r && p.col===c && p.number)?.number;
+    html += '<div class="cwcell">'+(num?'<span class="num">'+num+'</span>':'')+'<input maxlength="1" data-r="'+r+'" data-c="'+c+'" data-ans="'+grid[r][c]+'"></div>';
+  }
+  html += '</div></div>';
+  html += '<div class="row" style="margin-top:14px;"><button class="btn primary" id="check">Revisar</button><button class="btn" id="reveal">Mostrar respuestas</button></div>';
+  html += '<div class="cluecols"><div><h4>Horizontales →</h4><ul>'+(across.length? across.map(p=>'<li><b>'+p.number+'.</b> '+esc(p.clue||p.topic)+'</li>').join('') : '<li style="color:var(--muted);">— ninguna en esta partida —</li>')+'</ul></div>';
+  html += '<div><h4>Verticales ↓</h4><ul>'+(down.length? down.map(p=>'<li><b>'+p.number+'.</b> '+esc(p.clue||p.topic)+'</li>').join('') : '<li style="color:var(--muted);">— ninguna en esta partida —</li>')+'</ul></div></div>';
+  box.innerHTML = html;
+  document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+
+  const inputs = box.querySelectorAll('.cwcell input');
+  inputs.forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      inp.value = inp.value.toUpperCase().slice(-1);
+      inp.classList.remove('ok','bad');
+      if(inp.value){
+        const r=+inp.dataset.r, c=+inp.dataset.c;
+        const next = box.querySelector('.cwcell input[data-r="'+r+'"][data-c="'+(c+1)+'"]') || box.querySelector('.cwcell input[data-r="'+(r+1)+'"][data-c="'+c+'"]');
+        if(next) next.focus();
+      }
+    });
+  });
+  document.getElementById('check').addEventListener('click', ()=>{
+    inputs.forEach(inp=>{
+      if(!inp.value) return;
+      inp.classList.toggle('ok', inp.value===inp.dataset.ans);
+      inp.classList.toggle('bad', inp.value!==inp.dataset.ans);
+    });
+  });
+  document.getElementById('reveal').addEventListener('click', ()=>{
+    inputs.forEach(inp=>{ inp.value = inp.dataset.ans; inp.classList.add('ok'); inp.classList.remove('bad'); });
+  });
+}
+
+/* ================= MEMORAMA ================= */
+function playMemorama(box, items){
+  const n = Math.min(8, items.length);
+  const chosen = pick(items, n);
+  let cards = [];
+  chosen.forEach((it,i)=>{
+    cards.push({pairId:i, type:'num', text:it.num});
+    cards.push({pairId:i, type:'topic', text:it.topic});
+  });
+  cards = shuffle(cards).map((c,i)=>({...c, id:i}));
+  let flipped = [], matched = new Set(), moves = 0, locked = false, pendingMismatch = false;
+
+  function draw(){
+    let html = '<div class="rowbetween"><h2 style="margin:0;">🃏 Memorama</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<div class="hud"><span>Movimientos: <b>'+moves+'</b></span><span>Parejas: <b>'+matched.size+'/'+n+'</b></span></div>';
+    html += '<div class="memgrid">' + cards.map(c=>{
+      const isFlipped = flipped.includes(c.id) || matched.has(c.pairId);
+      const isMismatch = pendingMismatch && flipped.includes(c.id);
+      const cls = 'memcard' + (isFlipped?' flip':'') + (c.type==='num'?' num':'') + (matched.has(c.pairId)?' matched':'') + (isMismatch?' mismatch':'');
+      return '<div class="'+cls+'" data-id="'+c.id+'">'+(isFlipped ? esc(c.text) : '?')+'</div>';
+    }).join('') + '</div>';
+    if(pendingMismatch) html += '<p style="color:var(--bad);font-size:13.5px;margin-top:12px;font-weight:600;">No es pareja — tómate tu tiempo para leerlas y toca cualquier carta para continuar.</p>';
+    if(matched.size===n) html += '<p style="color:var(--good);font-weight:700;margin-top:14px;">🎉 ¡Completado en '+moves+' movimientos!</p>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    box.querySelectorAll('.memcard').forEach(elm=>{
+      elm.addEventListener('click', ()=>{
+        if(pendingMismatch){
+          flipped = [];
+          pendingMismatch = false;
+          locked = false;
+          moves++;
+          draw();
+          return;
+        }
+        const id = +elm.dataset.id;
+        const card = cards.find(c=>c.id===id);
+        if(locked || matched.has(card.pairId) || flipped.includes(id)) return;
+        flipped.push(id);
+        if(flipped.length===2){
+          const [a,b] = flipped.map(fid=>cards.find(c=>c.id===fid));
+          if(a.pairId===b.pairId){
+            matched.add(a.pairId);
+            flipped = [];
+            moves++;
+            draw();
+          } else {
+            locked = true;
+            pendingMismatch = true;
+            draw();
+          }
+        } else { draw(); }
+      });
+    });
+  }
+  draw();
+}
+
+/* ================= RELACIONA LAS COLUMNAS ================= */
+const PAIR_COLORS = [
+  {bg:'#ffe08a', fg:'#4a3b00'}, {bg:'#8fe3c0', fg:'#003d2b'}, {bg:'#a7c7f2', fg:'#0a2a52'},
+  {bg:'#f7a6c1', fg:'#4a0d24'}, {bg:'#c9b3f2', fg:'#2e1352'}, {bg:'#f5b989', fg:'#4a2600'},
+  {bg:'#8fd6e8', fg:'#063a44'}, {bg:'#d7e07a', fg:'#333d00'},
+];
+function playRelaciona(box, items){
+  const n = Math.min(8, items.length);
+  const chosen = pick(items, n);
+  const leftOrder = shuffle(chosen.map((it,i)=>({...it, pid:i})));
+  const rightOrder = shuffle(chosen.map((it,i)=>({...it, pid:i})));
+  const matched = new Set();
+  let selectedLeft = null;
+  let attempts = 0, correctCount = 0;
+
+  function draw(){
+    let html = '<div class="rowbetween"><h2 style="margin:0;">🔗 Relaciona las columnas</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<p style="color:var(--muted);font-size:13px;margin-top:-6px;">Arrastra cada descripción de la izquierda hasta su artículo en la derecha. En pantalla táctil, toca la descripción y luego el artículo.</p>';
+    html += '<div class="hud"><span>Parejas: <b>'+matched.size+'/'+n+'</b></span><span>Intentos: <b>'+attempts+'</b></span></div>';
+    html += '<div class="matchwrap"><div class="matchcol" id="colLeft">' + leftOrder.map(it=>{
+      const isMatched = matched.has(it.pid);
+      const isSel = selectedLeft===it.pid;
+      const col = PAIR_COLORS[it.pid % PAIR_COLORS.length];
+      const style = isMatched ? ' style="background:'+col.bg+';border-color:'+col.bg+';color:'+col.fg+';"' : '';
+      return '<div class="matchcard left'+(isMatched?' matched':'')+(isSel?' sel':'')+'" draggable="'+(!isMatched)+'" data-pid="'+it.pid+'"'+style+'">'+(isMatched?'✓ ':'')+esc(it.detail||it.topic)+'</div>';
+    }).join('') + '</div>'
+    + '<div class="matchcol" id="colRight">' + rightOrder.map(it=>{
+      const isMatched = matched.has(it.pid);
+      const col = PAIR_COLORS[it.pid % PAIR_COLORS.length];
+      const style = isMatched ? ' style="background:'+col.bg+';border-color:'+col.bg+';color:'+col.fg+';"' : '';
+      return '<div class="matchcard right'+(isMatched?' matched':'')+'" data-pid="'+it.pid+'"'+style+'">'+esc(it.num)+'</div>';
+    }).join('') + '</div></div>';
+    if(matched.size===n) html += '<p style="color:var(--good);font-weight:700;margin-top:14px;">🎉 ¡Completado! '+correctCount+' aciertos de '+attempts+' intentos.</p>'
+      + '<button class="btn primary" id="retry">Jugar otra vez</button>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    const retry = document.getElementById('retry');
+    if(retry) retry.addEventListener('click', ()=> playRelaciona(box, items));
+    wire();
+  }
+
+  function attemptMatch(pidLeft, pidRight, rightEl){
+    if(matched.has(pidLeft)) return;
+    attempts++;
+    if(pidLeft===pidRight){
+      matched.add(pidLeft);
+      correctCount++;
+      selectedLeft = null;
+      draw();
+    } else {
+      selectedLeft = null;
+      if(rightEl){
+        rightEl.classList.add('shake');
+        setTimeout(()=>{ draw(); }, 420);
+      } else {
+        draw();
+      }
+    }
+  }
+
+  function wire(){
+    const leftCards = box.querySelectorAll('.matchcard.left');
+    const rightCards = box.querySelectorAll('.matchcard.right');
+    leftCards.forEach(card=>{
+      if(card.classList.contains('matched')) return;
+      card.addEventListener('click', ()=>{
+        selectedLeft = (selectedLeft === +card.dataset.pid) ? null : +card.dataset.pid;
+        draw();
+      });
+      card.addEventListener('dragstart', e=>{
+        e.dataTransfer.setData('text/plain', String(card.dataset.pid));
+        e.dataTransfer.effectAllowed = 'move';
+      });
+    });
+    rightCards.forEach(card=>{
+      if(card.classList.contains('matched')) return;
+      card.addEventListener('click', ()=>{
+        if(selectedLeft===null) return;
+        attemptMatch(selectedLeft, +card.dataset.pid, card);
+      });
+      card.addEventListener('dragover', e=> e.preventDefault());
+      card.addEventListener('dragenter', e=>{ e.preventDefault(); card.classList.add('dragover'); });
+      card.addEventListener('dragleave', ()=> card.classList.remove('dragover'));
+      card.addEventListener('drop', e=>{
+        e.preventDefault();
+        card.classList.remove('dragover');
+        const pidLeft = +e.dataTransfer.getData('text/plain');
+        attemptMatch(pidLeft, +card.dataset.pid, card);
+      });
+    });
+  }
+  draw();
+}
+
+/* ================= VERDADERO / FALSO ================= */
+function buildVFQuestions(items, trampasForVF){
+  const qs = [];
+  items.forEach(it=>{
+    qs.push({ text:'El artículo '+it.num+' trata sobre: "'+(it.detail||it.topic)+'".', isTrue:true });
+    const other = items.filter(o=>o!==it);
+    if(other.length){
+      const decoy = other[Math.floor(Math.random()*other.length)];
+      qs.push({ text:'El artículo '+it.num+' trata sobre: "'+(decoy.detail||decoy.topic)+'".', isTrue:false, real:it.detail||it.topic });
+    }
+  });
+  trampasForVF.forEach(t=>{
+    qs.push({ text:t.wrong, isTrue:false, real:t.correct });
+  });
+  return shuffle(qs);
+}
+
+function playVF(box, items){
+  const trampasForVF = TRAMPAS.filter(t => items.some(it=>it.lawId===t.lawId));
+  const questions = buildVFQuestions(items, trampasForVF);
+  let idx = 0, score = 0, total = 0, timeLeft = 60, timer = null, answered = false, paused = false;
+
+  function draw(){
+    if(idx>=questions.length) idx = 0;
+    const q = questions[idx];
+    let html = '<div class="rowbetween"><h2 style="margin:0;">⏱️ Verdadero o Falso</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<div class="hud"><span>Tiempo: <b id="time">'+timeLeft+'</b>s</span><span>Aciertos: <b>'+score+'/'+total+'</b></span></div>';
+    html += '<div class="timerbar"><div id="tbar" style="width:'+(timeLeft/60*100)+'%;"></div></div>';
+    html += '<div class="statement">'+esc(q.text)+'</div>';
+    html += '<div class="row"><button class="btn primary" id="btrue" style="flex:1;">Verdadero</button><button class="btn primary" id="bfalse" style="flex:1;">Falso</button></div>';
+    html += '<div id="fb"></div>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=>{ clearInterval(timer); go('games', {lawId:state.lawId}); });
+    document.getElementById('btrue').addEventListener('click', ()=> answer(true));
+    document.getElementById('bfalse').addEventListener('click', ()=> answer(false));
+    answered = false;
+    paused = false;
+  }
+  function answer(choice){
+    if(answered || timeLeft<=0) return;
+    answered = true;
+    paused = true; // el tiempo se detiene mientras lees la retroalimentación
+    const q = questions[idx];
+    total++;
+    const ok = choice===q.isTrue;
+    if(ok) score++;
+    document.getElementById('btrue').disabled = true;
+    document.getElementById('bfalse').disabled = true;
+    const fb = document.getElementById('fb');
+    fb.innerHTML = '<div class="feedback '+(ok?'good':'bad')+'">'+(ok?'Correcto. ':'Incorrecto. ')+(q.isTrue?'':'En realidad: "'+esc(q.real)+'".')+'</div>'
+      + '<button class="btn primary" id="nextq" style="margin-top:10px;">Siguiente pregunta →</button>';
+    document.getElementById('nextq').addEventListener('click', ()=>{ idx++; if(timeLeft>0) draw(); });
+  }
+  function tick(){
+    if(paused) return;
+    timeLeft--;
+    const t = document.getElementById('time'); if(t) t.textContent = timeLeft;
+    const bar = document.getElementById('tbar'); if(bar) bar.style.width = Math.max(0,timeLeft/60*100)+'%';
+    if(timeLeft<=0){
+      clearInterval(timer);
+      box.innerHTML = '<div class="rowbetween"><h2 style="margin:0;">⏱️ ¡Tiempo!</h2><button class="btn" id="back">← Volver a juegos</button></div>'
+        + '<p style="font-size:18px;">Resultado: <b>'+score+' de '+total+'</b> correctas.</p>'
+        + '<button class="btn primary" id="retry">Jugar otra vez</button>';
+      document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+      document.getElementById('retry').addEventListener('click', ()=> playVF(box, items));
+    }
+  }
+  draw();
+  timer = setInterval(tick, 1000);
+}
+
+/* ================= DETECTA LA TRAMPA ================= */
+function playTrampa(box, items, lawId){
+  const curated = TRAMPAS.filter(t => lawId==='mixed' || t.lawId===lawId);
+  const rounds = [];
+  curated.forEach(t=> rounds.push({statement:t.wrong, correct:t.correct, isCurated:true}));
+  // completa con trampas auto-generadas por mezcla de artículo/tema
+  const need = Math.max(0, 6 - rounds.length);
+  const pool = shuffle(items).slice(0, need);
+  pool.forEach(it=>{
+    const other = items.filter(o=>o!==it);
+    if(!other.length) return;
+    const decoy = other[Math.floor(Math.random()*other.length)];
+    rounds.push({ statement:'El artículo '+it.num+' regula en realidad: "'+(decoy.detail||decoy.topic)+'".', correct:'El artículo '+it.num+' regula: "'+(it.detail||it.topic)+'".', isCurated:false });
+  });
+  const shuffled = shuffle(rounds);
+  let idx = 0, score = 0;
+
+  function draw(){
+    if(idx>=shuffled.length){
+      box.innerHTML = '<div class="rowbetween"><h2 style="margin:0;">🪤 ¡Listo!</h2><button class="btn" id="back">← Volver a juegos</button></div>'
+        + '<p style="font-size:18px;">Detectaste correctamente <b>'+score+' de '+shuffled.length+'</b> trampas.</p>'
+        + '<button class="btn primary" id="retry">Jugar otra vez</button>';
+      document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+      document.getElementById('retry').addEventListener('click', ()=> playTrampa(box, items, lawId));
+      return;
+    }
+    const r = shuffled[idx];
+    const decoys = pick(shuffled.filter(x=>x!==r).map(x=>x.correct), Math.min(3, shuffled.length-1));
+    const options = shuffle([r.correct, ...decoys]);
+    let html = '<div class="rowbetween"><h2 style="margin:0;">🪤 Detecta la trampa</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<div class="hud"><span>Pregunta <b>'+(idx+1)+'/'+shuffled.length+'</b></span><span>Aciertos: <b>'+score+'</b></span></div>';
+    html += '<div class="statement">⚠️ '+esc(r.statement)+'<br><br><i style="color:var(--muted);font-size:13px;">¿Cuál es la corrección real?</i></div>';
+    html += options.map(o=> '<button class="opt" data-ans="'+esc(o)+'">'+esc(o)+'</button>').join('');
+    html += '<div id="fb"></div>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+        const correctOpt = [...box.querySelectorAll('.opt')].find(x=>x.dataset.ans===r.correct);
+        if(correctOpt) correctOpt.classList.add('correct');
+        if(b.dataset.ans!==r.correct){ b.classList.add('wrong'); } else { score++; }
+        document.getElementById('fb').innerHTML = '<div class="feedback good">✓ '+esc(r.correct)+'</div>'
+          + '<button class="btn primary" id="nextq" style="margin-top:10px;">Siguiente →</button>';
+        document.getElementById('nextq').addEventListener('click', ()=>{ idx++; draw(); });
+      });
+    });
+  }
+  draw();
+}
+
+/* ================= COMPLETA EL ENUNCIADO ================= */
+function playCompleta(box, items){
+  const order = shuffle(items);
+  let idx = 0, score = 0;
+  function draw(){
+    if(idx>=order.length){
+      box.innerHTML = '<div class="rowbetween"><h2 style="margin:0;">📝 ¡Listo!</h2><button class="btn" id="back">← Volver a juegos</button></div>'
+        + '<p style="font-size:18px;">Respondiste bien <b>'+score+' de '+order.length+'</b>.</p>'
+        + '<button class="btn primary" id="retry">Jugar otra vez</button>';
+      document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+      document.getElementById('retry').addEventListener('click', ()=> playCompleta(box, items));
+      return;
+    }
+    const it = order[idx];
+    const other = items.filter(o=>o!==it);
+    const decoys = pick(other, Math.min(3, other.length)).map(o=>o.num);
+    const options = shuffle([it.num, ...decoys]);
+    let html = '<div class="rowbetween"><h2 style="margin:0;">📝 Completa el enunciado</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<div class="hud"><span>Pregunta <b>'+(idx+1)+'/'+order.length+'</b></span><span>Aciertos: <b>'+score+'</b></span></div>';
+    html += '<div class="statement">El artículo <b>___</b> trata sobre:<br>"'+esc(it.detail||it.topic)+'"</div>';
+    html += options.map(o=> '<button class="opt" data-ans="'+esc(o)+'">'+esc(o)+'</button>').join('');
+    html += '<div id="fb"></div>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        box.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+        const correctOpt = [...box.querySelectorAll('.opt')].find(x=>x.dataset.ans===it.num);
+        if(correctOpt) correctOpt.classList.add('correct');
+        if(b.dataset.ans!==it.num){ b.classList.add('wrong'); } else { score++; }
+        document.getElementById('fb').innerHTML = '<div class="feedback good">✓ Artículo '+esc(it.num)+'</div>'
+          + '<button class="btn primary" id="nextq" style="margin-top:10px;">Siguiente →</button>';
+        document.getElementById('nextq').addEventListener('click', ()=>{ idx++; draw(); });
+      });
+    });
+  }
+  draw();
+}
+
+/* ================= TRIVIA POR CATEGORÍAS ================= */
+function playTrivia(box, items, lawId){
+  let categories;
+  if(lawId==='mixed'){
+    categories = LAWS.map(l=>({ label:l.label, cells: l.items.slice(0,5).map((it,i)=>({...it, value:(i+1)*100, used:false})) }));
+  } else {
+    const chunks = 5;
+    const size = Math.ceil(items.length/chunks) || 1;
+    categories = [];
+    for(let i=0;i<Math.min(chunks, Math.ceil(items.length/size));i++){
+      const slice = items.slice(i*size, i*size+size);
+      categories.push({ label:'Grupo '+(i+1), cells: slice.map((it,j)=>({...it, value:(j+1)*100, used:false})) });
+    }
+  }
+  const maxRows = Math.max(...categories.map(c=>c.cells.length));
+  let score = 0;
+
+  function draw(){
+    let html = '<div class="rowbetween"><h2 style="margin:0;">🏆 Trivia por categorías</h2><button class="btn" id="back">← Volver a juegos</button></div>';
+    html += '<div class="hud"><span>Puntaje: <b>'+score+'</b></span></div>';
+    html += '<div class="jboard" style="grid-template-columns:repeat('+categories.length+',1fr);">';
+    categories.forEach(cat=> html += '<div class="jcat">'+esc(cat.label)+'</div>');
+    for(let r=0;r<maxRows;r++){
+      categories.forEach((cat,ci)=>{
+        const cell = cat.cells[r];
+        if(!cell){ html += '<div></div>'; return; }
+        html += '<div class="jcell'+(cell.used?' used':'')+'" data-ci="'+ci+'" data-ri="'+r+'">'+(cell.used?'✓':cell.value)+'</div>';
+      });
+    }
+    html += '</div>';
+    box.innerHTML = html;
+    document.getElementById('back').addEventListener('click', ()=> go('games', {lawId:state.lawId}));
+    box.querySelectorAll('.jcell:not(.used)').forEach(elm=>{
+      elm.addEventListener('click', ()=>{
+        const ci = +elm.dataset.ci, ri = +elm.dataset.ri;
+        openCell(categories[ci], ri, categories[ci].cells[ri]);
+      });
+    });
+  }
+  function openCell(cat, ri, cell){
+    const modal = document.createElement('div');
+    modal.className = 'jmodal';
+    modal.innerHTML = '<div class="box">'
+      + '<div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;">'+esc(cat.label)+' · '+cell.value+' pts</div>'
+      + '<div class="q">"'+esc(cell.topic)+'"</div>'
+      + '<div id="rev"></div>'
+      + '<button class="btn primary" id="showAns">Mostrar artículo</button>'
+      + '<div id="scorebtns" style="display:none;margin-top:12px;" class="row">'
+      + '<button class="btn" id="hit" style="flex:1;">✓ Acerté</button><button class="btn" id="miss" style="flex:1;">✗ Fallé</button></div>'
+      + '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#showAns').addEventListener('click', ()=>{
+      modal.querySelector('#rev').innerHTML = '<div class="a">¿Cuál es el Art. '+esc(cell.num)+'?</div>';
+      modal.querySelector('#showAns').style.display='none';
+      modal.querySelector('#scorebtns').style.display='flex';
+    });
+    modal.querySelector('#hit').addEventListener('click', ()=>{ score += cell.value; cell.used=true; document.body.removeChild(modal); draw(); });
+    modal.querySelector('#miss').addEventListener('click', ()=>{ cell.used=true; document.body.removeChild(modal); draw(); });
+  }
+  draw();
+}
+
+/* ================= INICIO ================= */
+function boot(initial){
+  state = (initial && initial.screen) ? initial : { screen:'laws' };
+  render();
+}
+let booted = false;
+function safeBoot(initial){ if(booted) return; booted = true; boot(initial); }
+try{
+  if(window.claude && window.claude.hot){
+    try{ if(typeof window.claude.hot.snapshot === 'function') window.claude.hot.snapshot(() => state); }catch(e){}
+    if(typeof window.claude.hot.ready === 'function'){ window.claude.hot.ready(safeBoot); }
+    else { safeBoot(window.claude.hot.data); }
+  } else {
+    safeBoot();
+  }
+}catch(e){
+  safeBoot();
+}
+setTimeout(safeBoot, 0);
+})();
+</script>

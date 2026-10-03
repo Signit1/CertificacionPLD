@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RutaPLD</title>
+<style>
+:root{
+  --ink:#12233d;
+  --ink-2:#1c3a63;
+  --paper:#fbf9f4;
+  --card:#ffffff;
+  --line:#e4ded0;
+  --teal:#0f7d82;
+  --teal-d:#0a5a5e;
+  --gold:#c99a3b;
+  --green:#3fb84f;
+  --green-d:#2f9a3d;
+  --red:#e2564f;
+  --red-d:#c23e38;
+  --locked:#cfc9b8;
+  box-sizing:border-box;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+:root:not([data-theme="light"]){
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f1a2b; --card:#16243b; --line:#26385a; --ink:#eef2f8;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f1a2b; --card:#16243b; --line:#26385a; --ink:#eef2f8;
+}
+body{
+  margin:0;
+  font-family:'Nunito','Helvetica Neue',Arial,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100%;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  -webkit-font-smoothing:antialiased;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+button{font-family:inherit;}
+.screen{display:none; min-height:100%;}
+.screen.active{display:block;}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  padding-top:calc(env(safe-area-inset-top,0px) + 10px);
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  padding-left:16px; padding-right:16px; padding-bottom:10px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.stat{display:flex; align-items:center; gap:5px; font-weight:800; font-size:15px;}
+.stat.streak{color:var(--gold);}
+.stat.xp{color:var(--teal);}
+.brand{font-weight:900; font-size:18px; letter-spacing:-.02em; color:var(--ink);}
+.brand span{color:var(--teal);}
+
+/* ===== HOME / PATH ===== */
+.home-wrap{max-width:480px; margin:0 auto; padding:22px 16px 60px;}
+.home-head{margin-bottom:22px;}
+.home-head h1{font-size:21px; margin:0 0 4px; font-weight:900;}
+.home-head p{margin:0; font-size:13.5px; color:#7a7566; font-family:inherit;}
+:root:not([data-theme="light"]) .home-head p{}
+@media (prefers-color-scheme: dark){.home-head p{color:#93a0ba;}}
+:root[data-theme="dark"] .home-head p{color:#93a0ba;}
+
+.path{position:relative; padding:10px 0 20px;}
+.unit-row{display:flex; margin-bottom:6px;}
+.unit-row.left{justify-content:flex-start; padding-left:6%;}
+.unit-row.right{justify-content:flex-end; padding-right:6%;}
+.unit-row.center{justify-content:center;}
+
+.node{
+  width:76px; height:76px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:30px; position:relative;
+  border:none; cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.18);
+  transition:transform .12s ease;
+}
+.node:active{transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.18);}
+.node.locked{background:var(--locked); box-shadow:0 5px 0 rgba(0,0,0,.08); cursor:default;}
+.node.locked:active{transform:none;}
+.node.available{background:var(--teal); box-shadow:0 5px 0 var(--teal-d);}
+.node.done{background:var(--gold); box-shadow:0 5px 0 #93701f;}
+
+.node-label{
+  text-align:center; font-size:12px; font-weight:800; margin-top:6px; max-width:100px;
+  color:var(--ink);
+}
+.node-count{
+  text-align:center; font-size:10px; font-weight:600; margin-top:2px; max-width:100px;
+  color:#8b8570;
+}
+.unit-block{display:flex; flex-direction:column; align-items:center; margin-bottom:8px;}
+.unit-title-row{
+  display:flex; align-items:center; gap:10px; margin:26px 0 14px;
+}
+.area-head{
+  margin:38px 0 4px; text-align:center; font-size:13px; font-weight:900;
+  letter-spacing:.03em; color:#fff; background:var(--ink-2);
+  padding:8px 14px; border-radius:20px; display:inline-block;
+  position:relative; left:50%; transform:translateX(-50%);
+}
+.unit-title-row .line{flex:1; height:1px; background:var(--line);}
+.unit-title-row .txt{font-size:12px; font-weight:800; letter-spacing:.04em; color:#8b8570; white-space:nowrap;}
+.stars-row{display:flex; gap:2px; margin-top:4px;}
+.star{font-size:12px;}
+.star.on{color:var(--gold);}
+.star.off{color:var(--line);}
+
+/* ===== LESSON SCREEN ===== */
+.lesson-top{
+  display:flex; align-items:center; gap:12px;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;
+  background:var(--paper);
+  position:sticky; top:0; z-index:10;
+}
+.close-btn{
+  background:none; border:none; font-size:22px; color:#9a927a; cursor:pointer; line-height:1; padding:4px;
+}
+.progress-track{
+  flex:1; height:14px; background:var(--line); border-radius:8px; overflow:hidden;
+}
+.progress-fill{height:100%; background:var(--green); border-radius:8px; transition:width .3s ease;}
+.hearts{display:flex; gap:3px; font-size:17px;}
+
+.q-wrap{max-width:520px; margin:0 auto; padding:20px 20px 140px;}
+.q-kicker{font-size:12px; font-weight:800; letter-spacing:.04em; color:var(--teal); margin-bottom:8px;}
+.q-prompt{font-size:19px; font-weight:800; line-height:1.5; margin:0 0 22px; text-align:justify; white-space:pre-line;}
+.opt{
+  display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:11px;
+  background:var(--card); border:2px solid var(--line); border-radius:13px;
+  font-size:15px; font-weight:700; color:var(--ink); cursor:pointer;
+  transition:border-color .12s, background .12s;
+}
+.opt:active{transform:scale(.99);}
+.opt.selected{border-color:var(--teal); background:rgba(15,125,130,.08);}
+.opt.correct{border-color:var(--green); background:rgba(63,184,79,.12); color:var(--green-d);}
+.opt.wrong{border-color:var(--red); background:rgba(226,86,79,.12); color:var(--red-d);}
+.opt:disabled{cursor:default;}
+
+.feedback-bar{
+  position:fixed; left:0; right:0; bottom:0;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  transform:translateY(110%); transition:transform .25s ease;
+  z-index:20;
+}
+.feedback-bar.show{transform:translateY(0);}
+.feedback-bar.ok{background:#d9f2da;}
+.feedback-bar.bad{background:#fbe1df;}
+:root[data-theme="dark"] .feedback-bar.ok{background:#173a1e;}
+:root[data-theme="dark"] .feedback-bar.bad{background:#3a1c1a;}
+.fb-inner{max-width:520px; margin:0 auto;}
+.fb-title{font-weight:900; font-size:16px; margin-bottom:4px;}
+.feedback-bar.ok .fb-title{color:var(--green-d);}
+.feedback-bar.bad .fb-title{color:var(--red-d);}
+.fb-text{font-size:13.5px; color:#4a4536; margin-bottom:12px; line-height:1.5; text-align:justify;}
+:root[data-theme="dark"] .fb-text{color:#c7d0e0;}
+.fb-btn{
+  width:100%; padding:14px; border:none; border-radius:12px; font-weight:900; font-size:15px; cursor:pointer;
+}
+.feedback-bar.ok .fb-btn{background:var(--green); color:#fff;}
+.feedback-bar.bad .fb-btn{background:var(--red); color:#fff;}
+
+/* ===== RESULT SCREEN ===== */
+.result-wrap{max-width:420px; margin:0 auto; padding:60px 24px 40px; text-align:center;}
+.result-emoji{font-size:64px; margin-bottom:10px;}
+.result-title{font-size:23px; font-weight:900; margin:0 0 6px;}
+.result-sub{font-size:14px; color:#7a7566; margin-bottom:24px;}
+:root[data-theme="dark"] .result-sub{color:#93a0ba;}
+.result-stars{font-size:40px; margin-bottom:24px; letter-spacing:4px;}
+.result-stats{display:flex; justify-content:center; gap:28px; margin-bottom:32px;}
+.rstat{text-align:center;}
+.rstat .n{font-size:22px; font-weight:900; color:var(--teal);}
+.rstat .l{font-size:11px; color:#8b8570; font-weight:700;}
+.btn-primary{
+  width:100%; padding:15px; background:var(--teal); color:#fff; border:none; border-radius:13px;
+  font-weight:900; font-size:15.5px; cursor:pointer; box-shadow:0 4px 0 var(--teal-d); margin-bottom:12px;
+}
+.btn-primary:active{transform:translateY(3px); box-shadow:0 1px 0 var(--teal-d);}
+.btn-ghost{
+  width:100%; padding:13px; background:none; color:#8b8570; border:none; font-weight:800; font-size:14px; cursor:pointer;
+}
+
+/* ===== OUT OF HEARTS ===== */
+.dead-wrap{max-width:380px; margin:0 auto; padding:80px 24px 40px; text-align:center;}
+.dead-emoji{font-size:70px; margin-bottom:14px;}
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div class="screen active" id="screen-home">
+  <div class="topbar">
+    <div class="brand">Ruta<span>PLD</span></div>
+    <div style="display:flex; gap:16px;">
+      <div class="stat streak">🔥 <span id="streakCount">0</span></div>
+      <div class="stat xp">⭐ <span id="xpCount">0</span></div>
+    </div>
+  </div>
+  <div class="home-wrap">
+    <div class="home-head">
+      <h1>Tu ruta hacia la certificación</h1>
+      <p>8 unidades, una por cada subtema de tu temario oficial (Áreas 1, 2 y 3). Practica cualquiera, en el orden que quieras — cada una tiene 5 corazones y suma XP a tu racha.</p>
+    </div>
+    <div class="path" id="pathContainer"></div>
+  </div>
+</div>
+
+<!-- LESSON SCREEN -->
+<div class="screen" id="screen-lesson">
+  <div class="lesson-top">
+    <button class="close-btn" onclick="exitLesson()">✕</button>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="hearts" id="heartsDisplay"></div>
+  </div>
+  <div class="q-wrap">
+    <div class="q-kicker" id="qKicker">UNIDAD</div>
+    <div class="q-prompt" id="qPrompt"></div>
+    <div id="optsContainer"></div>
+  </div>
+  <div class="feedback-bar" id="feedbackBar">
+    <div class="fb-inner">
+      <div class="fb-title" id="fbTitle"></div>
+      <div class="fb-text" id="fbText"></div>
+      <button class="fb-btn" id="fbBtn" onclick="nextQuestion()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="screen" id="screen-result">
+  <div class="result-wrap">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-title" id="resultTitle">¡Unidad completada!</div>
+    <div class="result-sub" id="resultSub"></div>
+    <div class="result-stars" id="resultStars"></div>
+    <div class="result-stats">
+      <div class="rstat"><div class="n" id="rstatCorrect">0</div><div class="l">CORRECTAS</div></div>
+      <div class="rstat"><div class="n" id="rstatXP">0</div><div class="l">XP GANADOS</div></div>
+    </div>
+    <button class="btn-primary" onclick="goHome()">Continuar</button>
+  </div>
+</div>
+
+<!-- DEAD SCREEN (sin corazones) -->
+<div class="screen" id="screen-dead">
+  <div class="dead-wrap">
+    <div class="dead-emoji">💔</div>
+    <div class="result-title">Te quedaste sin corazones</div>
+    <div class="result-sub">No pasa nada — repasa y vuelve a intentarlo. Los corazones se recuperan cada vez que reinicias la unidad.</div>
+    <button class="btn-primary" onclick="retryUnit()">Reintentar unidad</button>
+    <button class="btn-ghost" onclick="goHome()">Volver al inicio</button>
+  </div>
+</div>
+
+<script>
+/* ============ DATOS ============ */
+const UNITS = [
+  { id:'a1', area:'Área 1 · Conocimientos básicos', temario:'1.1', title:'Conceptos básicos PLD/FT', icon:'🌊', questions:[
+    {p:'¿Cómo se llama la primera etapa del Lavado de Dinero, en la que el lavador introduce sus ganancias ilícitas en el sistema financiero?', o:['Estratificación','Colocación','Integración','Reconversión'], c:1, e:'Colocación es la primera etapa (ej. depósitos bancarios en efectivo). Le siguen Estratificación e Integración.'},
+    {p:'Una serie de transferencias a distintas cuentas sin relación aparente entre ordenante y beneficiario corresponde a la fase de:', o:['Colocación','Integración','Estratificación','Dispersión'], c:2, e:'Estratificación: se mueve el dinero para dificultar su rastreo, no es la primera ni la última fase.'},
+    {p:'La venta de un yate que se adquirió en la etapa de estratificación, para "cerrar el círculo", corresponde a la fase de:', o:['Colocación','Estratificación','Integración','Estas ventas no corresponden a ninguna fase'], c:2, e:'Integración: reinserción de los fondos ilegales en la economía, ya con apariencia de legítimos.'},
+    {p:'¿Cuál es una diferencia clave entre Lavado de Dinero y Financiamiento al Terrorismo?', o:['Ninguna, son idénticos','En el FT (Financiamiento al Terrorismo), los recursos pueden ser lícitos o ilícitos, pero se destinan a fines terroristas','El LD (Lavado de Dinero) solo ocurre en bancos','El FT (Financiamiento al Terrorismo) no está tipificado en México'], c:1, e:'En LD (Lavado de Dinero) el origen del dinero es ilícito y se busca ocultarlo. En FT (Financiamiento al Terrorismo) el dinero puede ser lícito, lo que importa es su destino.'},
+    {p:'(Completamiento) La Convención de Viena (1988) considera que el lavado proviene ___, mientras que la Convención de Palermo (2000) lo amplía a ___.', o:['únicamente de delitos de narcotráfico / crimen organizado transnacional en general','crimen organizado en general / únicamente narcotráfico','corrupción / terrorismo','ninguna de las anteriores, son idénticas'], c:0, e:'Viena es específica de narcotráfico; Palermo amplía el concepto a crimen organizado transnacional.'},
+    {p:'La Convención de Mérida (2003) también se conoce como la Convención de la ONU (Organización de las Naciones Unidas) contra:', o:['El Narcotráfico','La Corrupción','El Terrorismo','El Crimen Organizado'], c:1, e:'UNCAC (Convención de las Naciones Unidas contra la Corrupción) = United Nations Convention against Corruption, adoptada en Mérida, México, en 2003.'},
+    {p:'¿Qué convención se adoptó en 1997, entrando en vigor por la OEA (Organización de Estados Americanos), y es el primer instrumento internacional en reconocer la trascendencia de la corrupción?', o:['Convención de Viena','Convención de Palermo','Convención Interamericana contra la Corrupción (Caracas)','Convención de Mérida'], c:2, e:'Adoptada por la OEA, entró en vigor en 1997 — es anterior a la de Mérida (2003/2005).'},
+    {p:'Según Transparencia Internacional, la corrupción se define como:', o:['La evasión fiscal de personas morales','El abuso del poder para beneficio propio','El uso excesivo de efectivo','Cualquier delito financiero'], c:1, e:'Definición citada en la Guía Anticorrupción de la CNBV (Comisión Nacional Bancaria y de Valores).'},
+    {p:'(Relación de elementos) Relacione el tipo de corrupción con su descripción\n\n1. Corrupción a gran escala\n2. Actos de corrupción menores\n3. Corrupción política\n\na) Manipulación de políticas e instituciones en la asignación de recursos\nb) Actos en los niveles más altos del gobierno, distorsión de funciones centrales del Estado\nc) Abuso cotidiano de poder por PEP (Persona Políticamente Expuesta) de bajo/mediano rango con ciudadanos comunes', o:['1b, 2c, 3a','1a, 2b, 3c','1c, 2a, 3b','1b, 2a, 3c'], c:0, e:'Gran escala = niveles más altos del gobierno (b); Menores = abuso cotidiano con ciudadanos comunes (c); Política = manipulación de políticas e instituciones (a).'},
+    {p:'Un ejecutivo de alto rango amenaza con despedir a un empleado porque descubrió que hacía malas prácticas con clientes para obtener un beneficio propio. Esto es un ejemplo de:', o:['Corrupción por abuso de poder','NO es un ejemplo de corrupción — es supervisión/control apropiado','Lavado de Dinero','Financiamiento al Terrorismo'], c:1, e:'Trampa: detectar y actuar contra una mala práctica es supervisión legítima, no corrupción.'},
+    {p:'¿Cuál es la pena del Artículo 400 Bis (Lavado de Dinero)?', o:['15 a 40 años / 400 a 1,200 UMA (Unidad de Medida y Actualización)','5 a 15 años / 1,000 a 5,000 días multa','3 meses a 3 años / 15 a 60 días multa','10 a 20 años / 2,000 UMA (Unidad de Medida y Actualización)'], c:1, e:'400 Bis: 5 a 15 años de prisión y 1,000 a 5,000 días multa. Ojo: es "días multa" (percepción neta diaria real del sentenciado, Art. 29 CPF (Código Penal Federal)), no UMA (Unidad de Medida y Actualización) — la UMA sí aplica al Art. 139, pero no al 400 Bis.'},
+    {p:'Un delito con pena de 5 a 15 años de prisión y 1,000 a 5,000 días multa corresponde al artículo:', o:['139','139 Quáter','400 Bis','148 Bis'], c:2, e:'Es la pena exacta del Art. 400 Bis — reconocerla "al revés" (de la pena al artículo) es una forma común de preguntarlo.'},
+    {p:'El Artículo 139 Quáter (Financiamiento al Terrorismo) tiene la misma pena que el artículo:', o:['400 Bis','400','139','148 Ter'], c:2, e:'139 Quáter remite textualmente a la pena del Art. 139: 15 a 40 años de prisión, 400 a 1,200 UMA (hereda la UMA porque el 139 sí fue reformado a esa unidad en 2024).'},
+    {p:'(Completamiento) El Artículo 148 Bis del CPF (Código Penal Federal) tipifica el ___ y prevé una pena de ___.', o:['Terrorismo Internacional / 15 a 40 años y 400 a 1,200 días multa','Financiamiento al Terrorismo / 5 a 15 años','Lavado de Dinero agravado / duplicación de la pena','Encubrimiento / 3 meses a 3 años'], c:0, e:'148 Bis = Terrorismo Internacional. Mismos años y misma cifra que el Art. 139 (15 a 40 años, 400 a 1,200), pero cuidado: el 148 Bis sigue en "días multa", mientras que el 139 ya está en UMA (Unidad de Medida y Actualización) — la cifra es igual, la unidad no.'},
+    {p:'¿Cuál de los siguientes artículos del CPF (Código Penal Federal) tiene su multa expresada en "días multa" y NO en UMA (Unidad de Medida y Actualización)?', o:['Artículo 139 (Terrorismo)','Artículo 139 Quáter (Financiamiento al Terrorismo)','Artículo 400 Bis (Lavado de Dinero)','Ninguno, todos están en UMA (Unidad de Medida y Actualización) desde 2016'], c:2, e:'El Art. 400 Bis (y también el 148 Bis) siguen literalmente en "días multa". El 139 sí fue reformado a UMA (DOF (Diario Oficial de la Federación) 07-06-2024), y el 139 Quáter hereda esa UMA por remitir textualmente a la pena del 139.'},
+    {p:'Conforme al Art. 29 del CPF (Código Penal Federal), un "día multa" equivale a:', o:['El valor diario de la UMA (Unidad de Medida y Actualización)','El salario mínimo diario, siempre, sin excepción','La percepción neta diaria del propio sentenciado al momento del delito, con piso en el salario mínimo diario','Un monto fijo igual para cualquier sentenciado'], c:2, e:'El día multa se calcula sobre el ingreso real del sentenciado (no es un monto fijo como la UMA (Unidad de Medida y Actualización)); solo su límite inferior está atado al salario mínimo diario, no a la UMA. El Decreto de Desindexación de 2016 no convirtió esta figura a UMA porque nunca estuvo indexada como "veces salario mínimo".'},
+    {p:'Si un empleado de un banco comete Lavado de Dinero, su pena (Art. 400 Bis 1) se incrementa:', o:['Se duplica siempre','De un tercio a una mitad','Se reduce a la mitad','No cambia'], c:1, e:'El agravante para consejeros/empleados/apoderados de Entidades del régimen PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) es de +1/3 a +1/2, no duplicación.'},
+    {p:'¿A quién se le duplica la pena del 400 Bis, conforme al Art. 400 Bis 1?', o:['A cualquier empleado bancario','A servidores públicos encargados de prevenir/investigar/juzgar delitos','A los extranjeros','A las personas morales'], c:1, e:'Es el agravante más severo: se duplica para servidores públicos con funciones de prevención, investigación o juzgamiento de delitos.'},
+    {p:'El Artículo 400 (sin "Bis") del Código Penal Federal tipifica:', o:['Lavado de Dinero','Encubrimiento (delito distinto y más leve)','Financiamiento al Terrorismo','Corrupción'], c:1, e:'Trampa común: el 400 NO es Lavado de Dinero. Es encubrimiento, con pena mucho menor (3 meses a 3 años).'},
+    {p:'Un delito con pena de 3 meses a 3 años de prisión y 15 a 60 días multa, cometido por quien ayuda a ocultar a un delincuente sin haber participado en el delito original, es:', o:['Art. 400 Bis (Lavado de Dinero)','Art. 400 (Encubrimiento)','Art. 400 Bis 1 (agravante)','Art. 139 (Terrorismo)'], c:1, e:'Reconocer la pena leve (3 meses-3 años) identifica el Encubrimiento del Art. 400, no el Lavado de Dinero.'},
+    {p:'La inhabilitación prevista en el Art. 400 Bis 1 empieza a correr:', o:['Al mismo tiempo que la prisión','Antes de la prisión','Hasta que se haya cumplido la pena de prisión','Nunca'], c:2, e:'La inhabilitación es consecutiva, no simultánea: corre después de que termine la pena de prisión.'},
+    {p:'(Elección de elementos) ¿Cuáles de los siguientes SÍ traen consigo inhabilitación, conforme al Art. 400 Bis 1?\n\n1. Agravante de empleado del régimen PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo)\n2. Agravante de servidor público\n3. Agravante por usar a un menor de edad', o:['1 y 2','Solo 1','Solo 3','1, 2 y 3'], c:0, e:'Los agravantes 1 y 2 traen inhabilitación igual al tiempo de prisión; el agravante de usar a un menor (3) no la trae.'},
+    {p:'¿Cuál organismo fue el primero en tipificar el Lavado de Dinero como delito fiscal en México, antes del 400 Bis?', o:['El Art. 400 Bis mismo, desde el inicio','El Art. 115 Bis del Código Fiscal de la Federación (derogado en 1996)','La LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)','El CPF (Código Penal Federal) nunca tuvo otra tipificación'], c:1, e:'Antes de 1996, el LD (Lavado de Dinero) se tipificaba fiscalmente en el Art. 115 Bis del CFF; luego pasó al 400 Bis del CPF (Código Penal Federal).'},
+    {p:'Desde la entrada en vigor del Código Nacional de Procedimientos Penales (18 junio 2016), el delito del Art. 400 Bis:', o:['Amerita Prisión Preventiva Oficiosa','NO amerita Prisión Preventiva Oficiosa','Se volvió no perseguible de oficio','Prescribe en 1 año'], c:1, e:'Dato histórico relevante: desde 2016 el 400 Bis dejó de ameritar prisión preventiva oficiosa automática.'},
+    {p:'El G20 (Grupo de los 20) solicitó al GAFI (Grupo de Acción Financiera Internacional) abordar específicamente el tema de:', o:['La corrupción','El cambio climático','El comercio internacional','La migración'], c:0, e:'El G20 pidió al GAFI enfocar su trabajo también en el vínculo entre corrupción y Lavado de Dinero.'},
+    {p:'"Corrupción a gran escala" según Transparencia Internacional implica que las PEP (Persona Políticamente Expuesta) se benefician:', o:['De pequeños sobornos cotidianos','A expensas del bien común, distorsionando políticas o funciones centrales del Estado','Solo en el sector privado','Nunca de forma monetaria'], c:1, e:'Es la definición exacta de "corrupción a gran escala" en la Guía Anticorrupción de la CNBV (Comisión Nacional Bancaria y de Valores).'},
+    {p:'Si la pena base de un empleado de banco fuera 6 años y se agrava en una mitad, el resultado es:', o:['7 años','8 años','9 años','12 años'], c:2, e:'6 años ÷ 2 = 3 años extra → 6 + 3 = 9 años.'},
+    {p:'Un cliente lleva durante varias semanas pequeños montos en efectivo a distintas sucursales bancarias para depositarlos. Esta práctica corresponde a:', o:['Operación legítima sujeta solo a reporte','Etapa de colocación mediante estructuración (smurfing)','Etapa de estratificación con fondos legítimos','Etapa de integración mediante diversificación'], c:1, e:'El smurfing (estructuración) consiste en fragmentar montos grandes en operaciones menores al umbral de reporte. Es típico de la etapa de colocación, donde el efectivo ilícito se introduce al sistema financiero formal.'},
+    {p:'Conforme al marco mexicano, ¿cuál es la definición técnica más precisa de lavado de dinero?', o:['Proceso por el cual recursos de procedencia ilícita se incorporan al sistema económico aparentando ser legítimos','Cualquier operación en efectivo superior a USD 10,000','Cualquier transferencia internacional no reportada al SAT (Servicio de Administración Tributaria)','Toda operación realizada por una Persona Políticamente Expuesta'], c:0, e:'El lavado de dinero (operación con recursos de procedencia ilícita conforme al Art. 400 Bis CPF (Código Penal Federal)) es el proceso mediante el cual se da apariencia de legitimidad a recursos cuyo origen es un delito previo.'},
+    {p:'El Trade-Based Money Laundering (TBML) NO incluye, como tal, la siguiente modalidad:', o:['Subfacturación de importaciones','Embarques fantasma o repetidos','Sobrefacturación de exportaciones','Reporte de operaciones relevantes en plazo legal'], c:3, e:'Reportar operaciones es lo opuesto al TBML: es precisamente la medida preventiva que busca detectarlo, no una modalidad de lavado. Las modalidades clásicas de TBML son sobre/subfacturación, embarques fantasma o repetidos, el mismo bien facturado a varios destinos, descripción o cantidad falsa de mercancía, y fraude documental. (Nota: el TBML como concepto no aparece nombrado así en tus documentos oficiales revisados; es una tipología reconocida internacionalmente por GAFI (Grupo de Acción Financiera Internacional)/Egmont, no verificada palabra por palabra contra tu material — te lo señalo por transparencia.)'},
+  ]},
+  { id:'a2', area:'Área 1 · Conocimientos básicos', temario:'1.2', title:'Organismos Internacionales', icon:'🌍', questions:[
+    {p:'El GAFI (Grupo de Acción Financiera Internacional) fue establecido en 1989 por:', o:['La ONU (Organización de las Naciones Unidas)','El G7 (Grupo de los 7), en París','El G20 (Grupo de los 20)','El Banco Mundial'], c:1, e:'GAFI: entidad intergubernamental creada en la Cumbre de París del G7 (Grupo de los 7), 1989.'},
+    {p:'El Comité de Supervisión Bancaria de Basilea fue creado en 1974 por:', o:['El GAFI (Grupo de Acción Financiera Internacional)','Los Gobernadores de los Bancos Centrales del G10','La ONU (Organización de las Naciones Unidas)','El FMI (Fondo Monetario Internacional)'], c:1, e:'Es más antiguo que el GAFI (Grupo de Acción Financiera Internacional) y nace de los bancos centrales del G10.'},
+    {p:'Un organismo intergubernamental fundado en 1989 por el G7 (Grupo de los 7) que fija estándares contra el LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo) es:', o:['El Comité de Basilea','El GAFI (Grupo de Acción Financiera Internacional)','El Grupo Egmont','El Grupo Wolfsberg'], c:1, e:'Reconocer el GAFI (Grupo de Acción Financiera Internacional) a partir de su año y fundador (formato "al revés").'},
+    {p:'¿Cuál organismo conecta directamente a las Unidades de Inteligencia Financiera (UIF) del mundo entre sí?', o:['Grupo Wolfsberg','GAFI (Grupo de Acción Financiera Internacional)','Grupo Egmont','Banco Mundial'], c:2, e:'Egmont es la red de cooperación entre UIF; usa la plataforma Egmont Secure Web (ESW).'},
+    {p:'El Grupo Wolfsberg se diferencia del resto porque es:', o:['Un organismo de la ONU (Organización de las Naciones Unidas)','Una asociación de bancos, no gubernamental','Parte del GAFI (Grupo de Acción Financiera Internacional)','Un tribunal internacional'], c:1, e:'Wolfsberg es la excepción: no es intergubernamental, son bancos privados desarrollando sus propios estándares.'},
+    {p:'(Relación de elementos) Relacione el organismo con su función\n\n1. Comité de Basilea\n2. Grupo Egmont\n3. Grupo Wolfsberg\n\na) Foro de cooperación entre UIF (Unidad de Inteligencia Financiera)\nb) Principal organismo normativo para regulación prudencial de bancos\nc) Desarrolla estándares de banca privada, PEP (Persona Políticamente Expuesta) y Beneficiarios Reales', o:['1b, 2a, 3c','1a, 2b, 3c','1c, 2a, 3b','1b, 2c, 3a'], c:0, e:'Basilea=regulación prudencial (b); Egmont=cooperación UIF (a); Wolfsberg=banca privada/PEP (c).'},
+    {p:'(Relación de elementos) Relacione\n\n1. Basilea\n2. GAFI (Grupo de Acción Financiera Internacional)\n3. Egmont\n4. Wolfsberg\n\na) Foro de cooperación entre UIF (Unidad de Inteligencia Financiera)\nb) Guías de banca privada, PEP (Persona Políticamente Expuesta) y Beneficiarios Reales\nc) Regulación prudencial de bancos\nd) Fija estándares y evalúa a sus Miembros', o:['1c, 2d, 3a, 4b','1d, 2c, 3b, 4a','1a, 2b, 3c, 4d','1c, 2a, 3d, 4b'], c:0, e:'Basilea=regulación prudencial (c); GAFI=fija estándares y evalúa (d); Egmont=cooperación UIF (a); Wolfsberg=banca privada (b).'},
+    {p:'El FMI (Fondo Monetario Internacional) y el Banco Mundial, respecto al GAFI (Grupo de Acción Financiera Internacional):', o:['Emiten sus propias 40 Recomendaciones','Solo apoyan: contribuyen a estándares, evalúan países, dan asistencia técnica','No tienen ninguna relación','Son miembros con voto igual que los países'], c:1, e:'Su rol es de apoyo (Art. 13 del Mandato del GAFI), no de emisión de estándares propios.'},
+    {p:'Las evaluaciones de países que realiza el FMI (Fondo Monetario Internacional) en materia de PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) se dan en el marco de:', o:['El Programa de Evaluación del Sector Financiero (FSAP)','Las 40 Recomendaciones directamente','El Egmont Secure Web','La Convención de Mérida'], c:0, e:'El FSAP es el mecanismo del FMI/Banco Mundial para evaluar sistemas financieros nacionales.'},
+    {p:'La UNODC (Oficina de las Naciones Unidas contra la Droga y el Delito), frente al GAFI (Grupo de Acción Financiera Internacional), tiene el rol de:', o:['Miembro pleno','Observador oficial','Presidente','Secretaría'], c:1, e:'UNODC es observador del GAFI y produce estudios de tipologías.'},
+    {p:'¿Cómo evalúa el GAFI (Grupo de Acción Financiera Internacional) el cumplimiento de sus Miembros?', o:['Mediante sanciones económicas directas','Mediante evaluaciones mutuas (revisiones entre pares)','No los evalúa','Mediante auditorías externas privadas'], c:1, e:'Las evaluaciones mutuas son el mecanismo central del GAFI para medir cumplimiento e implementación.'},
+    {p:'(Elección de elementos) ¿Cuáles de las siguientes son funciones reales del GAFI (Grupo de Acción Financiera Internacional), conforme a su Mandato?\n\n1. Identificar y analizar el LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo)\n2. Desarrollar las 40 Recomendaciones\n3. Establecer sanciones económicas a países no adheridos\n4. Evaluar a sus Miembros mediante evaluaciones mutuas', o:['1, 2 y 4','1, 2, 3 y 4','Solo 2 y 3','1 y 3'], c:0, e:'El GAFI NO tiene facultad de imponer sanciones económicas directas (3 es falso) — solo identifica jurisdicciones de riesgo.'},
+    {p:'GAFILAT (Grupo de Acción Financiera de Latinoamérica) es:', o:['Un banco regional','El organismo regional tipo GAFI (Grupo de Acción Financiera Internacional) para Latinoamérica','Una ONG anticorrupción','Parte del Grupo Egmont'], c:1, e:'GAFILAT es un FSRB (organismo regional tipo GAFI (Grupo de Acción Financiera Internacional)) que adapta y promueve las Recomendaciones en la región.'},
+    {p:'¿Cómo se le llama a un organismo regional que aplica el modelo del GAFI (Grupo de Acción Financiera Internacional) en su zona, como GAFILAT (Grupo de Acción Financiera de Latinoamérica) o CFATF (Grupo de Acción Financiera del Caribe)?', o:['FSRB (FATF-Style Regional Body, organismo regional tipo GAFI)','UIF (Unidad de Inteligencia Financiera) regional','Comisión Supervisora','Autoridad Financiera'], c:0, e:'FSRB = FATF-Style Regional Body (organismo regional tipo GAFI), la categoría a la que pertenecen GAFILAT, CFATF, MONEYVAL (Comité de Expertos del Consejo de Europa sobre Lavado de Activos), etc.'},
+    {p:'La Secretaría del GAFI (Grupo de Acción Financiera Internacional) es proporcionada por:', o:['La ONU (Organización de las Naciones Unidas), en Nueva York','La OCDE (Organización para la Cooperación y el Desarrollo Económicos), en París','El Banco Mundial, en Washington','El G7 (Grupo de los 7), de forma rotativa'], c:1, e:'Según el Mandato del GAFI, el servicio de Secretaría lo proporciona la OCDE (Organización para la Cooperación y el Desarrollo Económicos), con sede en París.'},
+    {p:'El Presidente del GAFI (Grupo de Acción Financiera Internacional) es nombrado por el Pleno, de entre sus Miembros, por un período de:', o:['6 meses','1 año, del 1 de julio al 30 de junio siguiente','2 años','Indefinido'], c:1, e:'Mandato del GAFI: el período del Presidente inicia el 1 de julio y termina el 30 de junio del año siguiente.'},
+    {p:'(Relación de elementos) Relacione el órgano del GAFI (Grupo de Acción Financiera Internacional) con su función, conforme a su estructura interna\n\n1. Pleno\n2. Presidente\n3. Vicepresidente\n4. Secretaría\n\na) Convoca y preside las sesiones del Pleno y del Grupo Directivo\nb) Máximo órgano de decisión, integrado por jurisdicciones miembro y organizaciones\nc) Compuesta por el Secretario Ejecutivo y el personal\nd) Asiste y precede al Presidente', o:['1b, 2a, 3d, 4c','1a, 2b, 3c, 4d','1b, 2d, 3a, 4c','1c, 2a, 3b, 4d'], c:0, e:'Pleno=máximo órgano de decisión (b); Presidente=convoca y preside (a); Vicepresidente=asiste y precede al Presidente (d); Secretaría=Secretario Ejecutivo y personal (c).'},
+    {p:'(Elección de elementos) ¿Cuáles son Grupos de Trabajo permanentes del GAFI (Grupo de Acción Financiera Internacional)?\n\n1. Grupo de Trabajo sobre Evaluaciones e Implementación (WGEI)\n2. Grupo de Trabajo sobre Lavado de Dinero y Financiamiento del Terrorismo (WGTM)\n3. Grupo de Trabajo sobre Tipologías (WGTYP)\n4. Grupo de Revisión de Cooperación Internacional (ICRG)', o:['1, 2, 3 y 4','Solo 1 y 2','1 y 4','Solo 3'], c:0, e:'Los cuatro son Grupos de Trabajo reales que reportan al Grupo Directivo del GAFI: WGEI, WGTM, WGTYP e ICRG (este último enfocado en jurisdicciones no cooperantes/de alto riesgo).'},
+    {p:'¿Cuántos miembros tiene el Consejo de Seguridad de las Naciones Unidas?', o:['5','10','15','20'], c:2, e:'15 miembros, cada uno con un voto; es el órgano con la responsabilidad principal de mantener la paz y seguridad internacionales.'},
+    {p:'La Resolución 1267 (1999) del Consejo de Seguridad de la ONU (Organización de las Naciones Unidas) ordenó principalmente:', o:['Tipificar el financiamiento al terrorismo en todos los países miembro','Negar autorización de vuelo a aeronaves de los talibanes y congelar sus fondos hasta que entregaran a Usama bin Laden','Crear el Grupo de Acción Financiera Internacional','Establecer el régimen de Personas Políticamente Expuestas'], c:1, e:'La Resolución 1267 de 1999 es específica del caso talibanes/Bin Laden: pide su entrega para enjuiciamiento y ordena congelar fondos y negar sobrevuelo/aterrizaje de sus aeronaves. También crea un comité del Consejo de Seguridad para vigilar su cumplimiento.'},
+    {p:'A diferencia de la Resolución 1267 (específica de los talibanes), la Resolución 1373 (2001) del Consejo de Seguridad de la ONU (Organización de las Naciones Unidas) pide a los Estados, de forma general:', o:['Tipificar la financiación del terrorismo y congelar los fondos destinados a ese fin, impedir la circulación de terroristas y cooperar en investigaciones penales','Únicamente sancionar a Corea del Norte, Irán y Myanmar','Prohibir el uso de criptomonedas','Eliminar el secreto bancario en todos los países'], c:0, e:'La Resolución 1373 (2001), a diferencia de la 1267, no se dirige a un grupo específico sino que establece obligaciones generales para todos los Estados: tipificar el financiamiento al terrorismo, congelar fondos, impedir la circulación de terroristas y cooperar en asistencia legal e intercambio de información.'},
+  ]},
+  { id:'a3', area:'Área 1 · Conocimientos básicos', temario:'1.3', title:'Autoridades Nacionales', icon:'🏛️', questions:[
+    {p:'¿Qué autoridad analiza reportes, detecta operaciones sospechosas y presenta denuncias?', o:['CNBV (Comisión Nacional Bancaria y de Valores)','UIF (Unidad de Inteligencia Financiera)','FGR (Fiscalía General de la República)','SAT (Servicio de Administración Tributaria)'], c:1, e:'La Unidad de Inteligencia Financiera (UIF) tiene esta función central.'},
+    {p:'¿Qué autoridad supervisa el cumplimiento normativo e impone sanciones a las Entidades?', o:['UIF (Unidad de Inteligencia Financiera)','FGR (Fiscalía General de la República)','CNBV (Comisión Nacional Bancaria y de Valores)','SHCP (Secretaría de Hacienda y Crédito Público) directamente'], c:2, e:'La CNBV (Comisión Nacional Bancaria y de Valores) supervisa, certifica y sanciona a las Entidades Financieras.'},
+    {p:'¿Qué autoridad investiga y persigue los delitos de LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo)?', o:['FGR (Fiscalía General de la República)','CNBV (Comisión Nacional Bancaria y de Valores)','UIF (Unidad de Inteligencia Financiera)','CONDUSEF (Comisión Nacional para la Protección y Defensa de los Usuarios de Servicios Financieros)'], c:0, e:'La Fiscalía General de la República investiga y persigue estos delitos penalmente.'},
+    {p:'Una autoridad que "analiza reportes, detecta operaciones sospechosas y presenta denuncias" es:', o:['La CNBV (Comisión Nacional Bancaria y de Valores)','La UIF (Unidad de Inteligencia Financiera)','La FGR (Fiscalía General de la República)','El SAT (Servicio de Administración Tributaria)'], c:1, e:'Reconocer a la UIF (Unidad de Inteligencia Financiera) a partir de su función, en vez de preguntar la función a partir del nombre.'},
+    {p:'Los reportes de las Entidades Financieras se envían a la Secretaría de Hacienda:', o:['Directamente, sin intermediarios','Por conducto de la CNBV (Comisión Nacional Bancaria y de Valores)','Por conducto del SAT (Servicio de Administración Tributaria)','Por conducto de la FGR (Fiscalía General de la República)'], c:1, e:'El canal es siempre: Entidad → CNBV (Comisión Nacional Bancaria y de Valores) → Secretaría.'},
+    {p:'¿Cuál es la autoridad rectora de todo el sistema PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) en México?', o:['CNBV (Comisión Nacional Bancaria y de Valores)','FGR (Fiscalía General de la República)','Secretaría de Hacienda y Crédito Público','Banco de México'], c:2, e:'La SHCP (Secretaría de Hacienda y Crédito Público) es la autoridad competente que da fundamento a todo el sistema.'},
+    {p:'(Relación de elementos) Relacione la autoridad con su función\n\n1. UIF (Unidad de Inteligencia Financiera)\n2. CNBV (Comisión Nacional Bancaria y de Valores)\n3. FGR (Fiscalía General de la República)\n\na) Impone sanciones y supervisa\nb) Investiga y persigue delitos, obtiene sentencias\nc) Analiza reportes y presenta denuncias', o:['1c, 2a, 3b','1a, 2c, 3b','1b, 2a, 3c','1c, 2b, 3a'], c:0, e:'UIF=analiza/denuncia (c); CNBV=supervisa/sanciona (a); FGR=investiga/persigue/sentencia (b).'},
+    {p:'(Elección de elementos) Dentro de la Unidad Especializada en Investigación (Fiscalía), ¿cuáles son funciones reales de la unidad especializada correspondiente?\n\n1. Investigar delitos de operaciones con recursos de procedencia ilícita\n2. Emitir las 40 Recomendaciones del GAFI (Grupo de Acción Financiera Internacional)\n3. Coadyuvar con la Secretaría en el análisis financiero y contable\n4. Certificar Oficiales de Cumplimiento', o:['1 y 3','1, 2, 3 y 4','2 y 4','Solo 1'], c:0, e:'La opción 2 es falsa: quien emite las 40 Recomendaciones es el GAFI, no esta unidad de la Fiscalía. La opción 4 también es falsa: certificar Oficiales de Cumplimiento es facultad de la CNBV (Comisión Nacional Bancaria y de Valores), no de esta unidad. Por eso solo 1 y 3 son funciones reales de la unidad especializada.'},
+    {p:'Dentro del Régimen Preventivo, ¿quién aplica las políticas de identificación de clientes y presenta los reportes?', o:['La UIF (Unidad de Inteligencia Financiera)','Los Sujetos Obligados (Entidades)','La CNBV (Comisión Nacional Bancaria y de Valores)','La FGR (Fiscalía General de la República)'], c:1, e:'Las propias Entidades/Sujetos Obligados son quienes identifican clientes y presentan reportes; las autoridades reciben y actúan sobre esa información.'},
+    {p:'El SNA (Sistema Nacional Anticorrupción) tiene la misión de coordinar el combate a la corrupción entre:', o:['Autoridades locales y federales','Solo la CNBV (Comisión Nacional Bancaria y de Valores) y el SAT (Servicio de Administración Tributaria)','Exclusivamente organismos internacionales','Solo el Poder Judicial'], c:0, e:'El SNA articula esfuerzos institucionales entre autoridades locales y federales contra la corrupción.'},
+    {p:'La ASF (Auditoría Superior de la Federación) forma parte de:', o:['El Comité Coordinador del SNA (Sistema Nacional Anticorrupción)','La Junta de Gobierno de la CNBV (Comisión Nacional Bancaria y de Valores)','El Comité de Comunicación y Control','El GAFI (Grupo de Acción Financiera Internacional)'], c:0, e:'La ASF, junto con la SFP (Secretaría de la Función Pública), la Fiscalía Especializada, el INAI (Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales) y otros, integra el Comité Coordinador del SNA (Sistema Nacional Anticorrupción).'},
+    {p:'El decomiso de bienes de procedencia ilícita, como parte del régimen preventivo, corresponde a:', o:['La CNBV (Comisión Nacional Bancaria y de Valores)','La UIF (Unidad de Inteligencia Financiera)','La Procuraduría/Fiscalía General de la República','El SAT (Servicio de Administración Tributaria)'], c:2, e:'Dentro de las funciones del régimen preventivo, la obtención de sentencias condenatorias y el decomiso de bienes corresponden a la FGR (Fiscalía General de la República).'},
+  ]},
+  { id:'b1', area:'Área 2 · Conocimientos técnicos', temario:'2.1', title:'Leyes y DCG — Sujetos Obligados', icon:'📑', maxHearts:10, questions:[
+    {p:'¿A partir de cuántos empleados es obligatorio constituir el Comité de Comunicación y Control?', o:['10','15','25','50'], c:2, e:'Con menos de 25 personas al servicio de la Entidad, se está exento (2.1.9 Comité).'},
+    {p:'El Auditor Interno, respecto al Comité de Comunicación y Control:', o:['Es miembro con voto','Participa con voz pero sin voto','No puede asistir a las sesiones','Preside el Comité'], c:1, e:'Participa en las sesiones, pero no cuenta como miembro ni tiene voto.'},
+    {p:'(Elección de elementos) ¿Quién SÍ puede ser miembro del Comité de Comunicación y Control?\n\n1. Un miembro del consejo de administración\n2. El Director General\n3. Funcionario dentro de las 3 jerarquías inferiores al Director General\n4. El Auditor Interno', o:['1, 2 y 3','1, 2, 3 y 4','Solo 4','Solo 2'], c:0, e:'El Auditor Interno queda expresamente excluido de ser miembro (solo voz, sin voto); los otros tres perfiles sí pueden serlo.'},
+    {p:'El Oficial de Cumplimiento es designado por:', o:['El Comité de Comunicación y Control','La CNBV (Comisión Nacional Bancaria y de Valores) directamente','El SAT (Servicio de Administración Tributaria)','Cada empleado, de forma individual'], c:0, e:'El Comité designa al Oficial de Cumplimiento (2.1.10 Oficial de cumplimiento).'},
+    {p:'¿A partir de qué monto se genera una Operación Relevante (efectivo)?', o:['1,000 USD','7,500 USD','10,000 USD','14,000 USD'], c:1, e:'7,500 USD en una sola exhibición, en billetes, monedas, cheques de viajero o metales preciosos (2.1.3 Reportes).'},
+    {p:'Una operación con billetes, monedas o cheques de viajero por 7,500 USD o más, en una sola exhibición, se clasifica como:', o:['Operación Inusual','Operación Interna Preocupante','Operación Relevante','Reporte de 24 horas'], c:2, e:'Reconocer la clasificación a partir del monto (formato "al revés").'},
+    {p:'El umbral de 10,000 USD en la DCG (Disposiciones de Carácter General) 115 corresponde a:', o:['La definición de Operación Relevante','Un requisito de identificación reforzada para cheques de caja','El límite mensual para extranjeros','El umbral de Propietario Real'], c:1, e:'No es lo mismo que Operación Relevante — es una obligación de identificación distinta, específica de cheques de caja.'},
+    {p:'(Completamiento) El Reporte de Transferencias Internacionales de Fondos (TIF) aplica desde ___ y debe enviarse dentro de ___.', o:['1,000 USD / 15 días hábiles siguientes al mes','7,500 USD / 24 horas','2,250 USD / 3 días hábiles','500 USD / 10 días hábiles'], c:0, e:'TIF: umbral de 1,000 USD, plazo de 15 días hábiles.'},
+    {p:'En Activos Virtuales, ¿qué operación NO tiene límite de monto para generar reporte?', o:['La venta','La compra','Ambas tienen el mismo límite','Ninguna se reporta'], c:1, e:'La compra se reporta sin importar el monto; la venta solo desde 2,250 USD.'},
+    {p:'El reporte de Activos Virtuales se presenta con una periodicidad:', o:['Diaria','Mensual','Trimestral (enero, abril, julio, octubre)','Anual'], c:2, e:'Igual que las Operaciones Relevantes, se reporta trimestralmente en los primeros 10 días hábiles de esos meses.'},
+    {p:'¿Cuál es el límite diario y mensual de USD en efectivo para un Usuario persona física mexicana?', o:['500 / 2,000','300 / 1,500','1,000 / 5,000','250 / 1,000'], c:1, e:'300 USD diarios, 1,500 USD acumulados en el mes (2.1.4 Restricciones de dólares en efectivo).'},
+    {p:'El límite de USD en efectivo para un Cliente persona física (distinto de Usuario) es:', o:['300 USD diarios','1,500 USD mensuales','4,000 USD acumulados en el mes','No tiene límite'], c:2, e:'Trampa importante: los límites de Cliente y Usuario NO son iguales. Cliente PF (Persona Física): 4,000 USD/mes; Usuario PF: 300 USD/día y 1,500 USD/mes.'},
+    {p:'Por regla general, ¿pueden las Entidades recibir dólares en efectivo de sus Clientes personas morales?', o:['Sí, sin ninguna restricción','No, salvo la excepción de zona fronteriza/alto flujo de remesas (hasta 14,000 USD/mes)','Sí, hasta 1,500 USD/mes siempre','No, nunca, sin excepción'], c:1, e:'La regla general es abstenerse; la excepción de 14,000 USD/mes solo aplica en municipios con alto flujo de remesas o zona fronteriza específica.'},
+    {p:'Los Usuarios extranjeros están exentos del límite:', o:['Mensual','Diario, pero el mensual sí les aplica','De ambos','No tienen ninguna exención'], c:1, e:'Trampa clásica: solo están exentos del tope diario, el mensual de 1,500 USD sigue aplicando.'},
+    {p:'Los "sistemas automatizados" que debe tener una Entidad sirven principalmente para:', o:['Calcular impuestos','Monitorear permanentemente operaciones que no correspondan al perfil transaccional del cliente','Emitir facturas','Generar nómina'], c:1, e:'Deben generar alertas cuando una operación se sale del perfil transaccional esperado del cliente (2.1.5 Sistemas automatizados).'},
+    {p:'El perfil transaccional de un cliente incluye, entre otros datos:', o:['Su religión','Monto, número, tipo, naturaleza y frecuencia de sus operaciones','Su estado civil','El nombre de sus hijos'], c:1, e:'Disposición 24ª: estos son los elementos centrales del perfil transaccional, junto con origen y destino de los recursos.'},
+    {p:'La Geolocalización del Dispositivo es obligatoria para:', o:['Todas las cuentas, sin excepción','Únicamente cuentas abiertas de forma no presencial','Solo cuentas de personas morales','Nunca es obligatoria'], c:1, e:'Solo aplica a operaciones/contratación no presencial (por Dispositivo); sin ella, no se puede abrir la cuenta de esa forma.'},
+    {p:'Para intercambiar información sobre Clientes con una Entidad Financiera extranjera, se requiere, entre otras cosas:', o:['Informar previamente a la CNBV (Comisión Nacional Bancaria y de Valores) antes del intercambio','Ninguna autorización, es libre','Autorización del cliente únicamente','Publicarlo en el DOF (Diario Oficial de la Federación)'], c:0, e:'La Disposición 62ª Ter exige convenir confidencialidad e informar previamente a la Comisión (2.1.7 Intercambio de información).'},
+    {p:'(Elección de elementos) Para el intercambio de información con Entidades Financieras extranjeras, ¿cuáles son requisitos reales conforme a la Disposición 62ª Ter?\n\n1. Convenir tratamiento confidencial\n2. Informar previamente a la CNBV (Comisión Nacional Bancaria y de Valores)\n3. Realizarlo vía Egmont Secure Web\n4. Que derive de una Operación real entre las Entidades', o:['1, 2 y 4','1, 2, 3 y 4','Solo 3','2 y 3'], c:0, e:'El Egmont Secure Web es para intercambio entre UIF (Unidad de Inteligencia Financiera), no para este supuesto entre Entidades Financieras.'},
+    {p:'Si la Entidad localiza a un cliente en la Lista de Personas Bloqueadas, debe:', o:['Guardar confidencialidad absoluta con el cliente','Suspender la operación e informar por escrito al cliente los motivos','Solo monitorear, sin suspender nada','Cerrar la cuenta inmediatamente sin aviso'], c:1, e:'A diferencia de un ROI (Reporte de Operación Inusual) normal, aquí SÍ se informa al cliente, porque tiene derecho a impugnar su inclusión en 10 días hábiles (2.1.8).'},
+    {p:'El cliente incluido en la Lista de Personas Bloqueadas puede acudir ante la autoridad competente a impugnar su inclusión dentro de:', o:['3 días hábiles','10 días hábiles','30 días naturales','No puede impugnarla'], c:1, e:'Tiene 10 días hábiles siguientes a la notificación para acudir ante la autoridad competente.'},
+    {p:'¿Cuál es la duración máxima de la autorización temporal para un Modelo Novedoso?', o:['1 año','2 años, prorrogable 1 año más','5 años','Indefinida'], c:1, e:'2.1.11 Obligaciones de los modelos novedosos: autorización temporal, sandbox regulatorio, máximo 2+1 años.'},
+    {p:'La autorización de un Modelo Novedoso la otorgan:', o:['Únicamente la CNBV (Comisión Nacional Bancaria y de Valores)','Las Autoridades Financieras según su ámbito de competencia (CNBV (Comisión Nacional Bancaria y de Valores), CNSF (Comisión Nacional de Seguros y Fianzas), CONSAR (Comisión Nacional del Sistema de Ahorro para el Retiro), Banxico)','El Comité de Comunicación y Control','La FGR (Fiscalía General de la República)'], c:1, e:'Depende de la actividad: puede ser CNBV (Comisión Nacional Bancaria y de Valores), CNSF (Comisión Nacional de Seguros y Fianzas), CONSAR (Comisión Nacional del Sistema de Ahorro para el Retiro) o Banco de México, según su competencia.'},
+    {p:'El órgano colegiado integrado por SHCP (Secretaría de Hacienda y Crédito Público), Banco de México y CNBV (Comisión Nacional Bancaria y de Valores) que interviene en la autorización de ITF (Instituciones de Tecnología Financiera) y Modelos Novedosos se llama:', o:['Comité de Comunicación y Control','Comité Interinstitucional','Junta de Gobierno','Consejo Técnico'], c:1, e:'El Comité Interinstitucional es específico de la LRITF (Ley para Regular las Instituciones de Tecnología Financiera), distinto al Comité de Comunicación y Control de cada Entidad.'},
+    {p:'¿Qué tipo de entidades requieren un Dictamen Técnico previo de la CNBV (Comisión Nacional Bancaria y de Valores) para operar?', o:['Bancos y Casas de Bolsa','Centros Cambiarios, Transmisores de Dinero y SOFOM (Sociedad Financiera de Objeto Múltiple) No Reguladas','Todas las Entidades Financieras sin excepción','Solo las ITF (Instituciones de Tecnología Financiera)'], c:1, e:'2.1.12/2.1.13: es un requisito específico de estas tres figuras (LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) Art. 86 Bis y 87-P), no general.'},
+    {p:'Las Casas de Cambio, a diferencia de los Centros Cambiarios, en materia PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) se regulan bajo:', o:['Su propia DCG (Disposiciones de Carácter General) — no están incluidas en el Art. 95 Bis LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito)','El Art. 95 Bis LGOAAC (con Dictamen Técnico)','La LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)','El Art. 115 LIC (Ley de Instituciones de Crédito)'], c:0, e:'El Art. 95 Bis LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) obliga solo a tres sujetos: Centros Cambiarios, Transmisores de Dinero y SOFOM ENR (SOFOM Entidad No Regulada). Las Casas de Cambio NO están ahí — no requieren Dictamen Técnico y su régimen PLD/FT viene de su propia DCG (Disposiciones de Carácter General), no de un artículo de la LGOAAC. (Ojo: el Art. 95 "a secas" de la LGOAAC no tiene nada que ver con esto — regula un requisito de querella penal.)'},
+    {p:'Una SOFOM (Sociedad Financiera de Objeto Múltiple) que tiene vínculo patrimonial con una Entidad Financiera regulada se llama:', o:['SOFOM ENR (SOFOM Entidad No Regulada)','SOFOM ER (SOFOM Entidad Regulada)','Centro Cambiario','Casa de Cambio'], c:1, e:'SOFOM ER (SOFOM Entidad Regulada) = Entidad Regulada (con vínculo patrimonial); las SOFOM ENR (No Reguladas) son las que requieren Dictamen Técnico.'},
+    {p:'Las Instituciones de Tecnología Financiera (ITF) tienen su obligación PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) en:', o:['El Art. 115 de la LIC (Ley de Instituciones de Crédito)','El Art. 58 de la LRITF (Ley para Regular las Instituciones de Tecnología Financiera)','El Art. 212 de la LMV (Ley del Mercado de Valores)','El Art. 17 de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)'], c:1, e:'2.1.14: el Art. 58 de la Ley Fintech es el equivalente al 115 LIC (Ley de Instituciones de Crédito), pero para ITF.'},
+    {p:'(Relación de elementos) Relacione la figura de ITF (Instituciones de Tecnología Financiera) con su definición\n\n1. ICF (Instituciones de Financiamiento Colectivo)\n2. IFPE (Instituciones de Fondos de Pago Electrónico)\n\na) Emisión, administración y transmisión de fondos de pago electrónico\nb) Pone en contacto a inversionistas y solicitantes para financiamiento colectivo ("crowdfunding")', o:['1b, 2a','1a, 2b','Ambas son lo mismo','Ninguna corresponde a la LRITF (Ley para Regular las Instituciones de Tecnología Financiera)'], c:0, e:'ICF = crowdfunding (b); IFPE = fondos de pago electrónico / wallets (a).'},
+    {p:'Las modalidades de una Institución de Financiamiento Colectivo (ICF) son:', o:['Deuda, Capital y Copropiedad o Regalías','Solo Deuda','Depósito y Retiro','Compra y Venta'], c:0, e:'Las tres modalidades reconocidas por la LRITF (Ley para Regular las Instituciones de Tecnología Financiera) para el crowdfunding.'},
+    {p:'Las sanciones del Art. 115 LIC (Ley de Instituciones de Crédito) pueden alcanzar, como rango porcentual:', o:['1% a 10%','10% a 100% del valor del acto u operación','50% fijo siempre','No hay sanciones porcentuales'], c:1, e:'2.1.15 Sanciones: 10% a 100% del valor de la operación, según el tipo de incumplimiento.'},
+    {p:'Las sanciones del Art. 58 de la LRITF (equivalente al 115 LIC (Ley de Instituciones de Crédito) pero para ITF (Instituciones de Tecnología Financiera)), por operar con un cliente en Lista de Personas Bloqueadas, son de:', o:['10% a 100% del monto del acto u operación','Multa fija de 1,000 UMA (Unidad de Medida y Actualización)','No existe sanción específica','Solo amonestación'], c:0, e:'El Art. 105 LRITF replica el mismo esquema porcentual del Art. 115 LIC para este tipo de incumplimiento.'},
+    {p:'¿A partir de qué porcentaje de composición accionaria se identifica a alguien como Propietario Real?', o:['10%','15%','25%','50%'], c:2, e:'2.1.16: 25% o más de la composición accionaria o capital social.'},
+    {p:'Si una persona física adquiere el 25% o más de la composición accionaria de una persona moral, se considera que:', o:['Es un Dueño Beneficiario','Es un Proveedor de Recursos','Ejerce Control','Es cliente de alto riesgo directo'], c:2, e:'El término técnico de la DCG (Disposiciones de Carácter General) 115 es "ejerce Control" — así es como se identifica al Propietario Real.'},
+    {p:'Si nadie llega al 25% de control accionario de una persona moral, se considera que ejerce el Control:', o:['Nadie, no se identifica a ningún Propietario Real','El administrador de la persona moral','El primer accionista registrado','El Proveedor de Recursos'], c:1, e:'Ante la ausencia de un accionista con 25%+, la regla supletoria es identificar al administrador como quien ejerce el Control.'},
+    {p:'El requisito de "al menos 3 años de constituida" para una persona moral que recibe dólares en efectivo corresponde a:', o:['El tope fijo de 14,000 USD/mes en zona fronteriza (no exige antigüedad)','El régimen de monto ILIMITADO en efectivo (Disposición 33ª Bis 1)','El límite de 1,500 USD/mes de Usuarios','Ninguno de los anteriores'], c:1, e:'Son dos disposiciones distintas: el tope de 14,000 USD/mes (33ª Bis, fracc. I) NO exige antigüedad. Los 3 años son uno de los 6 requisitos del régimen sin límite de monto (33ª Bis 1). Es una trampa clásica mezclar ambas.'},
+    {p:'El Reporte de Transferencias Internacionales de Fondos (TIF) debe enviarse dentro de:', o:['24 horas','3 días hábiles','15 días hábiles siguientes al mes','30 días naturales'], c:2, e:'2.1.17 Plazos de cumplimiento regulatorio: 15 días hábiles siguientes al mes que se reporta, umbral de 1,000 USD.'},
+    {p:'Las Operaciones Relevantes y de Activos Virtuales se envían dentro de los primeros ___ días hábiles de enero, abril, julio y octubre.', o:['5','10','15','20'], c:1, e:'Primeros 10 días hábiles de esos cuatro meses, cubriendo el trimestre anterior.'},
+    {p:'Una vez que el Comité dictamina una Operación Inusual, el reporte a la Secretaría debe enviarse dentro de:', o:['24 horas','3 días hábiles siguientes a la sesión del Comité','10 días hábiles','30 días naturales'], c:1, e:'3 días hábiles después de la sesión donde el Comité dictaminó.'},
+    {p:'El Comité de Comunicación y Control tiene, como plazo general para dictaminar una alerta de Operación Inusual:', o:['24 horas','10 días hábiles','60 días naturales (con posible prórroga de 30 días más)','1 año'], c:2, e:'60 días naturales, prorrogables 30 días más si el Manual de Cumplimiento lo prevé.'},
+    {p:'(Relación de elementos) Relacione el elemento de riesgo con su indicador\n\n1. Transacción\n2. Canal de envío\n3. Área geográfica\n\na) Ventanilla, cajeros automáticos, banca móvil\nb) Regímenes fiscales preferentes, jurisdicciones no cooperantes\nc) Uso de efectivo, tarjetas prepagadas, tipo/monto/número/frecuencia', o:['1c, 2a, 3b','1a, 2b, 3c','1b, 2c, 3a','1c, 2b, 3a'], c:0, e:'Transacción=instrumento monetario y frecuencia (c); Canal=presencial vs no presencial (a); Área geográfica=jurisdicciones de riesgo (b) — Guía CNBV (Comisión Nacional Bancaria y de Valores) de Metodología.'},
+    {p:'Un Centro Cambiario reporta operaciones relevantes por 7,500 USD y necesita renovar su autorización para operar. ¿Qué debe tramitar ante la CNBV (Comisión Nacional Bancaria y de Valores)?', o:['Un Dictamen Técnico','Una certificación de Oficial de Cumplimiento únicamente','Nada, no se renueva nada','Un Informe de Auditoría extraordinario'], c:0, e:'Los Centros Cambiarios (igual que Transmisores de Dinero y SOFOM ENR (SOFOM Entidad No Regulada)) requieren Dictamen Técnico favorable vigente de la CNBV.'},
+    {p:'¿Cuántos niveles de cuenta simplificada contempla la DCG (Disposiciones de Carácter General) 115 para personas físicas (Nivel 1, 2, 3)?', o:['2','3','4','5'], c:1, e:'Niveles 1, 2 y 3, cada uno con requisitos de identificación y topes de operación crecientes (medidos en UDI (Unidades de Inversión)).'},
+    {p:'Los montos de las cuentas Nivel 1, 2 y 3 de la DCG (Disposiciones de Carácter General) 115 se expresan en:', o:['UMA (Unidad de Medida y Actualización)','Dólares (USD)','UDI (Unidades de Inversión)','Pesos fijos, sin actualización'], c:2, e:'A diferencia de otros umbrales de la misma DCG (en USD) y de la LFPIORPI (en UMA (Unidad de Medida y Actualización)), estas cuentas usan UDI (Unidades de Inversión).'},
+    {p:'Una cuenta Nivel 1 (la más simple) se abre solo con:', o:['Apellidos, nombre y fecha de nacimiento','Identificación oficial completa y comprobante de domicilio','RFC (Registro Federal de Contribuyentes) y CURP (Clave Única de Registro de Población) obligatorios','Firma Electrónica Avanzada'], c:0, e:'Es la cuenta con menor información requerida, pensada para inclusión financiera de bajo monto.'},
+    {p:'Las Disposiciones de Carácter General en PLD aplicables a las casas de bolsa se sustentan en:', o:['Art. 91 de la Ley Fintech','Art. 17 LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)','Art. 115 LIC (Ley de Instituciones de Crédito)','Art. 212 de la Ley del Mercado de Valores'], c:3, e:'El Art. 212 LMV (Ley del Mercado de Valores) es el sustento de la DCG (Disposiciones de Carácter General) para casas de bolsa (Resolución DOF (Diario Oficial de la Federación) 9-sep-2010), estructura paralela a la bancaria pero ajustada a operaciones del mercado de valores. Corrección importante: el Art. 226 Bis LMV NO es para casas de bolsa, sino específicamente para asesores en inversiones (confirmado contra tu documento 16_DCG_226_bis — es una DCG distinta, para un sujeto obligado distinto). Si tu profesor o algún examen te da esa opción como correcta, es un error de la fuente.'},
+    {p:'Un VASP (Virtual Asset Service Provider / Proveedor de Servicios de Activos Virtuales) es:', o:['Solo una billetera electrónica','Cualquier usuario de criptomoneda','Solo un minero de criptomonedas','Persona física o moral que realiza como negocio actividades de intercambio, custodia, transferencia o emisión de Activos Virtuales'], c:3, e:'Conforme al glosario del GAFI (citado en tu documento de tipología de Activos Virtuales) y a la reforma de 2018 a la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita), que creó un marco híbrido (Ley Fintech + LFPIORPI) para regular la prestación de servicios de AV. Nota de fuente: el término "VASP" y su regulación en México sí están en tus documentos; la referencia puntual a la "Recomendación 15 del GAFI" es conocimiento general del estándar GAFI, no localizado textualmente en el material que me compartiste — te lo señalo por transparencia.'},
+  ]},
+  { id:'b2', area:'Área 2 · Conocimientos técnicos', temario:'2.2', title:'LFPIORPI — Actividades Vulnerables', icon:'📋', questions:[
+    {p:'¿Cuál es la fecha límite para presentar un Aviso conforme a la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)?', o:['Día 10 del mes siguiente','Día 17 del mes siguiente','Día 30 del mes siguiente','El mismo día de la operación'], c:1, e:'A más tardar el día 17 del mes inmediato siguiente a la operación.'},
+    {p:'Los expedientes bajo la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) deben conservarse por:', o:['5 años desde que termina la relación comercial','10 años desde la realización de la Actividad Vulnerable','3 años desde el aviso','Indefinidamente'], c:1, e:'10 años, contados desde la realización de la Actividad Vulnerable (no desde el fin de la relación).'},
+    {p:'La figura equivalente al "Oficial de Cumplimiento" en el régimen de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) se llama:', o:['Auditor Interno','Representante Encargado del Cumplimiento','Delegado Fiduciario','Consejero Independiente'], c:1, e:'La LFPIORPI usa un término distinto al de las Entidades Financieras.'},
+    {p:'(Elección de elementos) ¿Cuáles son Obligaciones reales conforme al Art. 18 de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)?\n\n1. Nombrar un "Oficial de Cumplimiento"\n2. Elaborar una evaluación con Enfoque Basado en Riesgos\n3. Elaborar informe de auditoría si se tienen operaciones por más de $1,000,000 anuales\n4. Conservar expedientes 10 años desde la realización de la actividad', o:['2 y 4','1, 2, 3 y 4','1 y 3','Solo 2'], c:0, e:'El término correcto es "Representante Encargado del Cumplimiento" (no "Oficial"), y la obligación de auditoría depende del grado de riesgo, no de un umbral de $1,000,000 — ese dato es falso.'},
+    {p:'El "Beneficiario Controlador" en la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) equivale, en la DCG (Disposiciones de Carácter General) 115, al concepto de:', o:['Oficial de Cumplimiento','Propietario Real','Representante Legal','Proveedor de Recursos'], c:1, e:'Ambos términos ("Beneficiario Controlador" y "Propietario Real") describen la misma idea: quien controla o se beneficia en última instancia.'},
+    {p:'Una Persona Políticamente Expuesta (PEP), conforme al Art. 3 de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita), es:', o:['Cualquier funcionario público actual o pasado, sin distinción de nivel','Quien desempeña o ha desempeñado funciones públicas destacadas, en México o el extranjero','Solo los ex presidentes','Cualquier empleado de gobierno, sin importar el cargo'], c:1, e:'La definición legal exige que sean funciones públicas destacadas, no cualquier cargo de gobierno.'},
+    {p:'El umbral de Aviso para mutuo, garantía, préstamo o crédito (Art. 17-IV) es:', o:['645 UMA (Unidad de Medida y Actualización)','1,605 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:1, e:'1,605 veces el valor diario de la UMA (Unidad de Medida y Actualización).'},
+    {p:'El umbral de Aviso para construcción o desarrollo de inmuebles (Art. 17-V) es:', o:['1,605 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)','14,000 UMA (Unidad de Medida y Actualización)'], c:2, e:'8,025 veces el valor diario de la UMA (Unidad de Medida y Actualización) — el más alto de los umbrales comunes.'},
+    {p:'El umbral de identificación para juegos con apuesta, concursos o sorteos (Art. 17-I) es:', o:['325 UMA (Aviso a 645 UMA)','645 UMA (Aviso a 1,285 UMA)','805 UMA (Aviso a 1,605 UMA)','1,605 UMA (Aviso a 3,210 UMA)'], c:0, e:'325 UMA (Unidad de Medida y Actualización) para identificación; 645 UMA para que sea objeto de Aviso.'},
+    {p:'El umbral de Aviso para tarjetas de servicio o crédito (Art. 17-II) es:', o:['645 UMA (Unidad de Medida y Actualización)','1,285 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:1, e:'805 UMA (Unidad de Medida y Actualización) de identificación; 1,285 UMA de Aviso.'},
+    {p:'El umbral de Aviso para metales preciosos, piedras preciosas, joyas o relojes (Art. 17-VI) es:', o:['645 UMA (Unidad de Medida y Actualización)','1,605 UMA (Unidad de Medida y Actualización)','4,815 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:1, e:'805 UMA (Unidad de Medida y Actualización) de identificación; 1,605 UMA de Aviso.'},
+    {p:'El umbral de Aviso para obras de arte (Art. 17-VII) es:', o:['1,605 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','4,815 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:2, e:'2,410 UMA (Unidad de Medida y Actualización) de identificación; 4,815 UMA de Aviso — el segundo umbral más alto después de inmuebles.'},
+    {p:'El umbral de Aviso para comercialización de vehículos nuevos o usados (Art. 17-VIII) es:', o:['3,210 UMA (Unidad de Medida y Actualización)','4,815 UMA (Unidad de Medida y Actualización)','6,420 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:2, e:'3,210 UMA (Unidad de Medida y Actualización) de identificación; 6,420 UMA de Aviso.'},
+    {p:'El umbral de Aviso para traslado o custodia de dinero o valores (Art. 17-X) es:', o:['1,605 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','4,815 UMA (Unidad de Medida y Actualización)','6,420 UMA (Unidad de Medida y Actualización)'], c:1, e:'3,210 UMA (Unidad de Medida y Actualización) — a diferencia de otras fracciones, aquí no hay un umbral de identificación separado, solo el de Aviso.'},
+    {p:'El umbral de Aviso para donativos recibidos por asociaciones o sociedades sin fines de lucro (Art. 17-XIII) es:', o:['1,605 UMA (Unidad de Medida y Actualización)','3,210 UMA (Unidad de Medida y Actualización)','4,815 UMA (Unidad de Medida y Actualización)','8,025 UMA (Unidad de Medida y Actualización)'], c:1, e:'1,605 UMA (Unidad de Medida y Actualización) de identificación; 3,210 UMA de Aviso.'},
+    {p:'¿Cuál de las siguientes SÍ es una Actividad Vulnerable conforme al Art. 17 LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)?', o:['Operaciones bancarias de instituciones de crédito','Comercialización de metales preciosos, piedras preciosas, joyas o relojes','Venta de abarrotes','Transporte público'], c:1, e:'Los bancos ya están regulados bajo el Art. 115 LIC (Ley de Instituciones de Crédito); las Actividades Vulnerables son para sujetos NO financieros.'},
+    {p:'(Elección de elementos) ¿Cuáles de las siguientes SÍ son Actividades Vulnerables reales conforme al Art. 17?\n\n1. El ofrecimiento habitual de mutuo o crédito por sujetos distintos a Entidades Financieras\n2. La comercialización habitual de hidrocarburos\n3. El uso intensivo de efectivo en supermercados\n4. La prestación de servicios de fe pública (notarios)', o:['1 y 4','1, 2, 3 y 4','2 y 3','Solo 1'], c:0, e:'Hidrocarburos y "efectivo en supermercados" no son Actividades Vulnerables reales — son distractores inventados.'},
+    {p:'Tratándose de fe pública (notarios), ¿cuál de los siguientes actos es SIEMPRE objeto de Aviso, sin importar el monto?', o:['La compraventa de cualquier inmueble','El otorgamiento de poderes para actos de dominio con carácter irrevocable','Cualquier trámite notarial','Ninguno, todos tienen umbral'], c:1, e:'Los poderes irrevocables, la constitución de personas morales y ciertos mutuos siempre son objeto de Aviso, sin umbral mínimo.'},
+    {p:'Las Actividades Vulnerables pueden presentar sus Avisos por conducto de una:', o:['Entidad Colegiada','Casa de Bolsa','SOFIPO (Sociedad Financiera Popular)','Institución de Banca Múltiple'], c:0, e:'La LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) permite agrupar la presentación de Avisos a través de una Entidad Colegiada que cumpla los requisitos del Art. 27.'},
+    {p:'Sobre uso de efectivo (Art. 32 LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)), está prohibido pagar en efectivo, por ejemplo:', o:['La compra de un inmueble por un monto igual o superior a 8,025 UMA (Unidad de Medida y Actualización)','Cualquier compra sin importar el monto','Solo compras en el extranjero','Nunca está prohibido el efectivo'], c:0, e:'El Art. 32 prohíbe liquidar en efectivo ciertos actos (inmuebles, vehículos, joyas...) a partir de determinados umbrales en UMA (Unidad de Medida y Actualización), aun pagando a través de una Entidad Financiera.'},
+    {p:'Las sanciones de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita) por omitir presentar un Aviso pueden llegar hasta:', o:['2,000 UMA (Unidad de Medida y Actualización)','10,000 UMA (Unidad de Medida y Actualización)','65,000 UMA (Unidad de Medida y Actualización), o 10%-100% del acto (lo que resulte mayor)','No hay sanción por esto'], c:2, e:'Es de las sanciones más severas de la ley: hasta 65,000 UMA (Unidad de Medida y Actualización) o el 10%-100% del valor del acto, lo que sea mayor.'},
+  ]},
+  { id:'c1', area:'Área 3 · Auditoría, supervisión y EBR', temario:'3.1', title:'Auditoría y Supervisión CNBV', icon:'🔍', questions:[
+    {p:'¿Cuáles son los tres tipos de Visita de Inspección de la CNBV (Comisión Nacional Bancaria y de Valores)?', o:['Preventiva, Correctiva, de Seguimiento','Ordinaria, Especial, de Investigación','Programada, Sorpresa, Extraordinaria','Interna, Externa, Mixta'], c:1, e:'Ordinarias, Especiales y de Investigación (Reglamento de Supervisión de la CNBV).'},
+    {p:'¿Con cuántos días hábiles de anticipación debe notificarse, por regla general, una visita de inspección?', o:['1 día','2 días','5 días','10 días'], c:1, e:'2 días hábiles, salvo excepciones (visitas de investigación, o cualquier tipo a Centros Cambiarios/Transmisores/SOFOM ENR (SOFOM Entidad No Regulada)).'},
+    {p:'(Elección de elementos) ¿En cuáles de los siguientes casos la CNBV (Comisión Nacional Bancaria y de Valores) puede notificar la visita en el acto de inicio (sin los 2 días de anticipación)?\n\n1. Visitas de investigación (de cualquier entidad)\n2. Cualquier tipo de visita a Centros Cambiarios y Transmisores de Dinero\n3. Cualquier tipo de visita a SOFOM (Sociedad Financiera de Objeto Múltiple) No Reguladas\n4. Visitas a Casas de Bolsa', o:['1, 2 y 3','Solo 1','1, 2, 3 y 4','2 y 3'], c:0, e:'Las tres primeras son excepciones reales; las Casas de Bolsa no tienen esta excepción especial.'},
+    {p:'Si un auditor PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) no cuenta con el nivel de estudios requerido, debe acreditar experiencia mínima de:', o:['1 año','3 años','5 años','10 años'], c:2, e:'5 años de experiencia en la materia, según los Lineamientos del Informe de Auditoría.'},
+    {p:'Un auditor PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) debe conservar la documentación de su auditoría por un plazo mínimo de:', o:['1 año','3 años','5 años','10 años'], c:2, e:'5 años, contados a partir de la presentación del Informe de Auditoría ante la Comisión.'},
+    {p:'El documento que se levanta al finalizar una Visita de Inspección se llama:', o:['Oficio de Observaciones','Acta de Conclusión','Dictamen Técnico','Informe Preliminar'], c:1, e:'El Acta de Conclusión formaliza el cierre de la visita.'},
+    {p:'(Elección de elementos) ¿Cuáles son documentos/actos reales que integran el procedimiento de una visita de inspección?\n\n1. Oficio de Orden de Visita\n2. Acta de Inicio\n3. Actas Parciales\n4. Acta de Conclusión', o:['1, 2, 3 y 4','Solo 2 y 4','1 y 3','Solo 4'], c:0, e:'Los cuatro son actos reales del procedimiento, confirmados en el Reglamento de Supervisión de la CNBV (Comisión Nacional Bancaria y de Valores).'},
+    {p:'¿Qué debe proporcionar la Entidad a los inspectores de la CNBV (Comisión Nacional Bancaria y de Valores) durante una visita?', o:['Espacio físico necesario y equipo de cómputo, de oficina y comunicación que requieran','Solo la información que se pida por escrito con antelación','Nada, la CNBV (Comisión Nacional Bancaria y de Valores) debe traer su propio equipo','Únicamente acceso a internet'], c:0, e:'Art. 30 del Reglamento de Supervisión: espacio físico y equipo de cómputo/oficina/comunicación necesarios.'},
+    {p:'El Informe de Auditoría PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) debe incluir, entre otras, la sección de:', o:['Cumplimiento regulatorio','Solo estados financieros','Nómina de empleados','Publicidad de la Entidad'], c:0, e:'Las secciones oficiales incluyen: Resultados de la Revisión, Cumplimiento regulatorio, Asuntos clave de la auditoría, y Hallazgos/acciones correctivas.'},
+    {p:'(Elección de elementos) ¿Qué secciones integran el Informe de Auditoría PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo), conforme a los Lineamientos (numeral OCTAVO)?\n\n1. Resultados de la Revisión\n2. Cumplimiento regulatorio\n3. Asuntos clave de la auditoría\n4. Hallazgos y acciones correctivas', o:['1, 2, 3 y 4','Solo 1 y 2','Solo 4','2 y 3'], c:0, e:'Las cuatro secciones (A, B, C, D) son reales y obligatorias según el numeral OCTAVO de los Lineamientos.'},
+    {p:'El Informe de Auditoría PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) debe presentarse con una periodicidad:', o:['Mensual','Trimestral','Anual','Cada 2 años'], c:2, e:'Es un ejercicio de revisión anual, salvo disposición distinta para casos específicos.'},
+    {p:'¿Quién puede levantar el Acta de Conclusión de una visita, si el visitado se niega a firmarla?', o:['Se cancela la visita','Se hace constar la negativa y queda válida igualmente','El visitado pierde toda posibilidad de defensa','No pasa nada, se repite la visita'], c:1, e:'La negativa a firmar no invalida el acta; simplemente se asienta esa circunstancia.'},
+    {p:'Las Actas Parciales que se levantan durante una visita de inspección sirven para:', o:['Documentar avances parciales antes del Acta de Conclusión','Sustituir el Acta de Conclusión','Solo se usan en visitas de investigación','No tienen validez legal'], c:0, e:'Son actos intermedios que documentan lo revisado hasta ese momento, y se acompañan al Acta de Conclusión final.'},
+    {p:'Las visitas de investigación de la CNBV (Comisión Nacional Bancaria y de Valores) pueden abarcar operaciones realizadas dentro de:', o:['El último mes','Los últimos 6 meses','Los 5 años inmediatos anteriores al inicio de la visita','Sin límite de tiempo'], c:2, e:'El Reglamento de Supervisión limita el alcance a los 5 años inmediatos anteriores a la visita.'},
+  ]},
+  { id:'c2', area:'Área 3 · Auditoría, supervisión y EBR', temario:'3.2', title:'EBR — Contexto Internacional', icon:'🌐', questions:[
+    {p:'Según la Guía del GAFI (Grupo de Acción Financiera Internacional) para el sector bancario, los "Retos" para implementar un EBR (Enfoque Basado en Riesgo) incluyen textualmente:', o:['Identificación, evaluación y mitigación del riesgo','Asignación de responsabilidades, entendimiento común de EBR (Enfoque Basado en Riesgo) e inclusión financiera','Supervisión, auditoría y certificación','Reportes, sanciones y sistemas automatizados'], c:1, e:'Estos tres son los retos nombrados explícitamente en la sección "D. Retos" de la guía — no confundir con los títulos de otros capítulos del mismo documento.'},
+    {p:'¿En qué fecha publicó el Comité de Basilea su documento "Adecuada gestión de los riesgos relacionados con el blanqueo de capitales y la financiación del terrorismo"?', o:['Octubre 2014','Enero 2014','Enero 2018','Diciembre 2013'], c:1, e:'Enero de 2014, según la bibliografía oficial del temario.'},
+    {p:'La Guía del GAFI (Grupo de Acción Financiera Internacional) para el sector bancario está dirigida principalmente a:', o:['Solo autoridades fiscales','Supervisores y bancos','Únicamente organismos internacionales','Sujetos Obligados de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)'], c:1, e:'La guía tiene una sección para supervisores y otra específica para bancos (evaluación y mitigación de riesgos).'},
+    {p:'¿Qué recomienda el GAFI (Grupo de Acción Financiera Internacional) como "base esencial" para cualquier régimen PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) efectivo?', o:['El Enfoque Basado en Riesgo (EBR)','La prohibición total de efectivo','La eliminación de la banca corresponsal','El secreto bancario absoluto'], c:0, e:'La Recomendación 1 del GAFI establece el EBR (Enfoque Basado en Riesgo) como la base esencial de todo el sistema preventivo.'},
+    {p:'(Elección de elementos) ¿Cuáles de los siguientes SÍ son capítulos reales de la Guía del GAFI (Grupo de Acción Financiera Internacional) para el sector bancario?\n\n1. El EBR (Enfoque Basado en Riesgo) del GAFI para efectos de ALA/CFT (Combating the Financing of Terrorism)\n2. Guía para supervisores\n3. Guía para bancos\n4. Guía para autoridades fiscales', o:['1, 2 y 3','1, 2, 3 y 4','Solo 3','2 y 4'], c:0, e:'No existe un capítulo dirigido a "autoridades fiscales" en esta guía — es un distractor.'},
+    {p:'La Recomendación 12 del GAFI (referida en el contexto de EBR (Enfoque Basado en Riesgo) internacional) exige:', o:['Prohibir a las PEP (Persona Políticamente Expuesta) abrir cuentas','Debida diligencia reforzada para PEP (Persona Políticamente Expuesta)','Eliminar el secreto bancario','Reportar solo operaciones en efectivo'], c:1, e:'La Recomendación 12 exige sistemas de gestión de riesgo para determinar si un cliente/beneficiario final es PEP (Persona Políticamente Expuesta) y aplicar debida diligencia reforzada.'},
+    {p:'El Comité de Basilea, en su documento de enero 2014, se enfoca en:', o:['Riesgos de mercado accionario','Riesgos relacionados con blanqueo de capitales y financiación del terrorismo','Riesgos cambiarios únicamente','Riesgos de tasas de interés'], c:1, e:'Es el título completo del documento: "Adecuada gestión de los riesgos relacionados con el blanqueo de capitales y la financiación del terrorismo".'},
+    {p:'¿Qué institución internacional es la contraparte técnica más citada del GAFI (Grupo de Acción Financiera Internacional) en materia de regulación prudencial bancaria?', o:['El Comité de Basilea','El Grupo Egmont','GAFILAT (Grupo de Acción Financiera de Latinoamérica)','La OCDE (Organización para la Cooperación y el Desarrollo Económicos)'], c:0, e:'Basilea aporta la perspectiva prudencial/bancaria que complementa las Recomendaciones del GAFI.'},
+    {p:'La aplicación de un EBR (Enfoque Basado en Riesgo), según el GAFI (Grupo de Acción Financiera Internacional), requiere que los países y las Entidades:', o:['Identifiquen, evalúen y entiendan sus riesgos de LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo)','Ignoren el riesgo geográfico por completo','Traten a todos los clientes exactamente igual','Eliminen toda relación con clientes de alto riesgo'], c:0, e:'El EBR exige identificar, evaluar y entender el riesgo para luego aplicar medidas proporcionales — no un trato uniforme para todos.'},
+    {p:'Dentro de la Guía para bancos (sección III de la Guía GAFI (Grupo de Acción Financiera Internacional)), los apartados incluyen:', o:['Evaluación de riesgos, Mitigación de riesgos, y Controles internos/gobierno corporativo','Solo Evaluación de riesgos','Sanciones y multas','Certificación de auditores'], c:0, e:'Estas son las tres secciones que integran la "Guía para bancos" dentro del documento del GAFI.'},
+  ]},
+  { id:'c3', area:'Área 3 · Auditoría, supervisión y EBR', temario:'3.3', title:'EBR — Contexto Nacional', icon:'🚦', questions:[
+    {p:'Según la Guía CNBV (Comisión Nacional Bancaria y de Valores) de Metodología de Evaluación de Riesgos, la fase de "Diseño" se compone de:', o:['Identificación de elementos de riesgo, Medición de riesgos y Mitigantes','Solo Identificación de riesgos','Implementación y Valoración únicamente','Auditoría y Certificación'], c:0, e:'Las tres fases de "Diseño" son: Identificación de Elementos de Riesgo e Indicadores, Medición de los Riesgos, y Mitigantes.'},
+    {p:'(Elección de elementos) ¿Cuáles procesos integran la fase de "Diseño" de la metodología de EBR (Enfoque Basado en Riesgo)?\n\n1. Identificación de Elementos de Riesgo y sus Indicadores\n2. Medición de los Riesgos\n3. Mitigantes\n4. Supervisión de la CNBV (Comisión Nacional Bancaria y de Valores)', o:['1, 2 y 3','1, 2, 3 y 4','Solo 1','2 y 4'], c:0, e:'La Supervisión de la CNBV no es parte de la fase de Diseño de la metodología — es una función externa de vigilancia.'},
+    {p:'Después de la fase de "Diseño", ¿cuáles son las otras dos fases de la metodología de EBR (Enfoque Basado en Riesgo)?', o:['Implementación y Valoración','Certificación y Auditoría','Reporte y Sanción','Identificación y Mitigación'], c:0, e:'Las tres fases completas son: I. Diseño, II. Implementación, III. Valoración.'},
+    {p:'¿Cuáles son los niveles típicos de Clasificación por Grado de Riesgo para un cliente?', o:['Alto, Medio, Bajo','Rojo, Amarillo, Verde','Crítico, Normal, Mínimo','A, B, C'], c:0, e:'La clasificación estándar usada en la metodología de EBR (Enfoque Basado en Riesgo) es Alto / Medio / Bajo.'},
+    {p:'Según la ENR (Evaluación Nacional de Riesgos) 2023, el riesgo de Lavado de Dinero en México se clasificó como:', o:['Bajo','Medio','Medio-Alto','Alto'], c:2, e:'Medio-Alto para LD (Lavado de Dinero); el riesgo de FT (Financiamiento al Terrorismo) se clasificó como Bajo ese mismo año.'},
+    {p:'(Completamiento) La Conclusión Nacional de la ENR (Evaluación Nacional de Riesgos) 2023 clasificó: Lavado de Dinero = ___, Financiamiento al Terrorismo = ___, Activos Virtuales = ___, Pandemia COVID-19 = ___.', o:['Medio-Alto / Bajo / Medio / Bajo','Alto / Bajo / Bajo / Bajo','Medio-Alto / Alto / Medio / Bajo','Alto / Medio / Medio / Bajo'], c:0, e:'Los cuatro niveles finales exactos de la ENR 2023, verificados contra el documento oficial.'},
+    {p:'¿Cuáles son los únicos sectores financieros clasificados como riesgo "ALTO" en la ENR (Evaluación Nacional de Riesgos) 2023?', o:['Seguros y Fianzas','Casas de Bolsa y SOFIPOS (Sociedades Financieras Populares)','Banca Múltiple-G7 y Banca Múltiple-Cambiarios','Uniones de Crédito'], c:2, e:'Solo estos dos subsectores bancarios llegaron a nivel ALTO en 2023.'},
+    {p:'¿Cuáles son los sectores financieros clasificados como riesgo "BAJO" en la ENR (Evaluación Nacional de Riesgos) 2023?', o:['Seguros, Fianzas y Asesores de Inversión','Banca Múltiple y Casas de Bolsa','Centros Cambiarios y Transmisores','SOFOM (Sociedad Financiera de Objeto Múltiple) y SOFIPOS (Sociedades Financieras Populares)'], c:0, e:'Estos tres sectores son los únicos clasificados como "BAJO" en la tabla de Riesgo de LD (Lavado de Dinero) del Sistema Financiero, ENR 2023.'},
+    {p:'(Elección de elementos) Según la ENR (Evaluación Nacional de Riesgos) 2023, ¿cuáles son "nuevos factores de riesgo" identificados respecto a ediciones anteriores?\n\n1. Marco Jurídico de Activos Virtuales\n2. Cultura Constitucional\n3. Ataques de Ransomware\n4. Corrupción', o:['1, 2 y 3','1, 2, 3 y 4','Solo 4','2 y 4'], c:0, e:'La Corrupción no es un factor "nuevo" — ya existía en ediciones anteriores de la ENR. Los tres primeros sí son nuevos en 2023.'},
+    {p:'Según la ENR (Evaluación Nacional de Riesgos) 2023, ¿cuáles son las Actividades Vulnerables con mayor riesgo de LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo)?', o:['Tarjetas prepagadas y mutuo/préstamo','Obras de arte y Certificados de devoluciones o recompensas','Metales preciosos y tarjetas prepagadas','Apuestas y traslado de valores'], c:1, e:'Ambas están clasificadas como riesgo ALTO en la tabla de Actividades Vulnerables de la ENR 2023; las demás combinaciones mezclan un ALTO con un MEDIO.'},
+    {p:'Según la ENR (Evaluación Nacional de Riesgos) 2023, la percepción de la corrupción en México se clasifica como un riesgo de:', o:['Baja probabilidad e impacto','Alta probabilidad e impacto, facilitador de otros delitos','Riesgo exclusivamente internacional','No fue evaluado'], c:1, e:'La corrupción se considera un riesgo nacional de alta probabilidad e impacto, que facilita la comisión de delitos de LD (Lavado de Dinero)/FT (Financiamiento al Terrorismo).'},
+    {p:'(Elección de elementos) Dentro del Plan de Acción Preliminar de la ENR (Evaluación Nacional de Riesgos) 2023, ¿cuáles son propuestas reales?\n\n1. Propuesta para mitigar la corrupción\n2. Propuesta de EBR (Enfoque Basado en Riesgo) para SO de Actividades Vulnerables\n3. Fortalecimiento del Marco Jurídico del Sistema Financiero\n4. Prohibir a las PEP (Persona Políticamente Expuesta) ser clientes de cualquier Entidad', o:['1, 2 y 3','1, 2, 3 y 4','Solo 4','2 y 4'], c:0, e:'Prohibir a las PEP ser clientes no es una propuesta real — contradice el enfoque de debida diligencia reforzada que sí exige el marco normativo.'},
+    {p:'¿Cuántos países integran la lista negra del GAFI (Llamado a la Acción)?', o:['1','3','10','22'], c:1, e:'Solo 3: Corea del Norte, Irán y Myanmar (Birmania).'},
+    {p:'¿Qué medida pide el GAFI (Grupo de Acción Financiera Internacional) específicamente para Myanmar, a diferencia de Corea del Norte e Irán?', o:['Contramedidas, igual que los otros dos','Debida diligencia reforzada proporcional al riesgo (no contramedidas)','Ninguna medida especial','Expulsión del sistema financiero global'], c:1, e:'Dentro de la lista negra, Myanmar recibe la medida menos severa de las dos posibles.'},
+    {p:'La lista gris del GAFI (Grupo de Acción Financiera Internacional) incluye jurisdicciones que:', o:['No cooperan en absoluto con el GAFI (Grupo de Acción Financiera Internacional)','Se comprometieron con un plan de acción para corregir deficiencias','Ya fueron sancionadas económicamente','No existen realmente'], c:1, e:'A diferencia de la lista negra, la gris es para países que sí cooperan activamente con un plan y plazos definidos.'},
+    {p:'El riesgo de corrupción, dentro de la metodología de EBR (Enfoque Basado en Riesgo) nacional, se vincula principalmente con:', o:['Personas Políticamente Expuestas (PEP) y Personas Vulnerables','Únicamente extranjeros','Solo empresas del sector energético','No se vincula con ningún factor específico'], c:0, e:'La Guía Anticorrupción de la CNBV (Comisión Nacional Bancaria y de Valores) centra el análisis de riesgo de corrupción en las PEP (Persona Políticamente Expuesta) nacionales y Personas Vulnerables asociadas.'},
+    {p:'¿Cuál es la diferencia entre la lista gris y la lista negra del GAFI (Grupo de Acción Financiera Internacional)?', o:['Solo cambia el color con el que se les nombra','No hay ninguna diferencia real entre ambas','La lista gris es más severa que la negra','Lista gris: monitoreo aumentado con debida diligencia reforzada (EDD) para países en proceso de corregir deficiencias; lista negra: "llamado a la acción" con contramedidas obligatorias'], c:3, e:'Lista gris (monitoreo aumentado): países comprometidos con un plan de acción para corregir deficiencias, requieren debida diligencia reforzada (EDD). Lista negra ("call for action"): jurisdicciones de alto riesgo sujetas a contramedidas obligatorias — es el nivel más severo.'},
+  ]},
+  { id:'d1', area:'Material complementario · Tipologías', temario:'Tipologías', title:'Casos y Señales de Alerta', icon:'🕵️', questions:[
+    {p:'(Tipología Grupo Egmont) En el caso conocido como "Rick", un lavador mueve alrededor de 720 millones de dólares de narcotráfico mediante transferencias back-to-back mediante un Banco Central Nacional. ¿Qué rol pagaba comisiones del 3% al 5% para facilitar el esquema?', o:['Solo contadores públicos','Abogados y gerentes de banco','Exclusivamente notarios públicos','Agentes aduanales'], c:1, e:'El caso "Rick" (Tipología Grupo Egmont, red internacional de Unidades de Inteligencia Financiera, UIF, del mundo) muestra cómo abogados y gerentes de banco cobraban comisión por facilitar las transferencias, además del uso de compañías pantalla.'},
+    {p:'(Tipología Grupo Egmont) Un grupo coordinado cambia más de 20 cheques en dos semanas, usando siempre el mismo automóvil y montos justo debajo del umbral de reporte. Esta práctica se conoce como:', o:['Integración por diversificación','"Operación hormiga" (estructuración)','Reporte de Operación Relevante','Dictamen Técnico'], c:1, e:'Es un ejemplo documentado por el Grupo Egmont de estructuración ("operación hormiga"): fraccionar operaciones para quedar por debajo del monto que dispara un reporte, repitiendo el patrón con el mismo vehículo y grupo de personas.'},
+    {p:'(Tipología Grupo Egmont) Un esquema Ponzi llamado "Oro Ltda." ofrecía rendimientos del 13.5% anual respaldados en diamantes falsamente certificados, defraudando a cerca de 90 inversionistas. Este caso ilustra:', o:['Financiamiento al Terrorismo (FT) puro, sin Lavado de Dinero (LD)','Un fraude de inversión (esquema Ponzi) usado como mecanismo de Lavado de Dinero (LD)','Una Operación Relevante reportada correctamente','Un ejemplo de debida diligencia reforzada exitosa'], c:1, e:'El caso "Oro Ltda." del Grupo Egmont muestra un esquema Ponzi (fraude de inversión piramidal) con certificaciones falsas de diamantes, usado para captar y lavar recursos de casi 90 víctimas.'},
+    {p:'(Tipología del GAFI, Grupo de Acción Financiera Internacional — sector remesas) En Estados Unidos, un transmisor de dinero llamado "A de América" recibió cerca de 100 millones de dólares en efectivo en 30 meses y los transfirió íntegros a:', o:['Colombia','China','Pakistán','Rusia'], c:2, e:'El caso documentado por el GAFI (Grupo de Acción Financiera Internacional) describe cómo ese transmisor envió la totalidad de los fondos a Pakistán, usando 4 "couriers" (mensajeros) no autorizados para mover el efectivo.'},
+    {p:'(Tipología del GAFI — sector remesas, caso Francia-Colombia) Para evadir el reporte, el operador de la red fraccionaba sus transferencias en montos menores a:', o:['500 USD (dólares de Estados Unidos)','1,000 USD (dólares de Estados Unidos)','3,000 USD (dólares de Estados Unidos)','10,000 USD (dólares de Estados Unidos)'], c:2, e:'En este caso del GAFI, la intercepción de faxes reveló 3,600 transferencias por cerca de 2 millones de euros en menos de un mes, repartidas entre 1,300 receptores en 78 ciudades y 900 cuentas en 40 bancos — todas fraccionadas por debajo de 3,000 USD.'},
+    {p:'(Tipología del GAFI — sector seguros) En el caso documentado en Canadá, un narcotraficante compró una póliza de seguro de vida por 80,000 dólares. ¿Qué hizo el agente de seguros involucrado?', o:['Rechazó la operación y la reportó de inmediato','Aceptó la comisión sabiendo el origen ilícito de los fondos','Exigió debida diligencia reforzada antes de aceptar','Reportó la operación como Interna Preocupante'], c:1, e:'El agente aceptó cobrar su comisión a sabiendas de que los fondos provenían de actividad ilícita — un ejemplo de complicidad o negligencia grave en el sector asegurador, documentado por el GAFI (Grupo de Acción Financiera Internacional).'},
+    {p:'(Tipología "Montadeudas", Unidad de Inteligencia Financiera, UIF, México, 2023) En este esquema, 29 sujetos (24 empresas y 5 personas físicas) ofrecían préstamos de hasta 20,000 pesos vía aplicaciones móviles. Aunque el depósito real nunca excedía los 9,900 pesos, generaban una deuda inicial de:', o:['9,900 pesos','11,000 pesos','14,000 pesos','20,000 pesos'], c:2, e:'El esquema "Montadeudas" generaba una deuda inicial de 14,000 pesos por cargos de "IVA" y comisiones, con intereses de hasta 85% semanal — muy por encima del monto realmente depositado al usuario.'},
+    {p:'(Tipología "Montadeudas") Ante el incumplimiento de pago, ¿qué hacía el "gestor de cobranza" del esquema, usando los contactos y fotos extraídos del celular de la víctima?', o:['Enviaba solo recordatorios de pago por correo electrónico','Amenazaba e intimidaba por WhatsApp, incluyendo fotos de la víctima con mensajes de desprestigio','Acudía directamente a instancias judiciales','Ofrecía planes de reestructuración de la deuda'], c:1, e:'El documento de la UIF (Unidad de Inteligencia Financiera) describe cobranza extrajudicial ilegal: amenazas por WhatsApp, videos intimidatorios y fotos de la víctima difundidas a sus contactos con mensajes difamatorios — una conducta tipificada como delito (Art. 282 del Código Penal Federal, CPF).'},
+    {p:'(Tipología "Montadeudas") ¿Cuál de las siguientes NO es una señal de alerta identificada en este esquema?', o:['Empresas de muy reciente constitución con capital social desproporcionadamente bajo frente al volumen operado','Triangulación de fondos entre empresas del mismo grupo sin motivo aparente','Modificación posterior del objeto social declarado','Presentación oportuna de Reportes de Operación Relevante ante la CNBV (Comisión Nacional Bancaria y de Valores)'], c:3, e:'Presentar correctamente los reportes es justo lo opuesto a una señal de alerta — es la conducta esperada y preventiva. Las otras tres sí son señales de alerta reales documentadas en el caso "Montadeudas" de la UIF (Unidad de Inteligencia Financiera).'},
+    {p:'(Tipología "Montadeudas") Al cierre del caso, ¿qué acción tomó la UIF (Unidad de Inteligencia Financiera) respecto a los 29 sujetos involucrados?', o:['Solo les impuso una multa administrativa','Los incluyó en la Lista de Personas Bloqueadas y presentó denuncia penal','No tomó ninguna acción porque no eran Entidades Financieras','Les otorgó un plazo de regularización de 6 meses'], c:1, e:'La UIF incluyó a los 29 sujetos (24 empresas y 5 personas físicas) en la Lista de Personas Bloqueadas y presentó denuncia contra la empresa fachada y sus representantes, además de solicitar el aseguramiento de cuentas bancarias.'},
+  ]},
+];
+
+/* ============ ESTADO ============ */
+let state = { xp:0, streak:0, lastDate:null, progress:{} };
+let session = null;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem('rutapld_state');
+    if(raw) state = JSON.parse(raw);
+  }catch(e){ console.warn('No se pudo leer el progreso guardado', e); }
+  updateStreak();
+}
+function saveState(){
+  try{ localStorage.setItem('rutapld_state', JSON.stringify(state)); }
+  catch(e){ console.warn('No se pudo guardar el progreso', e); }
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function updateStreak(){
+  const today = todayStr();
+  if(state.lastDate === today) return;
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = y.toISOString().slice(0,10);
+  if(state.lastDate === yesterday){ /* se mantiene, se incrementa al completar lección de hoy */ }
+  else if(state.lastDate !== null && state.lastDate !== today){ state.streak = 0; }
+}
+function registerPracticeToday(){
+  const today = todayStr();
+  if(state.lastDate === today) return;
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = y.toISOString().slice(0,10);
+  if(state.lastDate === yesterday) state.streak += 1;
+  else state.streak = 1;
+  state.lastDate = today;
+  saveState();
+}
+
+/* ============ RENDER HOME ============ */
+function renderHome(){
+  document.getElementById('streakCount').textContent = state.streak || 0;
+  document.getElementById('xpCount').textContent = state.xp || 0;
+  const c = document.getElementById('pathContainer');
+  c.innerHTML = '';
+  let lastArea = null;
+  UNITS.forEach((u,i)=>{
+    const prog = state.progress[u.id] || {done:false, stars:0};
+    const status = prog.done ? 'done' : 'available';
+
+    if(u.area !== lastArea){
+      lastArea = u.area;
+      const areaHead = document.createElement('div');
+      areaHead.className = 'area-head';
+      areaHead.textContent = u.area;
+      c.appendChild(areaHead);
+    }
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'unit-title-row';
+    titleRow.innerHTML = `<div class="line"></div><div class="txt">TEMA ${u.temario} · ${u.title.toUpperCase()} · ${u.questions.length} PREGUNTAS</div><div class="line"></div>`;
+    c.appendChild(titleRow);
+
+    const row = document.createElement('div');
+    row.className = 'unit-row ' + (i%2===0?'left':(i%2===1?'right':'center'));
+    const block = document.createElement('div');
+    block.className = 'unit-block';
+    const btn = document.createElement('button');
+    btn.className = 'node ' + status;
+    btn.innerHTML = status==='locked' ? '🔒' : (status==='done' ? '✓' : u.icon);
+    btn.disabled = status==='locked';
+    btn.onclick = ()=>{ if(status!=='locked') startUnit(u.id); };
+    block.appendChild(btn);
+    const label = document.createElement('div');
+    label.className = 'node-label';
+    label.textContent = u.title;
+    block.appendChild(label);
+    const countLabel = document.createElement('div');
+    countLabel.className = 'node-count';
+    countLabel.textContent = u.questions.length + ' preguntas';
+    block.appendChild(countLabel);
+    if(prog.done){
+      const sr = document.createElement('div');
+      sr.className = 'stars-row';
+      for(let s=1;s<=3;s++){
+        const sp = document.createElement('span');
+        sp.className = 'star ' + (s<=prog.stars?'on':'off');
+        sp.textContent = '★';
+        sr.appendChild(sp);
+      }
+      block.appendChild(sr);
+    }
+    row.appendChild(block);
+    c.appendChild(row);
+  });
+}
+
+/* ============ LESSON LOGIC ============ */
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function startUnit(unitId){
+  const unit = UNITS.find(u=>u.id===unitId);
+  const maxHearts = unit.maxHearts || 5;
+  session = { unitId, questions: shuffleArray(unit.questions), qIndex:0, hearts:maxHearts, maxHearts:maxHearts, correctCount:0, xpEarned:0, answered:false };
+  showScreen('screen-lesson');
+  document.getElementById('qKicker').textContent = 'TEMA ' + unit.temario + ' · ' + unit.title.toUpperCase();
+  renderQuestion();
+}
+function retryUnit(){ startUnit(session.unitId); }
+function currentUnit(){ return UNITS.find(u=>u.id===session.unitId); }
+function currentQ(){ return session.questions[session.qIndex]; }
+
+function renderHearts(){
+  const el = document.getElementById('heartsDisplay');
+  el.innerHTML = '';
+  const max = session.maxHearts || 5;
+  for(let i=0;i<max;i++){
+    el.innerHTML += (i<session.hearts) ? '❤️' : '🤍';
+  }
+}
+function renderQuestion(){
+  session.answered = false;
+  const u = currentUnit();
+  const q = currentQ();
+  document.getElementById('progressFill').style.width = ((session.qIndex)/session.questions.length*100)+'%';
+  renderHearts();
+  document.getElementById('qPrompt').textContent = q.p;
+  const oc = document.getElementById('optsContainer');
+  oc.innerHTML = '';
+  q.o.forEach((opt,idx)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt;
+    b.onclick = ()=>selectOption(idx,b);
+    oc.appendChild(b);
+  });
+  document.getElementById('feedbackBar').classList.remove('show','ok','bad');
+}
+function selectOption(idx, btnEl){
+  if(session.answered) return;
+  session.answered = true;
+  const q = currentQ();
+  const allOpts = document.querySelectorAll('#optsContainer .opt');
+  allOpts.forEach(b=>b.disabled = true);
+  const correct = idx === q.c;
+  const fb = document.getElementById('feedbackBar');
+  if(correct){
+    btnEl.classList.add('correct');
+    session.correctCount++;
+    session.xpEarned += 10;
+    fb.classList.add('show','ok');
+    document.getElementById('fbTitle').textContent = '¡Correcto! +10 XP';
+    document.getElementById('fbText').textContent = q.e;
+  } else {
+    btnEl.classList.add('wrong');
+    allOpts[q.c].classList.add('correct');
+    session.hearts--;
+    fb.classList.add('show','bad');
+    document.getElementById('fbTitle').textContent = 'No es correcta';
+    document.getElementById('fbText').textContent = q.e;
+  }
+}
+function nextQuestion(){
+  const u = currentUnit();
+  document.getElementById('feedbackBar').classList.remove('show');
+  if(session.hearts<=0){
+    showScreen('screen-dead');
+    return;
+  }
+  session.qIndex++;
+  if(session.qIndex >= session.questions.length){
+    finishUnit();
+    return;
+  }
+  renderQuestion();
+}
+function finishUnit(){
+  const u = currentUnit();
+  const total = session.questions.length;
+  const pct = session.correctCount/total;
+  let stars = 1;
+  if(pct===1) stars = 3;
+  else if(pct>=0.7) stars = 2;
+  const bonus = session.hearts===(session.maxHearts||5) ? 20 : 0;
+  session.xpEarned += bonus;
+  state.xp = (state.xp||0) + session.xpEarned;
+  const prevStars = (state.progress[u.id] && state.progress[u.id].stars) || 0;
+  state.progress[u.id] = { done:true, stars: Math.max(prevStars, stars) };
+  registerPracticeToday();
+  saveState();
+
+  document.getElementById('resultEmoji').textContent = stars===3 ? '🏆' : (stars===2?'🎉':'👍');
+  document.getElementById('resultTitle').textContent = stars===3 ? '¡Perfecto!' : '¡Unidad completada!';
+  document.getElementById('resultSub').textContent = `${session.correctCount} de ${total} correctas`;
+  document.getElementById('resultStars').innerHTML = '★'.repeat(stars) + '<span style="color:var(--line)">'+'★'.repeat(3-stars)+'</span>';
+  document.getElementById('rstatCorrect').textContent = session.correctCount+'/'+total;
+  document.getElementById('rstatXP').textContent = session.xpEarned;
+  showScreen('screen-result');
+}
+function exitLesson(){ showScreen('screen-home'); renderHome(); }
+function goHome(){ showScreen('screen-home'); renderHome(); }
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ============ INIT ============ */
+loadState();
+renderHome();
+</script>
+</body>
+</html>
