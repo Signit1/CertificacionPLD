@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>DCG 115 (Art. 115 LIC) — Resumen Completo</title>
+<style>
+  :root{--navy:#12233d; --teal:#0f7d82; --gold:#c99a3b; --red:#b5432b; --purple:#5c4a8a; --green:#2f6b4f; --paper:#faf8f4; --ink:#1c1c1c; --line:#dcd6c8;}
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:Georgia,serif; line-height:1.6;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px;}
+  header h1{font-family:'Helvetica Neue',Arial,sans-serif; font-size:clamp(22px,4vw,34px); margin:0 0 10px;}
+  header p{font-family:'Helvetica Neue',Arial,sans-serif; color:#c7d2e0; max-width:78ch; margin:0; font-size:15px;}
+  .source-bar{background:#8a6a10; color:#fff; text-align:center; padding:9px 16px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12.5px;}
+  nav.toc{background:#f0ece0; border-bottom:1px solid var(--line); padding:14px 6vw; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12.5px;}
+  nav.toc a{color:var(--navy); text-decoration:none; margin-right:14px; display:inline-block; margin-bottom:6px;}
+  nav.toc a:hover{text-decoration:underline;}
+  main{max-width:1050px; margin:0 auto; padding:40px 5vw 90px;}
+  section{margin-bottom:52px; scroll-margin-top:16px;}
+  h2{font-family:'Helvetica Neue',Arial,sans-serif; font-size:21px; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; margin-bottom:8px;}
+  h3{font-family:'Helvetica Neue',Arial,sans-serif; font-size:15.5px; color:var(--navy); margin:26px 0 12px;}
+  .disp{font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:#8b8570; font-style:italic; margin-bottom:16px;}
+  p{margin:0 0 14px; font-size:15.5px; text-align:justify;}
+  ul,ol{margin:0 0 14px; padding-left:22px; font-size:15px;}
+  li{margin-bottom:6px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-bottom:16px;}
+  .card{background:#fff; border:1px solid var(--line); border-left:6px solid var(--c); border-radius:4px; padding:16px 18px;}
+  .card h3{font-family:'Helvetica Neue',Arial,sans-serif; color:var(--c); margin:0 0 4px; font-size:15px;}
+  .card .art{font-family:'Helvetica Neue',Arial,sans-serif; font-size:11px; color:#8b8570; margin-bottom:8px;}
+  .card p{font-size:13.5px; margin:0; text-align:left;}
+  .card ul{font-size:13px; margin:6px 0 0; padding-left:18px;}
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:#fff; margin-bottom:14px;}
+  table{width:100%; border-collapse:collapse; font-size:14px; background:#fff;}
+  th,td{text-align:left; padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:'Helvetica Neue',Arial,sans-serif; font-size:11.5px; text-transform:uppercase; color:var(--navy); background:#f0ece0;}
+  .amount,.amt{font-family:'Helvetica Neue',Arial,sans-serif; font-weight:700; color:var(--navy);}
+  .note{font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap{font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5c2418; background:#fbeae4; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap b{color:var(--red);}
+  .ref{font-family:'Helvetica Neue',Arial,sans-serif; font-size:12.5px; color:#2f6b4f; background:#eaf2ec; border-left:4px solid var(--green); padding:10px 16px; margin-top:14px; border-radius:3px;}
+  footer{text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:#8b8570; padding:30px;}
+  code{background:#f0ece0; padding:1px 5px; border-radius:3px; font-size:13px;}
+</style>
+</head>
+<body>
+
+<div class="source-bar">📎 Todo el contenido de este documento proviene del texto oficial de las Disposiciones de Carácter General a que se refiere el artículo 115 de la Ley de Instituciones de Crédito (DCG 115). Donde el texto no especifica un dato, se indica explícitamente en vez de inventarlo.</div>
+
+<header>
+  <h1>Disposiciones de Carácter General a que se refiere el artículo 115 de la Ley de Instituciones de Crédito (DCG 115) — Resumen</h1>
+  <p>El reglamento de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT) más importante del sector bancario mexicano: desarrolla, artículo por artículo, las obligaciones que el artículo 115 de la Ley de Instituciones de Crédito (LIC) impone a las Entidades (instituciones de crédito / bancos). Cubre el Área 2.1 completa del temario de la certificación CNBV.</p>
+</header>
+
+<nav class="toc">
+  <a href="#regula">1. Qué regula y a quién aplica</a>
+  <a href="#identificacion">2. Identificación y conocimiento del cliente</a>
+  <a href="#dolares">3. Restricciones de dólares en efectivo</a>
+  <a href="#reportes">4. Reportes y plazos</a>
+  <a href="#relevantes">5. Operaciones relevantes y activos virtuales</a>
+  <a href="#comite">6. Comité de Comunicación y Control</a>
+  <a href="#oficial">7. Oficial de Cumplimiento</a>
+  <a href="#sistemas">8. Sistemas automatizados</a>
+  <a href="#intercambio">9. Intercambio de información</a>
+  <a href="#lista">10. Lista de Personas Bloqueadas</a>
+  <a href="#sanciones">11. Sanciones</a>
+  <a href="#novedosos">12. Modelos Novedosos</a>
+  <a href="#trampas">13. Trampas de examen</a>
+</nav>
+
+<main>
+
+  <section id="regula">
+    <h2>1. Qué regula y a quién aplica</h2>
+    <p>
+      La DCG 115 (Disposiciones de Carácter General, es decir, reglas administrativas de observancia obligatoria emitidas por la autoridad financiera) desarrolla el artículo 115 de la Ley de Instituciones de Crédito (LIC): la obligación de los bancos de establecer medidas y procedimientos para prevenir y detectar actos u operaciones que pudieran ubicarse en los supuestos de los artículos 139 Quáter (Financiamiento al Terrorismo, FT) o 400 Bis (Lavado de Dinero, LD) del Código Penal Federal (CPF).
+    </p>
+    <p>
+      Su sujeto obligado principal son las <b>Entidades</b> — definidas en la Disposición 2ª, fracción XI como "las instituciones de crédito" (bancos múltiples y de desarrollo) —, aunque varias de sus disposiciones (identificación de Clientes, restricciones de dólares, Comité, Oficial de Cumplimiento) son la plantilla que otras Disposiciones de Carácter General (DCG 124 de Casas de Bolsa, DCG 212/226 Bis del Mercado de Valores, DCG de Centros Cambiarios y Transmisores de Dinero, entre otras) replican para sus propios sectores. Quien domina la DCG 115 reconoce el esqueleto de prácticamente todas las demás.
+    </p>
+    <div class="note"><b>Autoridades que aparecen en toda la DCG 115:</b> la <b>Secretaría</b> (Secretaría de Hacienda y Crédito Público, SHCP) es quien recibe los reportes y puede interpretar las Disposiciones; la <b>Comisión</b> (Comisión Nacional Bancaria y de Valores, CNBV) actúa como conducto entre las Entidades y la Secretaría, y es quien supervisa y sanciona. Casi todo reporte dice "a la Secretaría, por conducto de la Comisión" — es la SHCP quien recibe la información, pero siempre vía CNBV.</div>
+  </section>
+
+  <section id="identificacion">
+    <h2>2. Identificación y conocimiento del cliente</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 2ª, 4ª, 4ª Bis, 4ª Ter, 14ª Bis y 24ª</div>
+    <p>
+      Esta parte del Área 2.1 (temas "Objetivo" y "Política de identificación y conocimiento del cliente o usuario") ya está desarrollada con tablas completas, dato por dato, en tu documento <b>16_Identificacion_Clientes_DCG115.html</b>. Aquí va el resumen ejecutivo para tener el panorama completo en un solo documento; para el detalle de qué dato exacto se pide a cada tipo de Cliente, consulta ese archivo.
+    </p>
+
+    <h3>Conceptos clave (Disposición 2ª — Definiciones)</h3>
+    <div class="grid">
+      <div class="card" style="--c:#0f7d82">
+        <h3>Control</h3>
+        <div class="art">Disposición 2ª, fracción VII</div>
+        <p>Capacidad de imponer decisiones en la asamblea, nombrar/destituir a la mayoría de consejeros, o dirigir la administración/estrategia de una persona moral. También se considera que ejerce Control la persona física que adquiera, directa o indirectamente, <b>25% o más</b> de la composición accionaria o capital social.</p>
+      </div>
+      <div class="card" style="--c:#5c4a8a">
+        <h3>Propietario Real</h3>
+        <div class="art">Disposición 2ª, fracción XXXII</div>
+        <p>Persona física que, por medio de otra o de cualquier acto, obtiene los beneficios de una cuenta, contrato u Operación y es, en última instancia, el verdadero dueño de los recursos (uso, disfrute, aprovechamiento, disposición). Incluye a quien ejerce Control sobre una persona moral y a quien pueda instruir actos a través de Fideicomisos, mandatos o comisiones.</p>
+      </div>
+      <div class="card" style="--c:#b5432b">
+        <h3>Operación Relevante</h3>
+        <div class="art">Disposición 2ª, fracción XXX</div>
+        <p>Operación con billetes/monedas de curso legal (nacional o extranjero), cheques de viajero o monedas acuñadas en platino/oro/plata, por un monto igual o superior al equivalente en moneda nacional a <b>7,500 USD (Dólares de los Estados Unidos de América)</b>.</p>
+      </div>
+      <div class="card" style="--c:#c99a3b">
+        <h3>Persona Políticamente Expuesta (PPE)</h3>
+        <div class="art">Disposición 2ª, fracción XXXI</div>
+        <p>Individuo que desempeña o desempeñó funciones públicas destacadas (jefes de Estado/gobierno, líderes políticos, altos funcionarios, judiciales o militares, directivos de empresas estatales, etc.). Se asimilan el cónyuge, concubina/concubinario y parientes hasta segundo grado, y las personas morales con vínculos patrimoniales con la PPE. Conserva el carácter de PPE durante el año siguiente a dejar el cargo.</p>
+      </div>
+      <div class="card" style="--c:#2f6b4f">
+        <h3>Operación Inusual</h3>
+        <div class="art">Disposición 2ª, fracción XXVIII</div>
+        <p>Operación, actividad, conducta o comportamiento de un Cliente que no concuerde con sus antecedentes conocidos o con su perfil transaccional (origen/destino de recursos, monto, frecuencia, tipo), sin justificación razonable, o que la Entidad considere ubicable en los artículos 139 Quáter o 400 Bis del CPF.</p>
+      </div>
+      <div class="card" style="--c:#8b8570">
+        <h3>Operación Interna Preocupante</h3>
+        <div class="art">Disposición 2ª, fracción XXIX</div>
+        <p>Conducta de un directivo, funcionario, apoderado o empleado de la Entidad que pudiera contravenir la Ley o las Disposiciones, o que resulte dubitativa por poder favorecer o no alertar sobre los supuestos del 139 Quáter o 400 Bis del CPF.</p>
+      </div>
+    </div>
+
+    <h3>Lo esencial de la identificación (resumen de 16_Identificacion_Clientes_DCG115.html)</h3>
+    <ul>
+      <li><b>Expediente de identificación (Disposición 4ª):</b> los datos exigidos varían según el Cliente sea Persona Física (PF) mexicana/residente, Persona Moral (PM) mexicana, PF extranjera sin residencia, PM extranjera, o sociedades/dependencias del Anexo 1 — los datos "biográficos" (género, fecha y país de nacimiento) solo se piden a PF; los "corporativos" (fecha de constitución, representante legal) solo a PM.</li>
+      <li><b>Fideicomiso como Usuario (Disposición 4ª Bis):</b> solo tres datos — número/referencia del Fideicomiso, denominación de la fiduciaria, y datos del representante/delegado fiduciario.</li>
+      <li><b>Identificación no presencial (Disposición 4ª Ter):</b> aplica solo a Clientes de nacionalidad mexicana que abren cuenta por Dispositivo; la <b>Geolocalización es obligatoria y eliminatoria</b> — sin ella no se puede abrir la cuenta.</li>
+      <li><b>Cuentas Nivel 1 a 4 (Disposición 14ª Bis):</b> cuentas de depósito a la vista en moneda nacional de bajo Riesgo con identificación simplificada, con topes en <b>Unidades de Inversión (UDI)</b> — Nivel 1: 750 UDI/mes (saldo máx. 1,000 UDI); Nivel 2: 3,000 UDI/mes (+6,000 UDI si son fondos de programas gubernamentales); Nivel 3: 10,000 UDI/mes; la cuarta modalidad (fracción IV): 30,000 UDI/mes, exclusivamente remota.</li>
+      <li><b>Conocimiento del Cliente y perfil transaccional (Disposición 24ª):</b> el perfil transaccional se basa en la información que el Cliente proporciona y la que la Entidad conoce (monto, número, tipo, naturaleza y frecuencia de sus Operaciones habituales, origen y destino de los recursos). En Operaciones no presenciales se debe considerar además la Geolocalización del Dispositivo.</li>
+    </ul>
+    <div class="ref">Para la comparación dato-por-dato, documentos exigidos, Proveedor de Recursos y Propietario Real con tablas completas, consulta <b>16_Identificacion_Clientes_DCG115.html</b>.</div>
+  </section>
+
+  <section id="dolares">
+    <h2>3. Restricciones de dólares en efectivo</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 33ª, 33ª Bis, 33ª Bis 1 y 33ª Ter</div>
+    <p>Cuatro Disposiciones consecutivas regulan cuánto efectivo en dólares de los Estados Unidos de América (USD) puede recibir un banco, y de quién — son de las más confundidas del examen porque se parecen mucho en el nombre pero regulan límites completamente distintos.</p>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Disposición</th><th>A quién aplica</th><th>Límite</th><th>Detalle</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="amt">33ª</td>
+          <td>Clientes que sean Centros Cambiarios, Transmisores de Dinero, SOFOM ENR o personas con actividad vulnerable del Art. 17 fracción XVI LFPIORPI</td>
+          <td>Sin tope numérico propio</td>
+          <td>Obligación de identificar número, monto y frecuencia de sus Operaciones, y obtener constancia de alta/registro/autorización ante la Comisión, la CONDUSEF o el SAT, según corresponda.</td>
+        </tr>
+        <tr>
+          <td class="amt">33ª Bis</td>
+          <td>Clientes Personas Físicas (con expediente completo)</td>
+          <td class="amt">4,000 USD acumulados por mes calendario</td>
+          <td>Tope general para PF. Para PM: en principio <u>no</u> se les puede recibir USD en efectivo, salvo las excepciones de las fracciones I a IV (zonas fronterizas/alto flujo turístico o de remesas: hasta <b>14,000 USD/mes</b>; representaciones diplomáticas/organismos internacionales; otras Entidades/casas de bolsa/casas de cambio por cuenta propia; Fideicomisos públicos).</td>
+        </tr>
+        <tr>
+          <td class="amt">33ª Bis 1</td>
+          <td>Clientes Personas Morales, en todo el territorio nacional</td>
+          <td class="amt">Sin límite (ilimitado)</td>
+          <td>Solo si cumplen medidas reforzadas: antigüedad mínima de 3 años, documentación que justifique la necesidad de operar con USD por montos mayores al límite del 33ª Bis, estados financieros de los últimos 2 ejercicios, últimas 2 declaraciones anuales al SAT, información de PF que participan en su capital, y una valoración documentada (conservada 10 años). Empresas que cotizan en bolsa no necesitan los documentos III a V.</td>
+        </tr>
+        <tr>
+          <td class="amt">33ª Ter</td>
+          <td>Usuarios (no Clientes) — Personas Físicas</td>
+          <td class="amt">300 USD por operación diaria · 1,500 USD acumulados por mes</td>
+          <td>Excepción: Usuarios PF de nacionalidad extranjera no tienen el límite diario de 300 USD (sí requieren copia de pasaporte/tarjeta pasaporte y documento del INM). Usuarios Personas Morales o Fideicomisos: <b>no se les puede recibir USD en efectivo en absoluto.</b></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="trap">
+      <b>La trampa clásica del examen — Cliente vs. Usuario, PF vs. PM:</b>
+      <ul style="margin:8px 0 0;">
+        <li>El <b>33ª Bis</b> (4,000 USD/mes) es para <b>Clientes</b> (relación comercial permanente); el <b>33ª Ter</b> (300 USD/día, 1,500 USD/mes) es para <b>Usuarios</b> (sin relación comercial permanente) — los montos son distintos y bajan mucho para Usuario.</li>
+        <li>Los <b>14,000 USD/mes</b> no son un límite general: solo aplican a <b>Personas Morales</b> ubicadas en zonas específicas (franja fronteriza norte, Baja California/Baja California Sur, o municipios de alto flujo de remesas), bajo el 33ª Bis, fracción I.</li>
+        <li>El <b>33ª Bis 1</b> no es "otro límite más alto" — es la única vía para operar <b>sin límite</b>, y solo aplica a Personas Morales que cumplan las 6 medidas reforzadas.</li>
+        <li>Las <b>Personas Morales como Usuarios</b> (no Clientes) tienen prohibición total de recibir USD en efectivo bajo el 33ª Ter — ahí no hay tope, hay cero.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="reportes">
+    <h2>4. Reportes y plazos de cumplimiento regulatorio</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 34ª, 34ª Bis, 34ª Ter, 34ª Quáter, 35ª, 36ª, 37ª y 41ª</div>
+    <p>Siete tipos de reporte, cada uno con su propio disparador y plazo. Esta tabla consolida los plazos exactos que exige la Disposición respectiva — es el tema 2.1.17 del temario ("Plazos de cumplimiento regulatorio") resuelto de un vistazo.</p>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Reporte</th><th>Disposición</th><th>Qué dispara el reporte</th><th>Plazo exacto</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Operaciones Relevantes</td>
+          <td class="amt">34ª</td>
+          <td>Todas las Operaciones Relevantes (≥ 7,500 USD en efectivo/cheques de viajero/metales) de Clientes o Usuarios en el trimestre</td>
+          <td class="amt">Dentro de los primeros 10 días hábiles de enero, abril, julio y octubre (reporte trimestral; si no hubo operaciones, se envía reporte "en ceros")</td>
+        </tr>
+        <tr>
+          <td>Operaciones en efectivo con USD</td>
+          <td class="amt">34ª Bis</td>
+          <td>Compra, depósitos, pago de créditos/servicios o transferencias en efectivo en USD — ≥ 500 USD (Clientes) o &gt; 250 USD (Usuarios)</td>
+          <td class="amt">Dentro de los primeros 10 días hábiles de enero, abril, julio y octubre</td>
+        </tr>
+        <tr>
+          <td>Cheques de caja</td>
+          <td class="amt">34ª Ter</td>
+          <td>Expedición o pago de cheques de caja ≥ 10,000 pesos (equivalente en moneda nacional)</td>
+          <td class="amt">Dentro de los primeros 10 días hábiles de enero, abril, julio y octubre</td>
+        </tr>
+        <tr>
+          <td>Activos Virtuales</td>
+          <td class="amt">34ª Quáter</td>
+          <td>Toda compra de Activo Virtual (sin importar el monto) y venta por un monto ≥ 2,250 USD</td>
+          <td class="amt">Dentro de los primeros 10 días hábiles de enero, abril, julio y octubre</td>
+        </tr>
+        <tr>
+          <td>Transferencia Internacional de Fondos (TIF)</td>
+          <td class="amt">35ª / 36ª</td>
+          <td>Cada transferencia internacional (enviada o recibida) ≥ 1,000 USD o su equivalente</td>
+          <td class="amt">Mensual — a más tardar dentro de los 15 días hábiles siguientes al último día hábil del mes anterior</td>
+        </tr>
+        <tr>
+          <td>Operación Inusual</td>
+          <td class="amt">37ª</td>
+          <td>Operación que el Comité de Comunicación y Control dictamine como Inusual</td>
+          <td class="amt">Dentro de los 3 días hábiles siguientes a la sesión del Comité que la dictamine. El Comité cuenta con 60 días naturales desde la alerta para dictaminar (+30 días naturales adicionales si el Manual de Cumplimiento lo prevé)</td>
+        </tr>
+        <tr>
+          <td>Reporte de 24 horas (LD/FT)</td>
+          <td class="amt">41ª</td>
+          <td>Sospechas fundadas o indicios de que los recursos de una Operación provienen de actividad ilícita (139 Quáter o 400 Bis CPF), antes de realizarla</td>
+          <td class="amt">Dentro de las 24 horas siguientes a que se conozca la información — leyenda "Reporte de 24 horas LD" o "Reporte de 24 horas FT"</td>
+        </tr>
+        <tr>
+          <td>Lista de Personas Bloqueadas</td>
+          <td class="amt">41ª / 72ª</td>
+          <td>Identificar a un Cliente/Usuario en la Lista, o que un tercero intente operar en su nombre</td>
+          <td class="amt">Dentro de las 24 horas siguientes a conocer la información — leyenda "Lista de Personas Bloqueadas"</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="trap">
+      <b>No confundas los cuatro reportes "trimestrales":</b> Operaciones Relevantes (34ª), USD en efectivo (34ª Bis), cheques de caja (34ª Ter) y Activos Virtuales (34ª Quáter) comparten <u>exactamente el mismo calendario</u> — primeros 10 días hábiles de enero/abril/julio/octubre — pero son <b>cuatro reportes distintos</b>, con umbrales distintos (7,500 USD · 500/250 USD · 10,000 MXN · sin monto mínimo en compra / 2,250 USD en venta). El TIF (35ª) es el único reporte <b>mensual</b> entre los "programados"; el de 24 horas (41ª) y el de Lista de Bloqueados son los únicos con plazo en <b>horas</b>, no días.
+    </div>
+    <div class="note"><b>Dato que el examen aprovecha:</b> si una Entidad ya reportó una operación de USD en efectivo ≥ 7,500 USD bajo la 34ª Bis, <b>no</b> está obligada a reportarla también bajo la 34ª (Operaciones Relevantes) — evita la doble captura del mismo hecho.</div>
+  </section>
+
+  <section id="relevantes">
+    <h2>5. Operaciones relevantes y activos virtuales</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 2ª fracción XXX (definición), 34ª (reporte) y 34ª Quáter (Activos Virtuales)</div>
+    <p>
+      La <b>Operación Relevante</b> es la que se realiza con billetes y monedas metálicas de curso legal (nacionales o de cualquier país), cheques de viajero, o monedas acuñadas en platino, oro y plata, por un monto igual o superior al equivalente en moneda nacional a <b>7,500 USD</b>. El tipo de cambio a usar es el que publica el Banco de México en el Diario Oficial de la Federación (DOF) el día hábil bancario inmediato anterior a la Operación.
+    </p>
+    <p>
+      Los <b>Activos Virtuales</b> (Disposición 2ª, fracción I) se definen como la representación de valor registrada electrónicamente y usada entre el público como medio de pago, transferible solo por medios electrónicos — expresamente <b>excluye</b> la moneda de curso legal, las divisas y cualquier activo denominado en estas. Solo se consideran Activos Virtuales, para efectos de la DCG 115, los que determine el Banco de México mediante sus propias disposiciones (conforme al artículo 88 de la Ley para Regular las Instituciones de Tecnología Financiera, LRITF), y únicamente cuando el propio Banco de México autorice a las Entidades realizar Operaciones con ellos.
+    </p>
+    <div class="note"><b>Reporte de Activos Virtuales (34ª Quáter):</b> un reporte por <b>cada compra</b> de un Activo Virtual con moneda nacional o divisa, <b>sin importar el monto</b>; y un reporte por cada <b>venta</b> de Activos Virtuales a cambio de moneda de curso legal por un monto igual o superior al equivalente a <b>2,250 USD</b>. Mismo calendario trimestral que el resto de reportes del Capítulo IV (primeros 10 días hábiles de enero/abril/julio/octubre).</div>
+  </section>
+
+  <section id="comite">
+    <h2>6. Comité de Comunicación y Control</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 43ª, 44ª y 45ª</div>
+    <p>Cada Entidad debe contar con un órgano colegiado llamado <b>Comité de Comunicación y Control</b> ("Comité"), responsable de operar el régimen de PLD/FT internamente.</p>
+
+    <h3>Funciones principales (Disposición 43ª)</h3>
+    <ul>
+      <li>Someter a la aprobación del comité de auditoría el <b>Manual de Cumplimiento</b> y sus modificaciones.</li>
+      <li>Presentar al consejo de administración los resultados de la metodología de evaluación de Riesgos.</li>
+      <li>Conocer los resultados de auditoría interna o del auditor externo sobre la eficacia de las políticas de PLD/FT.</li>
+      <li>Conocer a los Clientes clasificados con <b>Grado de Riesgo alto</b>, con base en los informes del Oficial de Cumplimiento.</li>
+      <li>Establecer y difundir los criterios de clasificación de Clientes por Grado de Riesgo.</li>
+      <li>Asegurar que los sistemas automatizados contengan la lista de PPE y la Lista de Personas Bloqueadas.</li>
+      <li><b>Dictaminar</b> las Operaciones que deban reportarse como Operación Inusual u Operación Interna Preocupante.</li>
+      <li>Aprobar los programas de capacitación del personal.</li>
+      <li>Informar al área competente de conductas de directivos/empleados que infrinjan las Disposiciones, para la imposición de medidas disciplinarias.</li>
+      <li>Asegurarse de que la clave de acceso al sistema electrónico de la Comisión esté a nombre del Oficial de Cumplimiento (o Interino) vigente.</li>
+    </ul>
+
+    <h3>Integración (Disposición 44ª)</h3>
+    <div class="grid">
+      <div class="card" style="--c:#0f7d82">
+        <h3>Miembros mínimos</h3>
+        <p>Al menos <b>3 miembros</b>, titulares de áreas designadas por el consejo de administración; en cualquier caso deben participar miembros de ese consejo, el director general, o funcionarios/empleados de las tres jerarquías inmediatas inferiores al director general.</p>
+      </div>
+      <div class="card" style="--c:#5c4a8a">
+        <h3>Auditor interno</h3>
+        <p>No forma parte del Comité, pero participa en sus sesiones <b>con voz, sin voto</b>.</p>
+      </div>
+      <div class="card" style="--c:#c99a3b">
+        <h3>Suplentes</h3>
+        <p>Los miembros propietarios pueden designar suplentes, que solo pueden representarlos en <b>2 sesiones no continuas por semestre</b>.</p>
+      </div>
+      <div class="card" style="--c:#b5432b">
+        <h3>Periodicidad y quórum</h3>
+        <p>Sesiona al menos <b>una vez cada mes del año</b>. Para sesionar válidamente se requiere la <b>mayoría</b> de los miembros presentes.</p>
+      </div>
+      <div class="card" style="--c:#2f6b4f">
+        <h3>Excepción — Entidades pequeñas</h3>
+        <p>Las Entidades con <b>menos de 25 personas</b> a su servicio (directas o indirectas) no están obligadas a constituir el Comité: sus funciones las ejerce el <b>Oficial de Cumplimiento</b>, salvo la de mantener actualizada la clave del sistema electrónico (fracción XI de la 43ª), que corresponde al director general.</p>
+      </div>
+    </div>
+
+    <h3>Votación y actas (Disposición 45ª)</h3>
+    <p>Las decisiones se toman por <b>voto favorable de la mayoría</b> de los miembros presentes; en caso de empate, el <b>presidente tiene voto de calidad</b>. De cada sesión se levanta un acta con las resoluciones adoptadas, firmada por el presidente y el secretario (o sus suplentes). Las Entidades deben conservar los documentos que justifiquen por qué se reportó o no cada Operación analizada como posible Inusual o Interna Preocupante.</p>
+  </section>
+
+  <section id="oficial">
+    <h2>7. Oficial de Cumplimiento (y Oficial de Cumplimiento Interino)</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 47ª, 47ª Bis y 48ª</div>
+
+    <h3>Designación y requisitos (Disposición 47ª)</h3>
+    <ul>
+      <li>Lo designa el consejo de administración, directivo o el propio Comité, de entre los miembros del Comité. Si la Entidad no tiene Comité (por tener menos de 25 personas a su servicio), lo designa directamente el consejo de administración o directivo, cumpliendo los mismos requisitos que un integrante del Comité.</li>
+      <li>Debe ocupar un cargo dentro de las <b>tres jerarquías inmediatas inferiores</b> al director general.</li>
+      <li>Debe ser <b>independiente</b> de las unidades que promuevan o gestionen productos/servicios financieros con Clientes.</li>
+      <li><b>No puede</b> tener funciones de auditoría interna en la Entidad.</li>
+      <li>Debe contar con la <b>certificación vigente</b> prevista en el artículo 4, fracción X de la Ley de la Comisión Nacional Bancaria y de Valores (requisito añadido por reforma del 28 de agosto de 2024).</li>
+      <li>Si la Entidad pertenece a un grupo financiero, puede ser <b>el mismo Oficial de Cumplimiento</b> de las demás entidades del grupo, siempre que cumpla los requisitos en cada una.</li>
+    </ul>
+
+    <h3>Funciones principales</h3>
+    <ul>
+      <li>Elaborar y someter al Comité el Manual de Cumplimiento.</li>
+      <li>Someter a aprobación la metodología de evaluación de Riesgos y sus resultados.</li>
+      <li>Verificar la correcta ejecución de las medidas adoptadas por el Comité.</li>
+      <li>Informar al Comité sobre conductas de directivos/empleados que infrinjan la normativa.</li>
+      <li>Informar al Comité sobre Clientes con <b>Grado de Riesgo alto</b>.</li>
+      <li>Coordinar el seguimiento de Operaciones e investigaciones para que el Comité pueda dictaminarlas.</li>
+      <li><b>Enviar</b> a la Secretaría (por conducto de la Comisión) los reportes de la Disposición 41ª (24 horas) y los que considere urgentes.</li>
+      <li>Fungir como instancia de consulta interna y como <b>enlace</b> entre el Comité, la Secretaría y la Comisión.</li>
+      <li>Definir el contenido de los programas de capacitación.</li>
+      <li>Recibir y verificar la respuesta de la Entidad a requerimientos de información/documentación y órdenes de aseguramiento o desbloqueo de cuentas de las autoridades.</li>
+    </ul>
+
+    <h3>Oficial de Cumplimiento Interino (Disposición 47ª Bis)</h3>
+    <div class="note">
+      El Comité, el consejo de administración/directivo, o el director general pueden nombrar un <b>Oficial de Cumplimiento Interino</b> cuando el titular deje el cargo, le sea revocado, o esté imposibilitado para ejercerlo. El interinato puede durar hasta <b>90 días naturales durante un año calendario</b>. El funcionario que ocupe el interinato <b>no debe tener funciones de auditoría interna</b>, y desempeña las mismas funciones que el Oficial de Cumplimiento titular hasta que se informe su revocación.
+    </div>
+
+    <h3>Aviso a la autoridad (Disposición 48ª)</h3>
+    <div class="scroll">
+    <table>
+      <tr><th>Evento</th><th>Plazo para avisar a la Secretaría (por conducto de la Comisión)</th></tr>
+      <tr><td>Designación del Oficial de Cumplimiento</td><td class="amt">2 días hábiles siguientes a la designación</td></tr>
+      <tr><td>Revocación del Oficial de Cumplimiento o del Interino</td><td class="amt">10 días hábiles siguientes a la revocación</td></tr>
+      <tr><td>Designación del Oficial de Cumplimiento Interino</td><td class="amt">10 días hábiles siguientes a la designación</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section id="sistemas">
+    <h2>8. Sistemas automatizados</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 51ª (Capítulo X)</div>
+    <p>Cada Entidad, como parte de su <b>Infraestructura Tecnológica</b> (equipos, instalaciones, redes, bases de datos y sistemas que soportan sus operaciones), debe contar con sistemas automatizados que, entre otras funciones, deben:</p>
+    <ul>
+      <li>Conservar, actualizar y permitir la consulta de los datos del expediente de identificación de cada Cliente.</li>
+      <li>Generar y transmitir de forma segura a la Secretaría (por conducto de la Comisión) los reportes de Operaciones Relevantes, USD en efectivo, cheques de caja, Operaciones Inusuales, Operaciones Internas Preocupantes, Activos Virtuales y TIF.</li>
+      <li>Clasificar los tipos de Operaciones/productos y monitorear las Operaciones con componente transaccional, para detectar posibles Operaciones Inusuales.</li>
+      <li>Detectar y monitorear Operaciones de una misma cuenta o Cliente/Usuario.</li>
+      <li>Ejecutar el <b>sistema de alertas</b> (vinculado a la Disposición 25ª Quáter).</li>
+      <li>Contribuir al análisis de Operaciones Inusuales/Internas Preocupantes, considerando información inicial del Cliente, historial de Operaciones, comportamiento transaccional y saldos promedio.</li>
+      <li>Agrupar en una base consolidada las cuentas y contratos de un mismo Cliente.</li>
+      <li>Conservar registros históricos de posibles Operaciones Inusuales e Internas Preocupantes.</li>
+      <li>Servir de canal seguro, confidencial y auditable para que el personal reporte posibles Operaciones Inusuales/Internas Preocupantes.</li>
+      <li>Garantizar integridad, disponibilidad, auditabilidad y confidencialidad de la información.</li>
+      <li>Ejecutar un <b>sistema de alertas</b> para Operaciones con personas de la Lista de Personas Bloqueadas, PPE, o países/jurisdicciones de riesgo.</li>
+      <li>Facilitar la verificación de datos/documentos entregados de forma no presencial.</li>
+      <li>Permitir conocer la <b>trazabilidad y origen de los Activos Virtuales</b> con los que opere la Entidad.</li>
+      <li>Ejecutar el modelo de evaluación de Riesgos para clasificar a los Clientes por Grado de Riesgo, conservando los registros históricos de cambios de Grado de Riesgo y perfil transaccional por <b>al menos 10 años</b>.</li>
+    </ul>
+    <div class="note"><b>Evaluación periódica:</b> las Entidades deben evaluar, al menos <b>cada dos años</b> y de forma independiente al área que desarrolló el sistema, la efectividad del sistema de alertas y de los parámetros/criterios de monitoreo transaccional y filtrado de listas. El Comité debe conocer el resultado de esas evaluaciones.</div>
+  </section>
+
+  <section id="intercambio">
+    <h2>9. Intercambio de información entre entidades</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 61ª a 62ª Octies (Capítulo XII) — desarrollan el artículo 115 Bis de la LIC</div>
+    <p>El Capítulo XII desarrolla el intercambio de información al que se refieren los artículos 52 y <b>115 Bis de la LIC</b>, y 113 de la Ley para Regular las Agrupaciones Financieras. El propósito, en todos los casos, es el mismo: <b>fortalecer las medidas para prevenir y detectar</b> actos u operaciones que pudieran actualizar los supuestos de los artículos 139 Quáter o 400 Bis del CPF.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Disposición</th><th>Qué regula</th><th>Entre quiénes</th></tr></thead>
+      <tbody>
+        <tr><td class="amt">62ª</td><td>Reglas generales del intercambio: solicitud por funcionarios autorizados, respuesta en <b>máximo 30 días naturales</b>, uso restringido a quien lo solicitó (salvo que se autorice compartirlo), y posibilidad de compartir información relevante sin necesidad de solicitud previa</td><td>Entre dos o más Entidades (bancos entre sí)</td></tr>
+        <tr><td class="amt">62ª Bis</td><td>Intercambio de la información de la Disposición 33ª Bis 1 (Personas Morales sin límite de USD)</td><td>Entidades con Entidades Financieras Extranjeras — debe derivar de una operación en USD</td></tr>
+        <tr><td class="amt">62ª Ter</td><td>Intercambio de información de Clientes/Usuarios y sus Operaciones, mediante formato oficial de la Secretaría</td><td>Entidades con Entidades Financieras Extranjeras análogas</td></tr>
+        <tr><td class="amt">62ª Quáter</td><td>Intercambio <b>obligatorio</b> de información sobre transferencias de fondos nacionales en moneda extranjera e internacionales, vía plataformas tecnológicas autorizadas por la Secretaría o del Banco de México</td><td>Entre todas las Entidades</td></tr>
+        <tr><td class="amt">62ª Quinquies</td><td>Intercambio del contenido de la <b>Lista de Personas Bloqueadas</b></td><td>Con oficinas de representación, filiales, entidades del exterior con inversión, corresponsales extranjeros y entidades del mismo grupo financiero</td></tr>
+        <tr><td class="amt">62ª Sexies</td><td>Intercambio de cualquier información de Operaciones, Clientes/Usuarios y reportes de Operación Inusual/24 horas/Interna Preocupante, mediante convenio</td><td>Entre entidades financieras del mismo grupo financiero</td></tr>
+        <tr><td class="amt">62ª Septies</td><td>Intercambio de información estadística sobre los reportes de Operación Inusual y 24 horas</td><td>Entre Entidades, vía la misma plataforma de la 62ª</td></tr>
+        <tr><td class="amt">62ª Octies</td><td>Intercambio de antecedentes de Clientes/Usuarios y estadísticas de reportes de Operación Inusual/24 horas</td><td>Con filiales en el exterior, entidades con inversión directa/indirecta, y corresponsales extranjeros</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note"><b>Condiciones que se repiten en casi todas estas Disposiciones:</b> (1) se requiere convenio previo entre las partes que garantice el tratamiento confidencial de la información y defina los funcionarios autorizados; (2) debe avisarse a la Comisión de la suscripción del convenio, antes de intercambiar información; (3) quien comparte información debe conservar la documentación soporte a disposición de la Secretaría y la Comisión.</div>
+  </section>
+
+  <section id="lista">
+    <h2>10. Lista de Personas Bloqueadas</h2>
+    <div class="disp">Fuente: DCG 115, Disposiciones 70ª, 71ª, 72ª y 73ª (Capítulo XV); definición en la Disposición 2ª, fracción XXI, que remite al artículo 115, párrafo noveno, de la LIC</div>
+
+    <h3>Quién la publica y quién puede entrar en ella (Disposiciones 70ª y 71ª)</h3>
+    <p>La <b>Secretaría</b> pone la Lista de Personas Bloqueadas y sus actualizaciones a disposición de las Entidades, por conducto de la Comisión. Puede incluir en ella, entre otros supuestos, a personas que: estén en listas de resoluciones del Consejo de Seguridad de la ONU (1267 de 1999 y sucesivas, 1373 de 2001); sean señaladas por autoridades extranjeras u organismos internacionales conforme a instrumentos internacionales con México; tengan indicios de relación con FT u operaciones con recursos de procedencia ilícita; estén compurgando sentencia por esos delitos; oculten o impidan conocer el origen/destino/propiedad de recursos de esos delitos; o aparezcan en la lista de contribuyentes del artículo 69-B, cuarto párrafo, del Código Fiscal de la Federación.</p>
+
+    <h3>Qué debe hacer la Entidad al identificar a alguien en la Lista (Disposición 72ª)</h3>
+    <ol>
+      <li><b>Suspender de inmediato</b> cualquier acto, Operación o servicio relacionado con ese Cliente o Usuario.</li>
+      <li><b>Remitir</b> a la Secretaría, por conducto de la Comisión, dentro de las <b>24 horas</b> siguientes a conocer la información, un reporte de Operación Inusual (bajo la Disposición 41ª) con la leyenda <code>"Lista de Personas Bloqueadas"</code> en la descripción.</li>
+      <li><b>Notificar por escrito o medios digitales</b> al Cliente/Usuario los fundamentos y causa de su inclusión, informándole que dentro de los <b>10 días hábiles</b> siguientes puede acudir ante la autoridad competente conforme a la Disposición 73ª.</li>
+    </ol>
+
+    <h3>Derecho de audiencia (Disposición 73ª)</h3>
+    <p>Quien sea incluido en la Lista puede hacer valer sus derechos ante el <b>Titular de la Unidad de Inteligencia Financiera (UIF)</b> de la Secretaría:</p>
+    <ul>
+      <li><b>10 días hábiles</b> desde que conoce la suspensión, para manifestar por escrito lo que convenga, aportar pruebas y alegatos (ampliable una sola vez, por el mismo plazo).</li>
+      <li>La UIF emite resolución fundada y motivada dentro de los <b>10 días hábiles</b> siguientes a la presentación del interesado, y la notifica por oficio dentro de los <b>15 días hábiles</b> siguientes a su emisión.</li>
+    </ul>
+    <div class="note"><b>Excepción de "Usuario":</b> no se consideran Usuarios, para este Capítulo, quienes cobren cheques de cuenta corriente ajena en sucursales de la Entidad librada, ni quienes reciban fondos de programas gubernamentales de apoyo.</div>
+  </section>
+
+  <section id="sanciones">
+    <h2>11. Sanciones</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 67ª</div>
+    <p>
+      La Disposición 67ª de la DCG 115 es breve y tiene un alcance específico: define qué se considera <b>incumplimiento para efectos de la imposición de sanciones</b>. Según su texto literal, se considera incumplimiento cuando las Entidades presenten <b>información incompleta, ilegible o con errores</b>, o cuando el medio electrónico utilizado <b>no cumpla con las especificaciones técnicas</b> señaladas por la Secretaría o la Comisión.
+    </p>
+    <div class="trap">
+      <b>Importante — honestidad sobre el alcance de este artículo:</b> la DCG 115 <u>no contiene, en su Disposición 67ª, una tabla propia de montos o rangos de multa</u> — solo define el supuesto de incumplimiento. Los montos y porcentajes de sanción (facultad de la CNBV) están fijados en el <b>propio artículo 115 de la LIC</b> (y artículos relacionados como el 108 y 110 Bis LIC), no en estas Disposiciones. Para esos montos exactos (10% a 100% del valor del acto u operación; 30,000 a 100,000 UMA para Operaciones Relevantes/Internas Preocupantes/TIF/USD en efectivo; 5,000 a 50,000 UMA para los demás incumplimientos), consulta tu documento <b>8_Resumen_Ley_Instituciones_Credito.html</b>, que ya los tiene verificados contra el texto de la LIC.
+    </div>
+  </section>
+
+  <section id="novedosos">
+    <h2>12. Obligaciones de los Modelos Novedosos</h2>
+    <div class="disp">Fuente: DCG 115, Capítulo XIV Bis, Disposición 69ª-2 (adicionado D.O.F. 22 marzo 2019)</div>
+    <p>
+      Contrario a lo que podría pensarse, la DCG 115 <b>sí contiene</b> un capítulo propio sobre Modelos Novedosos (tema 2.1.11 del temario) — no es un tema exclusivo de la Ley para Regular las Instituciones de Tecnología Financiera (LRITF). Un <b>Modelo Novedoso</b> (Disposición 2ª, fracción XXV) es aquel que, para prestar servicios financieros, utiliza herramientas o medios tecnológicos con modalidades distintas a las existentes en el mercado al momento en que se otorgue la autorización temporal prevista en la LRITF.
+    </p>
+    <p>Las Entidades que pretendan obtener autorización de la Comisión para operar mediante Modelos Novedosos deben:</p>
+    <ol>
+      <li><b>Identificar y evaluar el Riesgo</b> al que están expuestas, antes de lanzar el producto o servicio, conforme a la metodología del Capítulo II Bis de las Disposiciones.</li>
+      <li><b>Presentar el resultado</b> de esa evaluación a la Comisión, junto con la solicitud de autorización.</li>
+      <li><b>Ajustarse</b> a las Disposiciones conforme a los casos, formas, términos, plazos, condiciones y excepciones que señale la Comisión en la autorización, previa opinión de la Secretaría.</li>
+    </ol>
+  </section>
+
+  <section id="trampas">
+    <h2>13. Trampas de examen — resumen rápido</h2>
+    <div class="note">
+      <b>Checklist mental para el día del examen:</b>
+      <ul style="margin:8px 0 0;">
+        <li><b>Cliente ≠ Usuario:</b> siempre revisa cuál es el sujeto antes de aplicar un límite de dólares — los montos del 33ª Bis (Cliente) y 33ª Ter (Usuario) son distintos.</li>
+        <li><b>Todos los reportes trimestrales comparten calendario</b> (primeros 10 días hábiles de enero/abril/julio/octubre), pero son reportes independientes entre sí (34ª, 34ª Bis, 34ª Ter, 34ª Quáter).</li>
+        <li><b>24 horas</b> es el plazo más corto de toda la DCG 115, y aparece en dos supuestos distintos: el Reporte de 24 horas (41ª, por sospecha antes de operar) y la detección de alguien en la Lista de Personas Bloqueadas (72ª).</li>
+        <li><b>El Oficial de Cumplimiento no puede tener funciones de auditoría interna</b> — ni el titular (47ª) ni el interino (47ª Bis) — y debe estar certificado conforme al artículo 4, fracción X de la Ley de la CNBV.</li>
+        <li><b>Entidades con menos de 25 personas</b> a su servicio no necesitan Comité — sus funciones las asume el Oficial de Cumplimiento (excepto la de mantener la clave del sistema electrónico, que recae en el director general).</li>
+        <li><b>"La Secretaría, por conducto de la Comisión"</b> es la fórmula que se repite en casi todos los reportes: quien recibe la información en sustancia es la SHCP, pero el canal institucional es siempre la CNBV.</li>
+        <li><b>Sanciones:</b> la DCG 115 (Disposición 67ª) solo define qué cuenta como incumplimiento; los montos de la multa están en la LIC, no en la DCG.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Fuente: Disposiciones de Carácter General a que se refiere el artículo 115 de la Ley de Instituciones de Crédito (DCG 115), texto íntegro consultado (Disposiciones 2ª, 4ª, 4ª Bis, 4ª Ter, 14ª Bis, 24ª, 33ª-33ª Ter, 34ª-34ª Quáter, 35ª-37ª, 41ª, 43ª-45ª, 47ª-48ª, 51ª, 61ª-62ª Octies, 67ª-73ª, incluyendo el Capítulo XIV Bis de Modelos Novedosos). Complementa a 16_Identificacion_Clientes_DCG115.html (detalle de identificación) y 8_Resumen_Ley_Instituciones_Credito.html (montos de sanciones del Art. 108/110 Bis LIC).
+</footer>
+
+</body>
+</html>
