@@ -21,6 +21,24 @@ header {
   background: #161b22;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding-right: 0.75rem;
+  border-right: 1px solid #30363d;
+}
+
+.brand img {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+
+.brand-mark {
+  display: none !important;
+}
+
 header h1 {
   margin: 0;
   font-size: 1.25rem;
@@ -183,6 +201,18 @@ main {
 
   header h1 {
     font-size: 1.05rem;
+  }
+
+  .brand {
+    padding-right: 0.5rem;
+  }
+
+  .brand-full {
+    display: none !important;
+  }
+
+  .brand-mark {
+    display: block !important;
   }
 
   .subtitle {
