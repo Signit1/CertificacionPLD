@@ -34,6 +34,24 @@
     font-weight: 600;
     letter-spacing: 0.2px;
   }
+  header .intro{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin: 8px 0 10px 0;
+    font-family: "Inter","Segoe UI",system-ui,sans-serif;
+  }
+  @media (max-width: 900px){ header .intro{ grid-template-columns: 1fr; gap: 8px; } }
+  header .intro p{
+    margin: 0; max-width: none;
+    font-size: 12.8px; line-height: 1.5; color: var(--ink);
+    text-align: left;
+  }
+  header .intro b{ font-weight: 600; }
+  header .intro .intro-mx{
+    padding-left: 12px;
+    border-left: 3px solid var(--ink-dim);
+  }
   header p{
     margin: 0;
     color: var(--ink-dim);
@@ -64,14 +82,15 @@
 
   .node-label{
     font-family: "Inter",sans-serif;
-    font-size: 9.5px;
+    font-size: 11.5px;
     fill: var(--ink);
     pointer-events: none;
+    transition: fill 140ms ease, filter 140ms ease;
   }
   .node-num{
     font-family: "Inter",sans-serif;
-    font-weight: 700;
-    font-size: 10.5px;
+    font-weight: 800;
+    font-size: 13.5px;
     fill: var(--bg);
     pointer-events: none;
   }
@@ -80,6 +99,21 @@
     stroke-width: 1.4;
     cursor: pointer;
     transition: r 120ms ease, opacity 120ms ease;
+  }
+  .node-g .node-dot{ transition: r 140ms ease, filter 140ms ease, opacity 120ms ease; }
+  .node-g .node-num{ transition: font-size 140ms ease; }
+  .node-g.hot .node-dot{
+    r: 15.5px;
+    stroke: #fff; stroke-width: 1.6;
+    filter: drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 12px var(--glow));
+  }
+  .node-g.dimmed .node-label{ opacity: 0.3; }
+  .node-g.hot .node-label{ opacity: 1; }
+  .node-g.hot .node-num{ font-size: 17px; }
+  .node-g.hot .node-label{
+    fill: #fff; font-weight: 700; font-size: 16px;
+    stroke: var(--bg); stroke-width: 3.5px; paint-order: stroke;
+    filter: drop-shadow(0 0 3px var(--glow)) drop-shadow(0 0 9px var(--glow));
   }
   .node-dot:hover{ opacity: 1; }
 
@@ -95,10 +129,10 @@
   .cat-arc{ fill:none; stroke-width: 6; opacity: 0.9; }
   .cat-label{
     font-family: "Inter",sans-serif;
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    fill: var(--ink-dim);
+    font-size: 12px;
+    font-weight: 800;
+    fill: var(--bg);
+    pointer-events: none;
   }
 
   .sidebar{
@@ -203,6 +237,18 @@
     background: rgba(232,196,106,0.08); border-left: 3px solid #e8c46a;
     padding: 7px 10px; border-radius:4px; margin-top:6px;
   }
+  #detail .exam-note{
+    font-size: 12.5px; line-height: 1.55; color: var(--ink);
+    background: rgba(180,126,224,0.09); border: 1px solid rgba(180,126,224,0.35);
+    border-left: 3px solid #b47ee0; padding: 10px 12px; border-radius:6px;
+  }
+  #detail .exam-note .exam-tag{
+    display:inline-block; font-size: 10.5px; font-weight:700; letter-spacing:0.3px;
+    text-transform:uppercase; color:#b47ee0; margin-bottom:5px;
+  }
+  #detail .exam-note .exam-caveat{
+    display:block; margin-top:8px; font-size: 11px; color: var(--ink-dim); font-style:italic;
+  }
   #detail .rel-heading{
     font-size: 10.5px; font-weight:700; letter-spacing:0.4px; text-transform: uppercase;
     color: var(--ink-dim); margin: 4px 0 8px 0; padding-top:14px; border-top:1px solid var(--line);
@@ -222,6 +268,10 @@
 
 <header>
   <h1>Las 40 Recomendaciones del GAFI</h1>
+  <div class="intro">
+    <p><b>¿Qué son y para qué sirven en el mundo?</b> Son el estándar internacional contra el lavado de activos (LA), el financiamiento del terrorismo (FT) y el financiamiento de la proliferación de armas de destrucción masiva. Las emite el Grupo de Acción Financiera Internacional (GAFI), un ente intergubernamental establecido en 1989, y constituyen un esquema de medidas completo y consistente que cada país debe implementar: evaluar sus riesgos, tipificar y sancionar el delito, decomisar bienes, exigir medidas preventivas a las instituciones financieras y a las Actividades y Profesiones No Financieras Designadas (APNFD), contar con autoridades facultadas y cooperar a nivel internacional. Más de 200 países y jurisdicciones se han comprometido a aplicarlas, y su cumplimiento se mide con evaluaciones mutuas.</p>
+    <p class="intro-mx"><b>¿Y en México?</b> Son la base de la regulación de Prevención de Lavado de Dinero y Financiamiento al Terrorismo (PLD/FT): se reflejan en la Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita (LFPIORPI), en el Código Penal Federal y en las Disposiciones de Carácter General (DCG) que emite la Comisión Nacional Bancaria y de Valores (CNBV) con fundamento en el Artículo 115 de la Ley de Instituciones de Crédito (LIC). La Unidad de Inteligencia Financiera (UIF) recibe y analiza los reportes, y el Servicio de Administración Tributaria (SAT) supervisa a las APNFD. El país es evaluado por el GAFI y por el Grupo de Acción Financiera de Latinoamérica (GAFILAT).</p>
+  </div>
   <p>Mapa de relaciones normativas entre las 40 Recomendaciones, agrupadas por sus 7 categorías oficiales. Cada línea representa una referencia cruzada <b style="color:var(--ink)">explícita</b>, citada tal cual en el texto de las Recomendaciones o de sus Notas Interpretativas (versión de diciembre de 2025). Pasa el cursor sobre un número, o haz clic para fijarlo.</p>
 </header>
 
@@ -327,7 +377,7 @@ const mxData = {
   33: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben mantener estadísticas amplias sobre la eficacia y eficiencia de sus sistemas ALA/CFT, incluyendo: ROS recibidos y divulgados; investigaciones, procesos y condenas por lavado de activos y financiamiento del terrorismo; bienes congelados, incautados y decomisados; y asistencia legal mutua u otras solicitudes internacionales de cooperación.", nota: "NA", mexico: "Las Disposiciones de Carácter General (DCG) exigen a las instituciones financieras conservar estadísticas de sus reportes; la Unidad de Inteligencia Financiera (UIF) integra y publica trimestralmente estadísticas nacionales agregadas sobre Reportes de Operación Sospechosa (ROS), operaciones relevantes, y demás reportes recibidos del sistema financiero y de las APNFD." },
   34: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Las autoridades competentes, los supervisores y los Organismos Autorreguladores (OAR —colegios o asociaciones profesionales facultados para vigilar el cumplimiento de sus propios miembros—) deben establecer directrices y ofrecer retroalimentación que ayude a las instituciones financieras y a las APNFD a aplicar las medidas nacionales ALA/CFT, en particular en la detección y el reporte de operaciones sospechosas.", nota: "NA", mexico: "Guías de la Comisión Nacional Bancaria y de Valores (CNBV); facultades de la CNBV en materia de capacitación a las instituciones que supervisa." },
   35: { tipo: "Otras", grupo: "Facultades y responsabilidades de las autoridades competentes y otras medidas institucionales", puntos: "Los países deben asegurar que exista una gama de sanciones eficaces, proporcionales y disuasivas —penales, civiles o administrativas— disponibles para las personas naturales o jurídicas cubiertas en las Recomendaciones 6 y 8 a la 23 que incumplan los requisitos ALA/CFT. Las sanciones deben ser aplicables no solo a las instituciones financieras y APNFD, sino también a sus directores y alta gerencia.", nota: "NA", mexico: "Artículo 115 de la Ley de Instituciones de Crédito; sanciones penales de respaldo en los Artículos 400 Bis y 139 Quáter del Código Penal Federal" },
-  36: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben tomar medidas inmediatas para ser parte de, e implementar a plenitud: la Convención de Viena (1988), la Convención de Palermo (2000), la Convención de las Naciones Unidas contra la Corrupción (2003), y el Convenio Internacional para la Represión de la Financiación del Terrorismo (1999). Cuando corresponda, se exhorta también a ratificar otras convenciones relevantes: la Convención del Consejo de Europa sobre el Cibercrimen (2001), la Convención Interamericana contra el Terrorismo (2002), y el Convenio del Consejo de Europa sobre Blanqueo, Detección, Embargo y Decomiso de los Productos de un Delito y sobre el Financiamiento del Terrorismo (2005).", nota: "A qué se refiere cada convención: Viena (1988) — tráfico ilícito de estupefacientes y sustancias psicotrópicas; primer tratado en exigir tipificar el lavado de activos. Palermo (2000) — delincuencia organizada transnacional; amplía esa obligación a los delitos del crimen organizado en general. Convención de la ONU contra la Corrupción (2003) — soborno, malversación y otros actos de corrupción, e instrumentos para la recuperación de activos. Convenio Internacional para la Represión de la Financiación del Terrorismo (1999) — obliga a tipificar el financiamiento del terrorismo como delito autónomo.", mexico: "México es parte de las cuatro convenciones centrales; a nivel interno, la implementación se refleja en el Código Penal Federal (Art. 400 Bis, 139 Quáter) y en la LFPIORPI." },
+  36: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben tomar medidas inmediatas para ratificar y aplicar a plenitud cuatro convenciones internacionales centrales: la Convención de Viena (1988), la Convención de Palermo (2000), la Convención de las Naciones Unidas contra la Corrupción (2003), y el Convenio Internacional para la Represión de la Financiación del Terrorismo (1999). Cuando corresponda, se exhorta también a ratificar otras convenciones relevantes: la Convención del Consejo de Europa sobre el Cibercrimen (2001), la Convención Interamericana contra el Terrorismo (2002), y el Convenio del Consejo de Europa sobre Blanqueo, Detección, Embargo y Decomiso de los Productos de un Delito y sobre el Financiamiento del Terrorismo (2005).", nota: "A qué se refiere cada convención: Viena (1988) — tráfico ilícito de estupefacientes y sustancias psicotrópicas; primer tratado en exigir tipificar el lavado de activos. Palermo (2000) — delincuencia organizada transnacional; amplía esa obligación a los delitos del crimen organizado en general. Convención de la ONU contra la Corrupción (2003) — soborno, malversación y otros actos de corrupción, e instrumentos para la recuperación de activos. Convenio Internacional para la Represión de la Financiación del Terrorismo (1999) — obliga a tipificar el financiamiento del terrorismo como delito autónomo.", mexico: "México es parte de las cuatro convenciones centrales; a nivel interno, la implementación se refleja en el Código Penal Federal (Art. 400 Bis, 139 Quáter) y en la LFPIORPI." },
   37: { tipo: "Key", grupo: "Cooperación Internacional", puntos: "Los países deben prestar, rápida, constructiva y eficazmente, el mayor rango posible de asistencia legal mutua en investigaciones, procesos judiciales y procedimientos relacionados con el lavado de activos, sus delitos determinantes y el financiamiento del terrorismo, contando con base jurídica adecuada y, cuando corresponda, tratados o mecanismos para mejorar la cooperación. En particular: no deben negarse a prestar asistencia solo por motivos fiscales o de secreto bancario/profesional; deben contar con procesos claros y una autoridad central para tramitar solicitudes; deben mantener la confidencialidad de las peticiones; y deben prestar asistencia aun en ausencia de doble incriminación cuando no se requieran medidas coercitivas.", nota: "NA", mexico: "Tratados de Asistencia Jurídica Mutua bilaterales y multilaterales (por ejemplo, la Convención Interamericana sobre Asistencia Mutua en Materia Penal), coordinados por la Fiscalía General de la República y, por la vía diplomática, por la Secretaría de Relaciones Exteriores." },
   38: { tipo: "Otras", grupo: "Cooperación Internacional", puntos: "Los países deben tener medidas legislativas para actuar con rapidez ante solicitudes extranjeras de identificación, rastreo, congelamiento, incautación y decomiso de bienes delictivos y de valor equivalente, incluyendo reconocer y ejecutar órdenes extranjeras de congelamiento o decomiso. Deben poder administrar los bienes en todas las etapas del proceso de recuperación de activos, y compartir o devolver los bienes decomisados, contando con la gama más amplia posible de tratados o mecanismos para mejorar esta cooperación.", nota: "Los países deben poder actuar sobre la base de procedimientos de decomiso no basado en condena y de medidas provisionales; al reconocer órdenes extranjeras, pueden confiar en las determinaciones de hecho de la petición, sin condicionar el cumplimiento a una investigación interna propia; deben poder compartir bienes decomisados con otros países, en particular cuando el decomiso resulta de acciones coordinadas, y acordar mecanismos para compartir costos; y deben mantener comunicación informal con otros países sobre el estatus de las solicitudes.", mexico: "Tratados de Asistencia Jurídica Mutua (misma red bilateral/multilateral que la R.37) — no se trata de un tratado único, sino de la red de convenios vigentes de México, coordinados por la FGR." },
   39: { tipo: "Otras", grupo: "Cooperación Internacional", puntos: "Los países deben ejecutar, constructiva y eficazmente, las solicitudes de extradición relacionadas con el lavado de activos y el financiamiento del terrorismo, sin demora indebida, y asegurar que no sirvan de refugio a terroristas. En particular: el LA y el FT deben ser delitos extraditables; debe haber procesos claros y eficientes para tramitar solicitudes; no deben imponerse condiciones restrictivas poco razonables; y debe existir un marco jurídico adecuado. Cada país debe extraditar a sus propios nacionales o, si no lo hace únicamente por motivo de nacionalidad, debe someter el caso a sus propias autoridades para procesarlo como cualquier otro delito grave conforme a su ley interna.", nota: "NA", mexico: "Secretaría de Relaciones Exteriores (autoridad central para trámites de extradición); Código Penal Federal" },
@@ -435,7 +485,7 @@ const rangeEdges = [
 
 /* ---------- Layout circular agrupado por categoría ---------- */
 const W = 1040, H = 1040, CX = W/2, CY = H/2;
-const R_NODE = 330, R_LABEL = 352, R_ARC = 372, R_DOT = 6.6;
+const R_NODE = 300, R_LABEL = 346, R_ARC = 328, R_DOT = 11.5;
 const GAP_DEG = 3.4; // separación entre categorías
 
 let order = [];
@@ -493,11 +543,11 @@ categories.forEach(c=>{
   gArcs.appendChild(path);
 
   const midA = ((c._start+c._end)/2) * Math.PI/180;
-  const lr = R_ARC + 20;
-  const lx = CX + lr*Math.cos(midA), ly = CY + lr*Math.sin(midA);
+  const bx = CX + R_ARC*Math.cos(midA), by = CY + R_ARC*Math.sin(midA);
+  gArcs.appendChild(el("circle",{cx:bx, cy:by, r:10, fill:c.hex, stroke:"var(--bg)", "stroke-width":2}));
   const label = el("text",{
-    x:lx, y:ly, class:"cat-label", "text-anchor":"middle",
-    "dominant-baseline":"middle"
+    x:bx, y:by+0.5, class:"cat-label", "text-anchor":"middle",
+    "dominant-baseline":"central"
   });
   label.textContent = c.key;
   gArcs.appendChild(label);
@@ -543,6 +593,17 @@ for(let i=1;i<=40;i++) adjacency[i] = [];
   adjacency[b].push({to:a, label, type, dir:"←"});
 });
 
+// divide el nombre completo en renglones (sin cortar palabras)
+function wrapTitle(t, max){
+  const out=[]; let cur="";
+  t.split(" ").forEach(w=>{
+    if(cur && (cur+" "+w).length>max){ out.push(cur); cur=w; }
+    else cur = cur ? cur+" "+w : w;
+  });
+  if(cur) out.push(cur);
+  return out;
+}
+
 // nodes
 let selected = null;
 const nodeEls = {};
@@ -550,10 +611,11 @@ let hoverTimer = null;
 order.forEach(n=>{
   const c = catOf(n);
   const [x,y] = pt(n, R_NODE);
-  const g = el("g",{});
+  const g = el("g",{class:"node-g"});
+  g.style.setProperty("--glow", c.hex);
   const dot = el("circle",{cx:x, cy:y, r:R_DOT, fill:c.hex, class:"node-dot"});
   g.appendChild(dot);
-  const num = el("text",{x:x, y:y+3.6, class:"node-num", "text-anchor":"middle"});
+  const num = el("text",{x:x, y:y+4.8, class:"node-num", "text-anchor":"middle"});
   num.textContent = n;
   g.appendChild(num);
 
@@ -562,35 +624,53 @@ order.forEach(n=>{
   const ang = angleOf[n];
   const flip = ang > 90 && ang < 270;
   const label = el("text",{
-    x:lx, y:ly, class:"node-label",
+    class:"node-label",
     "text-anchor": flip ? "end":"start",
     transform: `rotate(${flip? ang+180 : ang}, ${lx}, ${ly})`
   });
-  label.textContent = titles[n].length>26 ? titles[n].slice(0,24)+"…" : titles[n];
+  function layoutLabel(big){
+    while(label.firstChild) label.removeChild(label.firstChild);
+    let wmax = big ? 21 : 27, lines = wrapTitle(titles[n], wmax);
+    if(!big){ while(lines.length>4 && wmax<40){ wmax++; lines = wrapTitle(titles[n], wmax); } }
+    const LH = big ? 19 : 13.5, base = big ? 5.5 : 4;
+    lines.forEach((ln,i)=>{
+      const ts = el("tspan",{x:lx, y: ly + (i-(lines.length-1)/2)*LH + base});
+      ts.textContent = ln;
+      label.appendChild(ts);
+    });
+  }
+  layoutLabel(false);
+  function setHot(on){
+    g.classList.toggle("hot", on);
+    layoutLabel(on);
+  }
   g.appendChild(label);
 
   // invisible, larger hit-target: the visible dot is only ~6.6px, too small to
   // hover/click precisely when nodes are close together. This transparent circle
   // gives a comfortable ~18px hit radius without changing how anything looks.
-  const hit = el("circle",{cx:x, cy:y, r:16, fill:"transparent", stroke:"none"});
+  const hit = el("circle",{cx:x, cy:y, r:18, fill:"transparent", stroke:"none"});
   hit.style.cursor = "pointer";
   hit.addEventListener("mouseenter", ()=>{
+    setHot(true);
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(()=>{ if(!selected) focusNode(n); }, 120);
   });
   hit.addEventListener("mouseleave", ()=>{
+    if(selected!==n) setHot(false);
     clearTimeout(hoverTimer);
     if(!selected) clearFocus();
   });
   hit.addEventListener("click", ()=>{
     clearTimeout(hoverTimer);
     selected = (selected===n) ? null : n;
-    if(selected) focusNode(n); else clearFocus();
+    Object.entries(nodeEls).forEach(([id,o])=> o.setHot(+id===selected));
+    if(selected) focusNode(n); else { clearFocus(); setHot(true); }
   });
   g.appendChild(hit);
 
   gNodes.appendChild(g);
-  nodeEls[n] = {g, dot};
+  nodeEls[n] = {g, dot, setHot};
 });
 
 function showRangesState(){ return document.getElementById("toggleRanges").checked; }
@@ -604,14 +684,15 @@ function focusNode(n){
     p.classList.toggle("hi", involved);
     p.classList.toggle("dim", !involved);
   });
-  Object.entries(nodeEls).forEach(([id,{dot}])=>{
+  Object.entries(nodeEls).forEach(([id,{dot,g}])=>{
     dot.setAttribute("opacity", conn.has(+id) ? 1 : 0.25);
+    g.classList.toggle("dimmed", !conn.has(+id));
   });
   renderDetail(n);
 }
 function clearFocus(){
   edgeEls.forEach(p=>{ p.classList.remove("hi"); p.classList.remove("dim"); });
-  Object.values(nodeEls).forEach(({dot})=> dot.setAttribute("opacity",1));
+  Object.values(nodeEls).forEach(({dot,g})=>{ dot.setAttribute("opacity",1); g.classList.remove("dimmed"); });
   if(!selected) renderDetailEmpty();
 }
 
@@ -632,6 +713,29 @@ function renderDetailEmpty(){
 
 const verifNotes = {
   6: "Esta Recomendación forma parte de las «big six» del GAFI: R3, R5, R6, R10, R11 y R20 — las seis Recomendaciones consideradas fundamentales dentro del sistema de evaluación."
+};
+
+const examNotes = {
+  14: `<span class="exam-tag">📝 Vista en examen de prueba</span>
+  «El sistema hawala es: una red informal de transferencia de valor basada en operadores (hawaladar) que compensan entre sí sin movimiento físico de fondos.»<br><br>
+  Es correcto: el hawala es informal y opaco — el dinero no viaja, los hawaladar compensan saldos entre ellos por otros medios (comercio, otra transferencia, etc.). La R.14 del GAFI exige registrar o licenciar, y supervisar, este tipo de servicios para mitigar su riesgo.<br><br>
+  <b>Ejemplo de cada término:</b><br>
+  • <b>Hawala</b> — originario del subcontinente indio y Medio Oriente. El ordenante entrega dinero a un hawaladar en su país; éste indica a un hawaladar corresponsal en el país destino que pague el equivalente al beneficiario; ambos compensan sus cuentas después, sin que el dinero cruce la frontera.<br>
+  • <b>Hundi</b> — instrumento informal originario también del subcontinente indio (India, Pakistán, Bangladesh), históricamente una letra de cambio usada para financiar comercio y remesas; opera bajo el mismo principio de confianza y compensación entre operadores que el hawala.<br>
+  • <b>Fei-chen</b> (飞钱, «dinero volador») — sistema de transferencia de valor de origen chino, cuyo nombre viene de un instrumento usado por comerciantes desde la dinastía Tang para mover valor a distancia sin transportar efectivo; hoy describe redes informales similares al hawala dentro de comunidades chinas.
+  <span class="exam-caveat">El documento del GAFI solo nombra estos tres términos, sin desarrollarlos, como ejemplos de Servicios de Transferencia de Dinero o Valores (STDV) «con lazos con regiones geográficas particulares» (Glosario, definición de STDV). El detalle de cómo opera cada uno es contexto general de la literatura ALA/CFT, no una cita textual del documento.</span>`,
+  15: `<span class="exam-tag">📝 Vista en examen de prueba</span>
+  «Un VASP (Virtual Asset Service Provider) es: un proveedor de servicios de activos virtuales (intercambio, custodia, transferencia, emisión); sujeto a R.15 GAFI»<br><br>
+  Es correcto en lo esencial, con dos matices importantes para el examen:<br><br>
+  <b>VASP vs. PSAV</b> — el documento del GAFI en español nunca usa el acrónimo en inglés «VASP»; usa siempre <b>PSAV (Proveedor de Servicios de Activos Virtuales)</b>, su equivalente exacto. VASP es el acrónimo de la versión original en inglés (<i>Virtual Asset Service Provider</i>) — pueden preguntártelo con cualquiera de los dos nombres.<br><br>
+  La definición completa no está en el texto de la R.15 ni en su Nota Interpretativa — vive en el <b>Glosario</b> del documento, y son <b>5 actividades</b>:<br><br>
+  «Proveedor de servicios de activos virtuales significa cualquier persona física o jurídica que no esté cubierta en ningún otro lugar en virtud de las Recomendaciones y que, como negocio, realiza una o más de las siguientes actividades u operaciones para o en nombre de otra persona física o jurídica:<br>
+  i. intercambio entre activos virtuales y monedas fiat;<br>
+  ii. intercambio entre una o más formas de activos virtuales;<br>
+  iii. transferencia de activos virtuales;<br>
+  iv. custodia y/o administración de activos virtuales o instrumentos que permitan el control sobre activos virtuales; y<br>
+  v. participación y provisión de servicios financieros relacionados con la oferta de un emisor y/o venta de un activo virtual.»
+  <span class="exam-caveat">Sobre «emisión»: el punto (v) no dice literalmente «emisión» — dice servicios relacionados con la oferta de un emisor y/o venta. Un PSAV no es quien emite el activo virtual, sino quien presta servicios alrededor de esa emisión/oferta (por ejemplo, quien la coloca o la comercializa) — un matiz que suele usarse para hacer incorrecta una opción en examen.</span>`
 };
 
 function renderDetail(n){
@@ -671,6 +775,12 @@ function renderDetail(n){
       <div class="mx-label">Aplicación práctica en México</div>
       <div class="mx-mexico">${mx.mexico}</div>
     </div>`;
+
+    if(examNotes[n]){
+      html += `<div class="mx-section">
+        <div class="exam-note">${examNotes[n]}</div>
+      </div>`;
+    }
   }
 
   html += `<div class="rel-heading">Se relaciona con</div>`;
