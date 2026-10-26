@@ -1,0 +1,154 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Centro Cambiario y Casa de Cambio</title><style>
+:root{--bg:#f4f6fa;--card:#fff;--ink:#1d2433;--mut:#5a6578;--line:#d6dce8;--navy:#14305a;--teal:#0f7d82;--gold:#b88a1c;--red:#b3261e;--green:#2f6b55;
+--cc:#0f7d82;--ca:#6b3fa0;--soft:#eef2f8;--okbg:#e3f1ea;--badbg:#fbe3e1;--warn:#fbf1d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151f;--card:#1a2230;--ink:#e8ecf4;--mut:#a3adc0;--line:#2e3a50;--navy:#8fb4ee;--teal:#4fc3c8;--gold:#e0b34a;--red:#ff8a80;--green:#6fcf9f;--cc:#4fc3c8;--ca:#b79af0;--soft:#222c3e;--okbg:#17372b;--badbg:#44201e;--warn:#3e3413}}
+:root[data-theme="dark"]{--bg:#10151f;--card:#1a2230;--ink:#e8ecf4;--mut:#a3adc0;--line:#2e3a50;--navy:#8fb4ee;--teal:#4fc3c8;--gold:#e0b34a;--red:#ff8a80;--green:#6fcf9f;--cc:#4fc3c8;--ca:#b79af0;--soft:#222c3e;--okbg:#17372b;--badbg:#44201e;--warn:#3e3413}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(24px,5vw,34px);margin:6px 0;color:var(--navy)}
+h2{font-size:22px;margin:34px 0 10px;color:var(--navy);border-bottom:3px solid var(--gold);padding-bottom:4px}
+h3{font-size:17px;margin:14px 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;overflow-wrap:anywhere}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.cc{border-top:5px solid var(--cc)}.ca{border-top:5px solid var(--ca)}
+.pill{display:inline-block;border-radius:99px;padding:2px 12px;font-weight:700;font-size:13px;color:#fff}
+.pill.cc{background:var(--cc);color:#04282a}.pill.ca{background:var(--ca);color:#1d0f33}
+:root:not([data-theme="dark"]) .pill.cc{color:#fff}:root:not([data-theme="dark"]) .pill.ca{color:#fff}
+.note{background:var(--warn);border-left:5px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0}
+.ok{background:var(--okbg)}.bad{background:var(--badbg)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+td.y{background:var(--okbg)}td.n{background:var(--badbg)}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.scroll svg{min-width:640px}
+svg text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.on{fill:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .on{fill:#10151f}}
+:root[data-theme="dark"] .on{fill:#10151f}
+.t{fill:var(--ink)}.m{fill:var(--mut)}
+.case{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
+@media(max-width:600px){.case{grid-template-columns:1fr}}
+.ans{border-radius:8px;padding:6px 10px;margin-top:6px;font-weight:600}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:8px 0;background:var(--card)}
+summary{cursor:pointer;font-weight:600}
+.tab{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.chip{border:1px solid var(--line);border-radius:99px;padding:3px 12px;font-size:13px;background:var(--soft)}
+</style></head><body><div class="wrap">
+<h1>Centro cambiario y casa de cambio</h1>
+<p class="sub">Diferencias para el examen de certificación en PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo), con ilustraciones y ejemplos. Fuente: LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito) y las DCG (Disposiciones de Carácter General) de cada figura de tu material de estudio.</p>
+
+<h2>1. Las dos figuras de un vistazo</h2>
+<div class="g2">
+<div class="card cc"><span class="pill cc">Centro cambiario</span><svg viewBox="0 0 220 170" width="220" role="img" aria-label="Ilustración de un módulo pequeño de cambio de divisas">
+<rect x="20" y="40" width="180" height="100" rx="8" style="fill:var(--card);stroke:var(--cc);stroke-width:3"/>
+<path d="M12 40 L28 14 H192 L208 40 Z" style="fill:var(--cc)"/>
+<rect x="38" y="62" width="144" height="38" rx="4" style="fill:var(--soft);stroke:var(--line)"/>
+<text x="110" y="86" text-anchor="middle" font-size="14" font-weight="700" class="t">CAMBIO DE DIVISAS</text>
+<rect x="86" y="108" width="48" height="32" style="fill:var(--soft);stroke:var(--line)"/>
+<circle cx="110" cy="124" r="8" style="fill:none;stroke:var(--cc);stroke-width:2"/>
+<text x="110" y="30" text-anchor="middle" font-size="11" font-weight="700" class="on">CENTRO CAMBIARIO</text>
+<rect x="40" y="148" width="140" height="18" rx="9" style="fill:var(--cc)"/>
+<text x="110" y="161" text-anchor="middle" font-size="10" font-weight="700" class="on">Registro ante la CNBV</text></svg>
+<p>Módulo pequeño de cambio. Se registra ante la CNBV (Comisión Nacional Bancaria y de Valores), opera con efectivo y tiene topes por cliente al día.</p></div>
+<div class="card ca"><span class="pill ca">Casa de cambio</span><svg viewBox="0 0 220 170" width="220" role="img" aria-label="Ilustración de un edificio de una casa de cambio">
+<rect x="22" y="34" width="176" height="108" rx="4" style="fill:var(--card);stroke:var(--ca);stroke-width:3"/>
+<rect x="14" y="22" width="192" height="16" rx="3" style="fill:var(--ca)"/>
+<text x="110" y="34" text-anchor="middle" font-size="11" font-weight="700" class="on">CASA DE CAMBIO</text>
+<g style="fill:var(--soft);stroke:var(--line)"><rect x="34" y="50" width="30" height="40"/><rect x="74" y="50" width="30" height="40"/><rect x="116" y="50" width="30" height="40"/><rect x="156" y="50" width="30" height="40"/></g>
+<rect x="92" y="100" width="36" height="42" style="fill:var(--soft);stroke:var(--ca)"/>
+<text x="110" y="76" text-anchor="middle" font-size="9" class="m"> </text>
+<rect x="40" y="148" width="140" height="18" rx="9" style="fill:var(--ca)"/>
+<text x="110" y="161" text-anchor="middle" font-size="10" font-weight="700" class="on">Autorización de la SHCP</text></svg>
+<p>Organización auxiliar del crédito con autorización de la SHCP (Secretaría de Hacienda y Crédito Público). Opera sin esos topes y puede cambiar mediante transferencias.</p></div>
+</div>
+
+<h2>2. Quién les da permiso</h2>
+<div class="card scroll"><svg viewBox="0 0 760 250" width="760" role="img" aria-label="Cómo se obtiene cada figura">
+<text x="380" y="20" text-anchor="middle" font-size="14" font-weight="700" class="t">Quién da el permiso</text>
+<g>
+<rect x="30" y="40" width="210" height="64" rx="10" style="fill:var(--soft);stroke:var(--ca);stroke-width:2"/><text x="135" y="66" text-anchor="middle" font-size="13" font-weight="700" class="t">Sociedad anónima</text><text x="135" y="86" text-anchor="middle" font-size="12" class="m">quiere ser casa de cambio</text>
+<path d="M240 72 H300" style="stroke:var(--ca);stroke-width:3" /><path d="M292 64 L304 72 L292 80 Z" style="fill:var(--ca)"/>
+<rect x="304" y="40" width="200" height="64" rx="10" style="fill:var(--ca)"/><text x="404" y="66" text-anchor="middle" font-size="13" font-weight="700" class="on">SHCP autoriza</text><text x="404" y="86" text-anchor="middle" font-size="11" class="on">discrecional e intransmisible</text>
+<path d="M504 72 H550" style="stroke:var(--ca);stroke-width:3"/><path d="M542 64 L554 72 L542 80 Z" style="fill:var(--ca)"/>
+<rect x="554" y="40" width="180" height="64" rx="10" style="fill:var(--soft);stroke:var(--ca);stroke-width:2"/><text x="644" y="66" text-anchor="middle" font-size="12" font-weight="700" class="t">Oye a Banxico</text><text x="644" y="86" text-anchor="middle" font-size="12" class="t">y a la CNBV</text>
+</g>
+<g>
+<rect x="30" y="150" width="210" height="64" rx="10" style="fill:var(--soft);stroke:var(--cc);stroke-width:2"/><text x="135" y="176" text-anchor="middle" font-size="13" font-weight="700" class="t">Sociedad anónima</text><text x="135" y="196" text-anchor="middle" font-size="12" class="m">quiere ser centro cambiario</text>
+<path d="M240 182 H300" style="stroke:var(--cc);stroke-width:3"/><path d="M292 174 L304 182 L292 190 Z" style="fill:var(--cc)"/>
+<rect x="304" y="150" width="200" height="64" rx="10" style="fill:var(--cc)"/><text x="404" y="176" text-anchor="middle" font-size="13" font-weight="700" class="on">Dictamen técnico PLD/FT</text><text x="404" y="196" text-anchor="middle" font-size="11" class="on">se tramita ante la CNBV</text>
+<path d="M504 182 H550" style="stroke:var(--cc);stroke-width:3"/><path d="M542 174 L554 182 L542 190 Z" style="fill:var(--cc)"/>
+<rect x="554" y="150" width="180" height="64" rx="10" style="fill:var(--soft);stroke:var(--cc);stroke-width:2"/><text x="644" y="176" text-anchor="middle" font-size="12" font-weight="700" class="t">Registro ante</text><text x="644" y="196" text-anchor="middle" font-size="12" class="t">la CNBV</text>
+</g></svg></div>
+<div class="note">Dato clave: la SHCP (Secretaría de Hacienda y Crédito Público) autoriza a la casa de cambio; la CNBV (Comisión Nacional Bancaria y de Valores) solo registra al centro cambiario, y antes le exige el dictamen técnico en PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo).</div>
+
+<h2>3. Qué pueden hacer con el dinero</h2>
+<div class="card scroll"><svg viewBox="0 0 760 270" width="760" role="img" aria-label="Qué pueden hacer con el dinero">
+<text x="190" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cc)">Centro cambiario</text>
+<text x="570" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ca)">Casa de cambio</text>
+<line x1="380" y1="10" x2="380" y2="262" style="stroke:var(--line);stroke-width:2;stroke-dasharray:5 5"/>
+<g font-size="13">
+<rect x="20" y="36" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="34" y="64" class="t">✔ Billetes y monedas contra efectivo</text>
+<rect x="20" y="92" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="34" y="120" class="t">✔ Cheques de viajero (hasta 10,000 USD al día)</text>
+<rect x="20" y="148" width="340" height="46" rx="8" style="fill:var(--badbg)"/><text x="34" y="176" class="t">✘ Transferencias o abonos a cuentas</text>
+<rect x="20" y="204" width="340" height="46" rx="8" style="fill:var(--warn)"/><text x="34" y="224" class="t">Vende documentos a la vista</text><text x="34" y="241" class="m">solo a bancos y casas de cambio</text>
+<rect x="400" y="36" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="414" y="64" class="t">✔ Billetes y monedas contra efectivo</text>
+<rect x="400" y="92" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="414" y="120" class="t">✔ Sin tope diario de 10,000 USD por cliente</text>
+<rect x="400" y="148" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="414" y="176" class="t">✔ Cambio mediante transferencia de fondos</text>
+<rect x="400" y="204" width="340" height="46" rx="8" style="fill:var(--okbg)"/><text x="414" y="224" class="t">✔ Sin restricción de a quién vende</text><text x="414" y="241" class="m">documentos a la vista</text>
+</g></svg></div>
+
+<h2>4. Los números que se confunden</h2>
+<div class="card scroll"><svg viewBox="0 0 760 250" width="760" role="img" aria-label="Escala de montos en dólares">
+<text x="380" y="20" text-anchor="middle" font-size="14" font-weight="700" class="t">Cuánto es «mucho»: umbrales en dólares (USD)</text>
+<rect x="40" y="110" width="680" height="16" rx="8" style="fill:var(--soft);stroke:var(--line)"/>
+<rect x="40" y="110" width="283" height="16" rx="8" style="fill:var(--okbg)"/>
+<rect x="323" y="110" width="142" height="16" style="fill:var(--warn)"/>
+<rect x="465" y="110" width="142" height="16" style="fill:var(--badbg)"/>
+<g font-size="12">
+<line x1="323" y1="70" x2="323" y2="130" style="stroke:var(--cc);stroke-width:3"/>
+<text x="323" y="56" text-anchor="middle" font-weight="700" fill="var(--cc)">5,000</text><text x="323" y="68" text-anchor="middle" fill="var(--cc)">Relevante del centro</text>
+<line x1="465" y1="150" x2="465" y2="110" style="stroke:var(--ca);stroke-width:3"/>
+<text x="465" y="166" text-anchor="middle" font-weight="700" fill="var(--ca)">7,500</text><text x="465" y="180" text-anchor="middle" fill="var(--ca)">Relevante de la casa</text>
+<line x1="607" y1="70" x2="607" y2="130" style="stroke:var(--red);stroke-width:3"/>
+<text x="607" y="56" text-anchor="middle" font-weight="700" fill="var(--red)">10,000</text><text x="607" y="68" text-anchor="middle" fill="var(--red)">Tope diario del centro</text>
+<text x="40" y="146" class="m">0</text>
+<text x="720" y="146" text-anchor="end" class="m">12,000+</text>
+</g>
+<path d="M613 118 H712" style="stroke:var(--ca);stroke-width:3"/><path d="M706 110 L718 118 L706 126 Z" style="fill:var(--ca)"/>
+<text x="617" y="102" text-anchor="start" font-size="11" fill="var(--ca)" font-weight="700">La casa sigue sin tope</text>
+<text x="380" y="228" text-anchor="middle" font-size="12" class="m">Entre 5,000 y 7,500 USD en efectivo: es relevante en un centro cambiario, pero todavía no en una casa de cambio.</text>
+</svg></div>
+<div class="note">Cuidado: los 10,000 USD (dólares de los Estados Unidos de América) son un tope de operación diaria por cliente (LGOAAC 81-A), no el umbral de reporte. El umbral de Operación Relevante es 5,000 USD en el centro cambiario y 7,500 USD en la casa de cambio.</div>
+
+<h2>5. Cuándo reportan</h2>
+<div class="card scroll"><svg viewBox="0 0 760 330" width="760" role="img" aria-label="Plazos del reporte trimestral"><text x="380" y="20" text-anchor="middle" font-size="14" font-weight="700" class="t">Cuándo se entrega el reporte trimestral de Operaciones Relevantes</text><rect x="20" y="36" width="170" height="250" rx="10" style="fill:var(--card);stroke:var(--line)"/><text x="105" y="58" text-anchor="middle" font-size="14" font-weight="700" class="t">Enero</text><rect x="32" y="68" width="146" height="50" rx="6" style="fill:var(--ca)"/><text x="105" y="88" text-anchor="middle" font-size="10" font-weight="700" class="on">Primeros 10 días hábiles</text><text x="105" y="106" text-anchor="middle" font-size="11" class="on">Casa de cambio</text><rect x="32" y="124" width="146" height="100" rx="6" style="fill:var(--soft)"/><text x="105" y="178" text-anchor="middle" font-size="11" class="m">resto del mes</text><rect x="32" y="230" width="146" height="46" rx="6" style="fill:var(--cc)"/><text x="105" y="249" text-anchor="middle" font-size="10" font-weight="700" class="on">Últimos 10 días hábiles</text><text x="105" y="266" text-anchor="middle" font-size="11" class="on">Centro cambiario</text><rect x="200" y="36" width="170" height="250" rx="10" style="fill:var(--card);stroke:var(--line)"/><text x="285" y="58" text-anchor="middle" font-size="14" font-weight="700" class="t">Abril</text><rect x="212" y="68" width="146" height="50" rx="6" style="fill:var(--ca)"/><text x="285" y="88" text-anchor="middle" font-size="10" font-weight="700" class="on">Primeros 10 días hábiles</text><text x="285" y="106" text-anchor="middle" font-size="11" class="on">Casa de cambio</text><rect x="212" y="124" width="146" height="100" rx="6" style="fill:var(--soft)"/><text x="285" y="178" text-anchor="middle" font-size="11" class="m">resto del mes</text><rect x="212" y="230" width="146" height="46" rx="6" style="fill:var(--cc)"/><text x="285" y="249" text-anchor="middle" font-size="10" font-weight="700" class="on">Últimos 10 días hábiles</text><text x="285" y="266" text-anchor="middle" font-size="11" class="on">Centro cambiario</text><rect x="380" y="36" width="170" height="250" rx="10" style="fill:var(--card);stroke:var(--line)"/><text x="465" y="58" text-anchor="middle" font-size="14" font-weight="700" class="t">Julio</text><rect x="392" y="68" width="146" height="50" rx="6" style="fill:var(--ca)"/><text x="465" y="88" text-anchor="middle" font-size="10" font-weight="700" class="on">Primeros 10 días hábiles</text><text x="465" y="106" text-anchor="middle" font-size="11" class="on">Casa de cambio</text><rect x="392" y="124" width="146" height="100" rx="6" style="fill:var(--soft)"/><text x="465" y="178" text-anchor="middle" font-size="11" class="m">resto del mes</text><rect x="392" y="230" width="146" height="46" rx="6" style="fill:var(--cc)"/><text x="465" y="249" text-anchor="middle" font-size="10" font-weight="700" class="on">Últimos 10 días hábiles</text><text x="465" y="266" text-anchor="middle" font-size="11" class="on">Centro cambiario</text><rect x="560" y="36" width="170" height="250" rx="10" style="fill:var(--card);stroke:var(--line)"/><text x="645" y="58" text-anchor="middle" font-size="14" font-weight="700" class="t">Octubre</text><rect x="572" y="68" width="146" height="50" rx="6" style="fill:var(--ca)"/><text x="645" y="88" text-anchor="middle" font-size="10" font-weight="700" class="on">Primeros 10 días hábiles</text><text x="645" y="106" text-anchor="middle" font-size="11" class="on">Casa de cambio</text><rect x="572" y="124" width="146" height="100" rx="6" style="fill:var(--soft)"/><text x="645" y="178" text-anchor="middle" font-size="11" class="m">resto del mes</text><rect x="572" y="230" width="146" height="46" rx="6" style="fill:var(--cc)"/><text x="645" y="249" text-anchor="middle" font-size="10" font-weight="700" class="on">Últimos 10 días hábiles</text><text x="645" y="266" text-anchor="middle" font-size="11" class="on">Centro cambiario</text><text x="380" y="312" text-anchor="middle" font-size="12" class="m">Truco: el centro cambiario y el transmisor de dinero entregan al final; la casa de cambio y el banco, al inicio.</text></svg></div>
+
+<h2>6. Tabla comparativa completa</h2>
+<div class="card scroll"><table><thead><tr><th>Concepto</th><th>Centro cambiario</th><th>Casa de cambio</th></tr></thead><tbody><tr><th>Quién la permite</th><td>Registro ante la CNBV (LGOAAC 81-A y 81-B).</td><td>Autorización de la SHCP (LGOAAC 81 y 82).</td></tr><tr><th>Dictamen técnico en PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo)</th><td class="y">Sí. Se tramita ante la CNBV (Comisión Nacional Bancaria y de Valores) antes del registro (LGOAAC 86 Bis).</td><td class="n">No lo exige el artículo 86 Bis.</td></tr><tr><th>Tope por cliente al día</th><td class="n">10,000 USD (dólares de los Estados Unidos de América) por tipo de operación (LGOAAC 81-A).</td><td class="y">Sin ese tope.</td></tr><tr><th>Transferencias o abonos a cuentas</th><td class="n">Prohibidos.</td><td class="y">Permitidos para operaciones de cambio.</td></tr><tr><th>Venta de documentos a la vista</th><td class="n">Solo a bancos y casas de cambio.</td><td class="y">Sin esa restricción.</td></tr><tr><th>Operación Relevante (efectivo)</th><td>Desde 5,000 USD (dólares de los Estados Unidos de América).</td><td>Desde 7,500 USD (dólares de los Estados Unidos de América).</td></tr><tr><th>Plazo del reporte trimestral</th><td>Últimos 10 días hábiles de enero, abril, julio y octubre (23ª).</td><td>Primeros 10 días hábiles de enero, abril, julio y octubre.</td></tr><tr><th>Comité de Comunicación y Control</th><td>No obligado con menos de veinticinco personas a su servicio.</td><td>No obligada con menos de veinticinco personas a su servicio.</td></tr><tr><th>Reporte de transferencias internacionales</th><td class="n">No aplica; no opera con transferencias.</td><td class="y">Sí; su DCG (Disposiciones de Carácter General) lo regula.</td></tr></tbody></table></div>
+
+<h2>7. Ejemplos para practicar</h2>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><g transform="translate(6,10)"><circle cx="30" cy="22" r="12" style="fill:var(--mut)"/><path d="M8 70 Q8 40 30 40 Q52 40 52 70 Z" style="fill:var(--mut)"/></g>
+<rect x="70" y="30" width="60" height="44" rx="6" style="fill:var(--soft);stroke:var(--line)"/><text x="100" y="58" text-anchor="middle" font-size="14" font-weight="700" fill="var(--red)">12,000</text>
+<text x="100" y="22" text-anchor="middle" font-size="10" class="m">USD en un día</text></svg></div><div><h3>Un cliente quiere cambiar 12,000 USD (dólares de los Estados Unidos de América) en billetes en un solo día</h3><p>El cliente llega a la ventanilla y pide cambiar 12,000 USD en efectivo, una sola vez.</p><div class="ans ok">Centro cambiario: no puede, porque el tope es 10,000 USD por cliente al día. Casa de cambio: sí puede, no tiene ese tope.</div></div></div>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><rect x="8" y="30" width="44" height="44" rx="6" style="fill:var(--soft);stroke:var(--line)"/><text x="30" y="58" text-anchor="middle" font-size="22">💵</text>
+<path d="M56 52 H104" style="stroke:var(--red);stroke-width:3;stroke-dasharray:6 4"/><rect x="92" y="30" width="44" height="44" rx="6" style="fill:var(--soft);stroke:var(--line)"/><text x="114" y="58" text-anchor="middle" font-size="20">🏦</text>
+<text x="80" y="24" text-anchor="middle" font-size="10" class="m">abono a cuenta</text></svg></div><div><h3>Un cliente quiere que le abonen los pesos en su cuenta bancaria</h3><p>Quiere cambiar divisas y recibir los pesos por transferencia a su cuenta, sin llevarse efectivo.</p><div class="ans bad">Centro cambiario: no, nunca puede usar transferencias ni abonos a cuentas. Casa de cambio: sí.</div></div></div>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><rect x="30" y="20" width="80" height="60" rx="8" style="fill:var(--soft);stroke:var(--line)"/><text x="70" y="56" text-anchor="middle" font-size="18" font-weight="700" fill="var(--gold)">6,000</text><text x="70" y="72" text-anchor="middle" font-size="10" class="m">USD en efectivo</text></svg></div><div><h3>Una operación en efectivo de 6,000 USD (dólares de los Estados Unidos de América)</h3><p>Un cliente cambia 6,000 USD en efectivo. ¿Se reporta como Operación Relevante?</p><div class="ans ok">Centro cambiario: sí, supera 5,000 USD. Casa de cambio: no, queda debajo de 7,500 USD.</div></div></div>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><rect x="40" y="10" width="60" height="78" rx="4" style="fill:var(--soft);stroke:var(--line)"/><g style="stroke:var(--mut);stroke-width:3"><path d="M50 28 H90"/><path d="M50 42 H90"/><path d="M50 56 H78"/></g><text x="70" y="78" text-anchor="middle" font-size="9" class="m">documento a la vista</text></svg></div><div><h3>Venta de documentos a la vista</h3><p>Una entidad quiere vender a un tercero documentos a la vista que compró en moneda extranjera.</p><div class="ans ok">El centro cambiario solo puede vendérselos a bancos y casas de cambio; la casa de cambio no tiene esa restricción.</div></div></div>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><rect x="30" y="14" width="80" height="72" rx="8" style="fill:var(--soft);stroke:var(--line)"/><rect x="30" y="14" width="80" height="18" rx="8" style="fill:var(--gold)"/><text x="70" y="27" text-anchor="middle" font-size="11" font-weight="700" class="on">OCTUBRE</text><text x="70" y="66" text-anchor="middle" font-size="26" font-weight="700" class="t">?</text></svg></div><div><h3>Es octubre: ¿cuándo se entrega el reporte trimestral?</h3><p>Corresponde reportar las Operaciones Relevantes del trimestre.</p><div class="ans ok">Centro cambiario: en los últimos diez días hábiles de octubre. Casa de cambio: en los primeros diez días hábiles.</div></div></div>
+<div class="card case"><div><svg viewBox="0 0 140 100" width="140"><g transform="translate(20,18)"><circle cx="22" cy="14" r="9" style="fill:var(--mut)"/><circle cx="52" cy="14" r="9" style="fill:var(--mut)"/><circle cx="82" cy="14" r="9" style="fill:var(--mut)"/><path d="M6 56 Q6 32 22 32 Q38 32 38 56Z M36 56 Q36 32 52 32 Q68 32 68 56Z M66 56 Q66 32 82 32 Q98 32 98 56Z" style="fill:var(--mut)"/></g><text x="70" y="94" text-anchor="middle" font-size="10" class="m">20 personas</text></svg></div><div><h3>Una empresa con 20 personas a su servicio</h3><p>Pregunta si debe constituir su Comité de Comunicación y Control.</p><div class="ans ok">Tanto el centro cambiario como la casa de cambio con menos de veinticinco personas no están obligados a constituirlo.</div></div></div>
+
+<h2>8. Trampas frecuentes</h2>
+<div class="card"><div class="tab"><span class="chip">5,000 contra 7,500 USD</span><span class="chip">Últimos contra primeros días hábiles</span><span class="chip">10,000 USD es tope, no umbral</span><span class="chip">SHCP contra CNBV</span><span class="chip">Transferencias</span></div></div>
+
+<h2>9. Pregúntate a ti misma</h2>
+<details><summary>¿Quién necesita autorización de la SHCP (Secretaría de Hacienda y Crédito Público)?</summary><p>La casa de cambio. El centro cambiario solo se registra ante la CNBV (Comisión Nacional Bancaria y de Valores).</p></details><details><summary>Una operación en efectivo de 6,000 USD (dólares de los Estados Unidos de América), ¿es relevante?</summary><p>En un centro cambiario sí (desde 5,000 USD (dólares de los Estados Unidos de América)). En una casa de cambio no (desde 7,500 USD).</p></details><details><summary>¿Cuál de los dos puede cambiar divisas mediante transferencia?</summary><p>La casa de cambio. El centro cambiario nunca puede.</p></details><details><summary>¿Cuándo reporta un centro cambiario?</summary><p>Dentro de los diez últimos días hábiles de enero, abril, julio y octubre.</p></details><details><summary>Entre sus actividades está comprar documentos a la vista hasta 10 mil USD (dólares de los Estados Unidos de América) por cliente en un mismo día. ¿Quién es?</summary><p>Centro cambiario (LGOAAC 81-A, fracción IV).</p></details><details><summary>¿Quién tramita dictamen técnico en PLD/FT (Prevención de Lavado de Dinero y Financiamiento al Terrorismo) ante la CNBV (Comisión Nacional Bancaria y de Valores)?</summary><p>El centro cambiario (y el transmisor de dinero), artículo 86 Bis.</p></details>
+
+<h2>Fuentes</h2>
+<div class="card"><p>LGOAAC (Ley General de Organizaciones y Actividades Auxiliares del Crédito), artículos 81, 81-A, 81-B, 82 y 86 Bis. DCG (Disposiciones de Carácter General) de Centros Cambiarios, 2ª y 23ª. DCG (Disposiciones de Carácter General) de Casas de Cambio, 2ª y 25ª Bis.</p></div>
+</div></body></html>

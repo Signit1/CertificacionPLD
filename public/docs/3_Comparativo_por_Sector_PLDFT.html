@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Comparativo por Sector — PLD/FT</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --teal:#0f7d82;
+    --gold:#c99a3b;
+    --red:#b5432b;
+    --green:#2f6b4f;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:Georgia,serif; line-height:1.6;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px;}
+  header h1{font-family:'Helvetica Neue',Arial,sans-serif; font-size:clamp(26px,4vw,38px); margin:0 0 10px;}
+  header p{font-family:'Helvetica Neue',Arial,sans-serif; color:#c7d2e0; max-width:70ch; margin:0; font-size:15px;}
+  main{max-width:1150px; margin:0 auto; padding:40px 4vw 90px;}
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:#fff;}
+  table{border-collapse:collapse; width:100%; min-width:900px; font-size:14px;}
+  th,td{padding:12px 14px; border-bottom:1px solid var(--line); border-right:1px solid var(--line); text-align:left; vertical-align:top;}
+  th:last-child, td:last-child{border-right:none;}
+  thead th{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    background:var(--navy); color:#fff; font-size:13px;
+    position:sticky; top:0;
+  }
+  tbody th{
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    background:#f0ece0; font-size:12.5px; color:var(--navy);
+    white-space:nowrap;
+  }
+  .yes{color:var(--green); font-weight:700; font-family:'Helvetica Neue',Arial,sans-serif;}
+  .no{color:#999; font-family:'Helvetica Neue',Arial,sans-serif;}
+  .amt{font-weight:700; color:var(--navy); font-family:'Helvetica Neue',Arial,sans-serif;}
+  section{margin-top:48px;}
+  h2{font-family:'Helvetica Neue',Arial,sans-serif; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; font-size:20px;}
+  .note{
+    font-family:'Helvetica Neue',Arial,sans-serif; font-size:13px; color:#5a5545;
+    background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;
+  }
+  footer{text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; font-size:12px; color:#8b8570; padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Comparativo por Sector — PLD/FT</h1>
+  <p>La estructura general (Comité, Oficial de Cumplimiento, reportes) se repite en casi todos los sectores, pero cada uno tiene diferencias puntuales. Aquí están una al lado de la otra para que dejes de confundirlas.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>¿Qué son las DCG y cómo se aplican a estos sectores?</h2>
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14.5px; color:#333; text-align:justify; max-width:80ch;">
+      Las <b>Disposiciones de Carácter General (DCG)</b> son la regulación secundaria que emite la <b>Secretaría de Hacienda y Crédito Público</b> (a través de la Unidad de Banca, Valores y Ahorro) para desarrollar, en detalle, la obligación general que cada ley financiera establece en un solo artículo. La ley (LIC, LMV, LGOAAC, etc.) dice, en pocas palabras, "esta Entidad debe prevenir el LD/FT" — pero no explica montos, plazos, ni procedimientos. Esa parte operativa es trabajo de la DCG correspondiente.
+    </p>
+    <div class="note" style="max-width:80ch;">
+      <b>La relación siempre es la misma, cambiando solo el artículo de referencia:</b><br>
+      Ley financiera (un artículo) → autoriza a la Secretaría a emitir → DCG "a que se refiere el artículo ___" (el reglamento operativo completo)
+    </div>
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14.5px; color:#333; text-align:justify; max-width:80ch; margin-top:14px;">
+      Por eso cada sector tiene <b>su propia DCG</b>, "clonada" de la misma estructura base (la del Art. 115 LIC), pero referenciando el artículo de su propia ley:
+    </p>
+    <div class="scroll" style="margin-top:14px;">
+    <table style="min-width:700px;">
+      <thead><tr><th>Sector</th><th>Artículo de la ley que lo obliga</th><th>Nombre corto de su DCG</th></tr></thead>
+      <tbody>
+        <tr><th>Bancos</th><td>Art. 115, Ley de Instituciones de Crédito</td><td>"DCG Art. 115"</td></tr>
+        <tr><th>Casas de Bolsa</th><td>Art. 212, Ley del Mercado de Valores</td><td>"DCG Art. 212"</td></tr>
+        <tr><th>Casas de Cambio</th><td>Organización auxiliar del crédito (LGOAAC), régimen PLD/FT propio en DCG separada</td><td>"DCG Casas de Cambio"</td></tr>
+        <tr><th>Centros Cambiarios</th><td>Art. 95 Bis LGOAAC (obligaciones PLD/FT) + Art. 81-A (qué operaciones puede realizar) + Art. 86 Bis (Dictamen Técnico)</td><td>"DCG Centros Cambiarios"</td></tr>
+        <tr><th>Transmisores de Dinero</th><td>Art. 95 Bis LGOAAC (obligaciones PLD/FT) + Art. 81-A Bis (qué es un Transmisor) + Art. 86 Bis (Dictamen Técnico)</td><td>"DCG Transmisores de Dinero"</td></tr>
+        <tr><th>SOFOM ENR</th><td>Art. 95 Bis LGOAAC (obligaciones PLD/FT) + Art. 87-P (Dictamen Técnico)</td><td>"DCG SOFOMES"</td></tr>
+        <tr><th>ITF</th><td>Art. 58, LRITF</td><td>"DCG Instituciones de Tecnología Financiera"</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:16px; max-width:80ch;">
+      <b>Por qué esto te sirve para el examen:</b> como todas las DCG "descienden" de la misma plantilla original (la del Art. 115 LIC), comparten prácticamente la misma estructura de Disposiciones numeradas (definiciones, Comité de Comunicación y Control, política de identificación, reportes, sanciones...). Si dominas la DCG 115 a fondo, entiendes automáticamente el 80-90% de la lógica de las demás — solo cambian algunos montos, plazos o requisitos específicos del sector, que es justo lo que compara la tabla de abajo.
+    </div>
+
+    <h3 style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:16px; color:var(--navy); margin:30px 0 12px;">Verificación real: ¿tienen exactamente el mismo orden de Capítulos?</h3>
+    <p style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:14.5px; color:#333; text-align:justify; max-width:80ch;">
+      Leí las 6 DCG completas (Bancos, Casas de Bolsa, Transmisores de Dinero, SOFOM, Casas de Cambio y Centros Cambiarios) para confirmarlo, en vez de inferirlo solo por su origen común. El resultado:
+    </p>
+    <div class="scroll" style="margin-top:10px;">
+    <table style="min-width:760px;">
+      <thead><tr><th>Capítulo (mismo orden en las 6 DCG)</th><th>Bancos (115)</th><th>Casas de Bolsa (212)</th><th>Transmisores</th><th>SOFOM</th><th>Casas de Cambio</th><th>Centros Cambiarios</th></tr></thead>
+      <tbody>
+        <tr><th>I — Objeto y definiciones</th><td>1ª-2ª</td><td>1ª-2ª</td><td>1ª-2ª</td><td>1ª-2ª</td><td>1ª-2ª</td><td>1ª-2ª</td></tr>
+        <tr><th>II — Identificación del Cliente/Usuario</th><td>3ª-17ª aprox.</td><td>3ª-20ª aprox.</td><td>3ª-12ª</td><td>3ª-17ª</td><td>—</td><td>3ª-11ª</td></tr>
+        <tr><th>III — Conocimiento del Cliente/perfil transaccional</th><td>18ª-27ª aprox.</td><td>21ª-31ª aprox.</td><td>13ª-22ª</td><td>18ª-27ª</td><td>—</td><td>12ª-21ª</td></tr>
+        <tr><th>Comité de Comunicación y Control</th><td class="amount">43ª</td><td class="amount">44ª</td><td class="amount">32ª</td><td class="amount">35ª</td><td class="amount">34ª</td><td class="amount">30ª</td></tr>
+        <tr><th>Sistemas automatizados</th><td class="amount">51ª</td><td class="amount">52ª</td><td class="amount">40ª</td><td class="amount">43ª</td><td class="amount">42ª</td><td class="amount">38ª</td></tr>
+        <tr><th>Lista de Personas Bloqueadas (artículo que la introduce)</th><td class="amount">71ª</td><td class="amount">70ª</td><td class="amount">61ª</td><td class="amount">62ª</td><td class="amount">60ª</td><td class="amount">58ª</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:14px; max-width:80ch;">
+      <b>Conclusión verificada:</b> el <b>orden de los temas (Capítulos) sí es idéntico</b> en las 6 — primero objeto/definiciones, luego identificación, luego conocimiento del cliente, luego restricciones de efectivo en dólares, luego reportes (relevantes, TIF, inusuales), luego operación interna preocupante, luego Comité de Comunicación y Control, luego capacitación, luego sistemas automatizados, y cerca del final el intercambio de información y la Lista de Personas Bloqueadas. Pero el <b>número exacto de cada Disposición NO es el mismo entre sectores</b> — varía porque cada DCG tiene distinta cantidad de artículos "Bis" intermedios o, en el caso de Centros Cambiarios y Casas de Cambio, artículos "Derogada" que recorren la numeración. Por eso, para el examen: aprende la <b>secuencia de temas</b> de memoria (esa sí es igual en todas), pero no asumas que un número de Disposición de la DCG 115 aplica igual en otro sector — siempre verifica contra la DCG específica que te pregunten.
+    </div>
+  </section>
+
+  <section>
+    <h2>Obligaciones estructurales por tipo de entidad</h2>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Obligación / Dato</th>
+          <th>Bancos<br>(Instituciones de Crédito)</th>
+          <th>Casas de Bolsa</th>
+          <th>Casas de Cambio</th>
+          <th>Centros Cambiarios</th>
+          <th>Transmisores de Dinero</th>
+          <th>SOFOM ENR</th>
+          <th>ITF</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Ley / DCG base</th>
+          <td>Art. 115 LIC</td>
+          <td>Art. 212 LMV</td>
+          <td>Art. 95 LGOAAC</td>
+          <td>Art. 95 Bis LGOAAC</td>
+          <td>Art. 95 Bis LGOAAC</td>
+          <td>Art. 87-D / 87-P LGOAAC</td>
+          <td>Art. 58 LRITF</td>
+        </tr>
+        <tr>
+          <th>Comité de Comunicación y Control</th>
+          <td><span class="yes">Sí</span> (exento &lt;25 empleados)</td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="no">No exige Comité</span> — solo Oficial de Cumplimiento</td>
+          <td><span class="no">No exige Comité</span> — solo Oficial de Cumplimiento</td>
+          <td><span class="no">No exige Comité</span> — solo Oficial de Cumplimiento</td>
+          <td><span class="yes">Sí</span></td>
+        </tr>
+        <tr>
+          <th>Dictamen Técnico previo (CNBV)</th>
+          <td><span class="no">No aplica</span></td>
+          <td><span class="no">No aplica</span></td>
+          <td><span class="no">No aplica</span></td>
+          <td class="amt">Sí (Art. 86 Bis LGOAAC)</td>
+          <td class="amt">Sí (Art. 86 Bis LGOAAC)</td>
+          <td class="amt">Sí (Art. 87-P LGOAAC)</td>
+          <td><span class="no">No aplica</span></td>
+        </tr>
+        <tr>
+          <th>Oficial de Cumplimiento certificado</th>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+          <td><span class="yes">Sí</span></td>
+        </tr>
+        <tr>
+          <th>Restricción USD efectivo (Usuario PF, bancos)</th>
+          <td class="amt">300 USD/día · 1,500 USD/mes (Usuario) · 4,000 USD/mes (Cliente, hasta 14,000 en ciertos casos)</td>
+          <td>Reglas propias, mismo esquema base</td>
+          <td>Reglas propias, mismo esquema base</td>
+          <td>Reglas propias (límites operativos específicos)</td>
+          <td>Reglas propias (límites operativos específicos)</td>
+          <td>No opera divisas en efectivo de forma típica</td>
+          <td>No aplica (no maneja efectivo físico)</td>
+        </tr>
+        <tr>
+          <th>Reporta a</th>
+          <td colspan="7" style="text-align:center; font-family:'Helvetica Neue',Arial,sans-serif; color:var(--navy); font-weight:700;">
+            Todos: Secretaría de Hacienda, por conducto de la CNBV
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note">
+      <b>El dato que más se presta a confusión:</b> el Dictamen Técnico <u>no</u> es un requisito general de "todas las entidades financieras" — es específico de <b>Centros Cambiarios, Transmisores de Dinero y SOFOM No Reguladas (ENR)</b>. Ni los bancos, ni las casas de bolsa, ni las Casas de Cambio lo requieren.
+    </div>
+    <div class="note">
+      <b>Ojo con el Art. 95 Bis LGOAAC:</b> es un solo artículo que impone las obligaciones PLD/FT <u>conjuntamente</u> a tres sujetos distintos — Centros Cambiarios, Transmisores de Dinero y SOFOM ENR —, no un artículo por sujeto. El Art. 95 (sin "Bis") es otra cosa: regula el requisito de querella para proceder penalmente por delitos de los Arts. 96-99 LGOAAC, y no tiene relación con PLD/FT ni con las Casas de Cambio.
+    </div>
+    <div class="note">
+      <b>Comité de Comunicación y Control — no es universal:</b> Centros Cambiarios, Transmisores de Dinero y SOFOM ENR <u>no</u> están obligados a integrar un Comité colegiado — solo requieren un Oficial de Cumplimiento (que incluso puede ser compartido entre varias entidades del mismo grupo empresarial). El Comité sí es obligatorio (con excepción por tamaño) en bancos, casas de bolsa, casas de cambio e ITF.
+    </div>
+  </section>
+
+  <section>
+    <h2>Régimen LFPIORPI vs. Régimen DCG Art. 115 — la otra gran comparación</h2>
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Aspecto</th>
+          <th>Entidades Financieras (DCG 115 / LIC)</th>
+          <th>Sujetos Obligados (LFPIORPI)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Quién regula</th>
+          <td>CNBV (supervisión) / SHCP-UBVA (normativa)</td>
+          <td>Secretaría de Hacienda (UIF), directamente</td>
+        </tr>
+        <tr>
+          <th>A quién se reporta</th>
+          <td>A la Secretaría, por conducto de la CNBV</td>
+          <td>Se presenta ante el SAT (portal sppld.sat.gob.mx), que lo remite a la UIF — sin pasar por la CNBV</td>
+        </tr>
+        <tr>
+          <th>Figura responsable</th>
+          <td>Oficial de Cumplimiento</td>
+          <td>Representante Encargado del Cumplimiento</td>
+        </tr>
+        <tr>
+          <th>Tipo de documento que se presenta</th>
+          <td>Reportes (Relevante, Inusual, Interna Preocupante, 24h)</td>
+          <td>Avisos</td>
+        </tr>
+        <tr>
+          <th>Plazo típico de envío</th>
+          <td>Variable: 24h / 3 días hábiles / 10 días hábiles trimestral / 15 días hábiles</td>
+          <td>Día 17 del mes siguiente a la operación</td>
+        </tr>
+        <tr>
+          <th>Conservación de expedientes</th>
+          <td class="amt">Al menos 10 años</td>
+          <td class="amt">Al menos 10 años</td>
+        </tr>
+        <tr>
+          <th>Ejemplos de sujetos</th>
+          <td>Bancos, casas de bolsa, SOFOM, centros cambiarios...</td>
+          <td>Joyerías, inmobiliarias, notarios, casinos, comerciantes de arte...</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Fuentes: DCG 115, LGOAAC, LRITF, LFPIORPI. Algunas celdas resumen "el mismo esquema base" cuando la Entidad tiene su propia DCG casi idéntica a la del Art. 115 — para el detalle numérico exacto de cada una, revisa siempre la DCG específica de ese sector.
+</footer>
+
+</body>
+</html>

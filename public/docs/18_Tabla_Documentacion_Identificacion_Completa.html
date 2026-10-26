@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Documentación de Identificación — Tablas Completas (DCG 115)</title>
+<style>
+  :root{--navy:#12233d; --teal:#0f7d82; --gold:#c99a3b; --red:#b5432b; --green:#2f6b4f; --purple:#5c4a8a; --orange:#c15a1f; --orangebg:#fdeee0; --paper:#faf8f4; --ink:#1c1c1c; --line:#dcd6c8;}
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.55;}
+  header{background:var(--navy); color:#f3efe4; padding:40px 6vw 28px;}
+  header h1{font-size:clamp(20px,4vw,30px); margin:0 0 8px;}
+  header p{color:#c7d2e0; max-width:80ch; margin:0; font-size:14.5px;}
+  .source-bar{background:#8a6a10; color:#fff; text-align:center; padding:8px 16px; font-size:12.5px;}
+  main{max-width:1300px; margin:0 auto; padding:36px 4vw 90px;}
+  section{margin-bottom:46px;}
+  h2{font-size:19px; color:var(--navy); border-bottom:3px solid var(--navy); padding-bottom:8px; margin-bottom:8px;}
+  h3{font-size:15.5px; color:var(--navy); margin:22px 0 10px;}
+  .disp{font-size:12px; color:#8b8570; font-style:italic; margin-bottom:14px;}
+  p{font-size:14px; margin:0 0 14px;}
+
+  .scroll{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:#fff;}
+  table{border-collapse:collapse; width:100%; font-size:13.5px;}
+  th,td{padding:9px 12px; border-bottom:1px solid var(--line); border-right:1px solid var(--line); text-align:left; vertical-align:top;}
+  th:last-child, td:last-child{border-right:none;}
+  thead th{background:var(--navy); color:#fff; font-size:12px; position:sticky; top:0;}
+  tbody th{background:#f0ece0; font-size:12.5px; color:var(--navy); white-space:normal; min-width:160px;}
+  .yes{color:var(--green); font-weight:700; text-align:center;}
+  .cond{color:var(--orange); font-weight:700; text-align:center;}
+  .no{color:#ccc; text-align:center;}
+
+  .dd-grid{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:#fff;}
+  .dd-col{padding:16px 18px;}
+  .dd-col.datos{border-right:1px solid var(--line);}
+  .dd-head{font-weight:700; color:#fff; background:var(--navy); margin:-16px -18px 12px -18px; padding:9px 18px; font-size:13px; letter-spacing:.03em; text-transform:uppercase;}
+  .dd-sub{font-weight:700; font-size:12px; color:#5a5545; margin:12px 0 4px;}
+  .dd-sub.cond-label{color:var(--orange);}
+  .dd-col ul{margin:0 0 4px; padding-left:20px; font-size:13px;}
+  .dd-col li{margin-bottom:5px;}
+  .cond-item{color:var(--orange); background:var(--orangebg); border-radius:3px; padding:1px 5px;}
+  @media (max-width: 760px){ .dd-grid{grid-template-columns:1fr;} .dd-col.datos{border-right:none; border-bottom:1px solid var(--line);} }
+
+  .taglist{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:#fff;}
+  .taglist > div{padding:9px 14px; border-bottom:1px solid var(--line); font-size:13px;}
+
+  .note{font-size:13px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;}
+  .trap{font-size:13px; color:#5c2418; background:#fbeae4; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap b{color:var(--red);}
+  .orangekey{display:inline-block; background:var(--orangebg); color:var(--orange); font-weight:700; padding:1px 7px; border-radius:3px; font-size:12.5px;}
+  footer{text-align:center; font-size:12px; color:#8b8570; padding:26px;}
+</style>
+</head>
+<body>
+
+<div class="source-bar">📎 Datos y documentos: Disposición 4ª, 4ª Bis y Anexo 1 de la DCG Art. 115 LIC (verificado contra el texto oficial) + tu material de estudio de la certificación. Lo marcado en <span class="orangekey">naranja</span> es "cuando se disponga de ello" / condicional — no obligatorio en todos los casos.</div>
+
+<header>
+  <h1>Documentación de Identificación — Tablas Completas por Tipo de Cliente</h1>
+  <p>Datos y documentos exigidos a Personas Físicas, Personas Morales (nacionales y extranjeras), Medidas Simplificadas (Anexo 1), Grado de Riesgo distinto al bajo y Fideicomisos — con el detalle de qué es obligatorio y qué es condicional ("cuando disponga de ellos" / "en su caso").</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>1. Personas Físicas — mexicana, o extranjera con residencia temporal/permanente</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª, fracción I</div>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Primer apellido, segundo apellido <span class="cond-item">(en caso de contar con él)</span>, y nombre o nombres, sin abreviaturas</li>
+          <li>Género</li>
+          <li>Fecha de nacimiento</li>
+          <li>Entidad federativa de nacimiento <span class="cond-item">(cuando corresponda)</span></li>
+          <li>País de nacimiento</li>
+          <li>Nacionalidad</li>
+          <li>Ocupación, profesión, actividad o giro del negocio al que se dedique el Cliente</li>
+          <li>Domicilio particular en su lugar de residencia (calle, número exterior e interior, colonia, alcaldía/municipio, ciudad, entidad federativa, código postal y país) — y además el domicilio en México, si reside en el extranjero</li>
+          <li>Número(s) de teléfono en que se pueda localizar</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ellos</div>
+        <ul>
+          <li class="cond-item">Correo electrónico</li>
+          <li class="cond-item">CURP, clave de RFC (con homoclave), número de identificación fiscal y/o equivalente, y el país o países que los asignaron</li>
+          <li class="cond-item">Número de serie de la Firma Electrónica Avanzada</li>
+        </ul>
+        <div class="note" style="margin-top:12px;">El RFC es <b>obligatorio</b> (no condicional) para la PF que tenga Actividad Empresarial.</div>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Identificación oficial vigente, con fotografía y firma, y <span class="cond-item">en su caso</span> domicilio; y firma, código o sello digital oficial distintivo si es identificación electrónica (ver lista de identificaciones válidas abajo)</li>
+          <li>Declaración firmada (por escrito, medios ópticos u otra tecnología) de si actúa a nombre y por cuenta propia o de un tercero</li>
+          <li>Comprobante de domicilio con antigüedad no mayor a 3 meses — <span class="cond-item">se exime si el domicilio de la credencial del INE o la matrícula consular usada para identificarse coincide con el contrato</span></li>
+          <li>Evidencia de entrevista personal</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ellos</div>
+        <ul>
+          <li class="cond-item">Cédula de Identificación Fiscal, o documento en que conste la asignación del número de identificación fiscal y/o equivalente, y constancia de Firma Electrónica Avanzada</li>
+          <li class="cond-item">Constancia de CURP — se exime si ya aparece en otro documento o identificación oficial</li>
+        </ul>
+        <div class="dd-sub" style="margin-top:14px;">Si actúa como apoderado de otra persona, además:</div>
+        <ul>
+          <li>Carta poder o copia certificada del poder ante fedatario público, que acredite las facultades conferidas</li>
+          <li>Identificación oficial y comprobante de domicilio propios del apoderado</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Identificaciones Oficiales Válidas</h3>
+    <p>Según las Disposiciones, las siguientes identificaciones oficiales emitidas por autoridades nacionales son válidas para integrar los expedientes de identificación de los Clientes:</p>
+    <div class="taglist">
+      <div>Credencial para votar (expedida por el INE — Instituto Nacional Electoral — o las oficinas consulares de la SRE en el extranjero)</div>
+      <div>Pasaporte o tarjeta pasaporte</div>
+      <div class="cond-item" style="display:block;">Cédula Profesional <i>(por regulación de 2026 de la SEP, ya no es válida — señalado así en tu material de estudio)</i></div>
+      <div>Cartilla del Servicio Militar Nacional</div>
+      <div>Certificado de Matrícula Consular, o documento expedido por el INM (Instituto Nacional de Migración) que acredite calidad migratoria</div>
+      <div>Tarjeta de acreditación que expida la SRE (Secretaría de Relaciones Exteriores) a cuerpos diplomáticos o consulares</div>
+      <div>Tarjeta de identidad militar</div>
+      <div>Tarjeta de Afiliación al INAPAM (Instituto Nacional de las Personas Adultas Mayores)</div>
+      <div>Credenciales y carnets del IMSS, ISSSTE o ISSFAM <i>(se elimina el "Seguro Popular")</i></div>
+      <div>Licencia para conducir</div>
+      <div>Credenciales federales, estatales y municipales</div>
+      <div>Documento migratorio o equivalente (para extranjeros)</div>
+      <div>Otras identificaciones nacionales que, en su caso, apruebe la CNBV</div>
+    </div>
+
+    <h3>Comprobantes de Domicilio Válidos</h3>
+    <p>Según las Disposiciones, los siguientes comprobantes de domicilio son válidos para integrar los expedientes de identificación de los Clientes:</p>
+    <div class="taglist">
+      <div>Energía eléctrica</div>
+      <div>Telefonía</div>
+      <div>Gas natural</div>
+      <div>Impuesto predial</div>
+      <div>Agua</div>
+      <div>Estados de cuenta bancarios</div>
+      <div>Contrato de arrendamiento</div>
+      <div>Comprobante de inscripción ante el RFC</div>
+      <div>Otros que apruebe la CNBV</div>
+    </div>
+    <div class="note">Todos deben tener una antigüedad no mayor a 3 meses a su fecha de emisión (salvo el contrato de arrendamiento, que debe estar vigente).</div>
+  </section>
+
+  <section>
+    <h2>2. Personas Morales de Nacionalidad Mexicana</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª, fracción II</div>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Denominación o razón social</li>
+          <li>Giro mercantil, actividad u objeto social</li>
+          <li>Nacionalidad</li>
+          <li>Clave del RFC (con homoclave) <span class="cond-item">y, en su caso, número de identificación fiscal y/o equivalente, así como el país o países que lo asignaron</span></li>
+          <li>Número de serie de la Firma Electrónica Avanzada</li>
+          <li>Domicilio</li>
+          <li>Número(s) de teléfono de dicho domicilio</li>
+          <li>Fecha de constitución</li>
+          <li>Nombre completo (sin abreviaturas) del administrador, director, gerente general o apoderado legal que, con su firma, pueda obligar a la persona moral</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de él</div>
+        <ul><li class="cond-item">Correo electrónico</li></ul>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Testimonio o copia certificada del instrumento público que acredite su legal existencia, inscrito en el registro público correspondiente <span class="cond-item">(si es de reciente constitución y aún no está inscrita: escrito firmado por persona legalmente facultada, con la obligación de inscribirse después)</span></li>
+          <li>Cédula de Identificación Fiscal</li>
+          <li>Comprobante de domicilio</li>
+          <li>Testimonio o copia certificada de los poderes del representante legal, cuando no estén contenidos en el instrumento que acredita la legal existencia, más la identificación personal de cada representante</li>
+          <li>Evidencia de entrevista personal</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ello</div>
+        <ul>
+          <li class="cond-item">Documento en que conste la asignación del número de identificación fiscal y/o equivalente, y constancia de Firma Electrónica Avanzada</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">Adicionalmente, sin importar el Grado de Riesgo: se debe recabar información de su <b>estructura accionaria o partes sociales</b>, y se debe identificar a los <b>Propietarios Reales</b> (declaración firmada por el representante legal). Si el Grado de Riesgo es distinto a bajo, además se exige la <b>estructura corporativa interna</b> (organigrama con nombre y cargo de quienes van de Director General a la jerarquía inmediata inferior, más los miembros del Consejo de Administración).</div>
+  </section>
+
+  <section>
+    <h2>3. Personas Morales de Nacionalidad Extranjera</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª, fracción III-b</div>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Denominación o razón social</li>
+          <li>Giro mercantil, actividad u objeto social</li>
+          <li>Nacionalidad</li>
+          <li>RFC y/o número de identificación fiscal y/o equivalente, así como el país o países que lo asignaron</li>
+          <li>Domicilio</li>
+          <li>Teléfono(s)</li>
+          <li>Fecha de constitución</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de él</div>
+        <ul><li class="cond-item">Correo electrónico</li></ul>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Documento que compruebe fehacientemente su legal existencia, debidamente <b>legalizado</b> o, si el país firmó el Convenio de La Haya de 1961, con la <b>apostilla</b></li>
+          <li>Cédula de Identificación Fiscal o equivalente en su país de origen</li>
+          <li>Comprobante de domicilio</li>
+          <li>Testimonio o copia certificada de los poderes de los representantes legales, cuando no estén en el documento de legal existencia</li>
+          <li>Identificación oficial del apoderado — si no vive en México y no tiene pasaporte, se acepta la licencia de conducir o credencial emitida por autoridad federal de su país de origen</li>
+          <li>Evidencia de entrevista personal</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">Se debe recabar la <b>misma información accionaria y de estructura corporativa</b> que a una PM mexicana, así como identificar a sus Propietarios Reales.</div>
+  </section>
+
+  <section>
+    <h2>4. Medidas Simplificadas de Identificación (Anexo 1 de la DCG)</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª fracción IV, y Anexo 1 (28 tipos de entidad)</div>
+    <div class="trap"><b>Corrección a una idea frecuente:</b> el Anexo 1 <b>no</b> es solo para entidades públicas — es una lista de <b>28 tipos de entidades del sector financiero</b> que, por estar ya reguladas y supervisadas, califican para el régimen simplificado. Las "dependencias y entidades públicas federales, estatales y municipales, y otras personas morales mexicanas de derecho público" son solo <b>uno</b> de esos 28 puntos (el número 23) — y son justo las que, cuando su Grado de Riesgo es distinto a bajo, pasan a un régimen reforzado aparte (ver sección 6).</div>
+    <div class="taglist">
+      <div>Instituciones de Tecnología Financiera (ITF)</div>
+      <div>Sociedades Controladoras de Grupos Financieros</div>
+      <div>Fondos de Inversión</div>
+      <div>Sociedades de Inversión Especializadas en Fondos para el Retiro (SIEFORE)</div>
+      <div>Sociedades Operadoras de Fondos de Inversión</div>
+      <div>Sociedades Distribuidoras de Acciones de Fondos de Inversión</div>
+      <div>Instituciones de Crédito</div>
+      <div>Financiera Nacional de Desarrollo Agropecuario, Rural, Forestal y Pesquero</div>
+      <div>Casas de Bolsa</div>
+      <div>Casas de Cambio</div>
+      <div>Administradoras de Fondos para el Retiro (AFORE)</div>
+      <div>Instituciones de Seguros y de Fianzas</div>
+      <div>Sociedades Mutualistas de Seguros</div>
+      <div>Almacenes Generales de Depósito</div>
+      <div>Sociedades Cooperativas de Ahorro y Préstamo (SOCAP)</div>
+      <div>Sociedades Financieras Populares (SOFIPO)</div>
+      <div>Sociedades Financieras Comunitarias (SOFINCO)</div>
+      <div>Sociedades Financieras de Objeto Múltiple, Reguladas y No Reguladas (SOFOM ER y ENR)</div>
+      <div>Uniones de Crédito</div>
+      <div>Sociedades Emisoras de Valores</div>
+      <div>Entidades Financieras Extranjeras <i>(excepto aquellas a las que se les presten servicios de corresponsalía)</i></div>
+      <div><b>Dependencias y entidades públicas federales, estatales y municipales, y otras personas morales mexicanas de derecho público</b></div>
+      <div>Bolsas de Valores</div>
+      <div>Instituciones para el Depósito de Valores</div>
+      <div>Sociedades que administren sistemas para facilitar operaciones con valores</div>
+      <div>Contrapartes Centrales de Valores</div>
+      <div>Sociedades autorizadas para operar con Modelos Novedosos (Título IV LRITF)</div>
+    </div>
+    <div class="note">Esta lista corresponde al texto vigente de 2024 del Anexo 1 (el punto 8 original fue derogado). El régimen simplificado solo aplica si, además, el Cliente está clasificado con <b>Grado de Riesgo bajo</b>.</div>
+
+    <h3>KYC — Medidas Simplificadas de Identificación (Grado de Riesgo bajo)</h3>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Denominación o razón social</li>
+          <li>Actividad u objeto social</li>
+          <li>RFC y/o número de identificación fiscal y/o equivalente, y país(es) que lo(s) asignaron</li>
+          <li>Domicilio</li>
+          <li>Nacionalidad</li>
+          <li>Teléfono(s)</li>
+          <li>Nombre completo (sin abreviaturas) del apoderado que corresponda</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ellos</div>
+        <ul><li class="cond-item">Correo electrónico y Firma Electrónica Avanzada</li></ul>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Poderes — o, para el representante de una institución de crédito o casa de bolsa, la constancia de nombramiento (Art. 90 LIC o 129 LMV)</li>
+          <li>Identificación oficial del apoderado</li>
+          <li>Evidencia de entrevista personal</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ella</div>
+        <ul><li class="cond-item">Firma Electrónica Avanzada</li></ul>
+      </div>
+    </div>
+    <div class="note">Las medidas simplificadas <b>únicamente</b> aplican a Clientes de Bajo Riesgo.</div>
+  </section>
+
+  <section>
+    <h2>5. KYC — Grado de Riesgo distinto al bajo (Anexo 1, solo entidades públicas o de derecho público)</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª fracción IV Bis</div>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Denominación o razón social</li>
+          <li>Actividad u objeto social</li>
+          <li>RFC con homoclave</li>
+          <li>Número de serie de la Firma Electrónica Avanzada</li>
+          <li>Domicilio</li>
+          <li>Nacionalidad</li>
+          <li>Teléfono(s)</li>
+          <li>Nombre completo sin abreviaturas del apoderado, proveniente de una identificación oficial</li>
+          <li>Correo electrónico</li>
+        </ul>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Evidencia que acredite su legal existencia, conforme a las leyes, reglamentos o estatutos orgánicos que las crean y regulan su operación</li>
+          <li>Evidencia que compruebe las facultades de sus representantes legales/apoderados, más copia de su nombramiento o instrumento público ante fedatario, según corresponda</li>
+          <li>Identificación oficial del apoderado</li>
+          <li>Comprobante de domicilio</li>
+          <li>Cédula de Identificación Fiscal y constancia de la Firma Electrónica Avanzada</li>
+        </ul>
+      </div>
+    </div>
+    <div class="trap"><b>La diferencia clave con la sección 4:</b> aquí ya no hay nada "condicional" — todo lo que en el régimen simplificado era "cuando disponga de ello" (correo, FEA) se vuelve <b>obligatorio</b>, y además se piden documentos adicionales (Cédula Fiscal, comprobante de domicilio) que en el simplificado no se exigían.</div>
+  </section>
+
+  <section>
+    <h2>6. Fideicomisos</h2>
+    <div class="disp">Fuente: DCG 115, Disposición 4ª fracción IX</div>
+    <div class="dd-grid">
+      <div class="dd-col datos">
+        <div class="dd-head">Datos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Número o referencia del Fideicomiso</li>
+          <li>Finalidad del Fideicomiso <span class="cond-item">y, en su caso, las actividades vulnerables que realice conforme al artículo 17 de la LFPIORPI (Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita)</span></li>
+          <li>Lugar y fecha de constitución del Fideicomiso</li>
+          <li>Denominación o razón social de la institución fiduciaria</li>
+          <li>Patrimonio fideicomitido (bienes y derechos)</li>
+          <li>Aportaciones de los fideicomitentes</li>
+          <li>Datos de identificación de fideicomitentes, fideicomisarios, delegados fiduciarios, miembros del comité técnico y representantes/apoderados</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ellos</div>
+        <ul><li class="cond-item">RFC y Firma Electrónica Avanzada</li></ul>
+      </div>
+      <div class="dd-col documentos">
+        <div class="dd-head">Documentos</div>
+        <div class="dd-sub">Obligatorios</div>
+        <ul>
+          <li>Contrato, testimonio o copia certificada del instrumento que acredite la constitución del Fideicomiso, inscrito <span class="cond-item">en su caso</span> en el Registro Público correspondiente</li>
+          <li>Comprobante de domicilio</li>
+          <li>Poderes, cuando no estén en el instrumento de constitución</li>
+          <li>Identificación oficial de representantes, apoderados y/o delegados fiduciarios</li>
+          <li>Evidencia de entrevista personal</li>
+        </ul>
+        <div class="dd-sub cond-label">Cuando disponga de ello</div>
+        <ul><li class="cond-item">Cédula de Identificación Fiscal y Firma Electrónica Avanzada</li></ul>
+      </div>
+    </div>
+    <h3>Aclaraciones para Fideicomisos</h3>
+    <ul style="font-size:13.5px;">
+      <li>Si la Entidad <b>no actúa como fiduciaria</b>, puede identificar a los miembros del comité técnico u órgano de gobierno equivalente solo con nombre completo y fecha de nacimiento, sin el resto de los datos.</li>
+      <li>Si la Entidad no actúa como fiduciaria, puede exceptuar el contrato del Fideicomiso y la identificación de los Propietarios Reales, si obtiene una carta firmada por el delegado fiduciario y el Oficial de Cumplimiento de la institución fiduciaria, con todos los datos del Fideicomiso y la obligación de mantener esa documentación a disposición de la SHCP y la CNBV.</li>
+      <li>No es necesario integrar el expediente de los fideicomisarios no individualizados en el contrato, o cuando las aportaciones son para prestaciones laborales/previsión social y el fideicomitente es siempre una entidad pública.</li>
+      <li>Si los fideicomisarios no están individualizados o no han adquirido derechos todavía, se integra su expediente hasta que acudan a ejercer sus derechos del contrato.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Tabla comparativa final — qué es obligatorio y qué es condicional, por tipo de Cliente</h2>
+    <p>Vista de conjunto de todas las categorías anteriores. <span class="yes">✓</span> = obligatorio · <span class="cond">◐</span> = condicional / "cuando disponga de ello" / "en su caso" · <span class="no">—</span> = no se exige.</p>
+    <div class="scroll">
+    <table style="min-width:1100px;">
+      <thead>
+        <tr>
+          <th>Dato / Documento</th>
+          <th>PF mexicana/<br>residente</th>
+          <th>PF extranjera<br>sin residencia</th>
+          <th>PM<br>mexicana</th>
+          <th>PM<br>extranjera</th>
+          <th>Medidas simplificadas<br>(Riesgo bajo, Anexo 1)</th>
+          <th>Riesgo distinto a bajo<br>(entidad pública)</th>
+          <th>Fideicomiso</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Nombre / Razón social</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓ (de fideicomitentes/fideicomisarios)</td></tr>
+        <tr><th>Género</th><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Fecha de nacimiento / constitución</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+        <tr><th>Entidad federativa de nacimiento</th><td class="cond">◐ (si corresponde)</td><td class="no">— (excluido a propósito)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>País de nacimiento</th><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Nacionalidad</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Ocupación / giro / objeto social</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Domicilio</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Teléfono</th><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>Correo electrónico</th><td class="cond">◐</td><td class="no">—</td><td class="cond">◐</td><td class="cond">◐</td><td class="cond">◐</td><td class="yes">✓</td><td class="no">—</td></tr>
+        <tr><th>RFC / CURP / equivalente</th><td class="cond">◐ (obligatorio si Act. Empresarial)</td><td class="no">—</td><td class="yes">✓ (RFC)</td><td class="yes">✓ (equivalente)</td><td class="yes">✓</td><td class="yes">✓</td><td class="cond">◐</td></tr>
+        <tr><th>Firma Electrónica Avanzada (serie)</th><td class="cond">◐</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="cond">◐</td><td class="yes">✓</td><td class="cond">◐</td></tr>
+        <tr><th>Representante / apoderado (datos)</th><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓ (delegado fiduciario)</td></tr>
+        <tr><th>Estructura accionaria / corporativa</th><td class="no">—</td><td class="no">—</td><td class="yes">✓ (accionaria, todos) / ✓ (corporativa, riesgo≠bajo)</td><td class="yes">✓ (igual que PM mexicana)</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Identificación oficial (persona o apoderado)</th><td class="yes">✓</td><td class="yes">✓ (pasaporte/INM/SRE)</td><td class="yes">✓ (del representante)</td><td class="yes">✓ (del representante)</td><td class="yes">✓ (del apoderado)</td><td class="yes">✓ (del apoderado)</td><td class="yes">✓ (de representantes/delegados)</td></tr>
+        <tr><th>Comprobante de domicilio</th><td class="yes">✓ (≤3 meses)</td><td class="yes">✓ (en su lugar de residencia)</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><th>Instrumento de existencia legal / constitución</th><td class="no">—</td><td class="no">—</td><td class="yes">✓ (testimonio/registro público)</td><td class="yes">✓ (legalizado o apostillado)</td><td class="no">—</td><td class="yes">✓ (evidencia legal)</td><td class="yes">✓ (contrato/testimonio)</td></tr>
+        <tr><th>Cédula de Identificación Fiscal</th><td class="cond">◐</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓ (o equivalente)</td><td class="no">—</td><td class="yes">✓</td><td class="cond">◐</td></tr>
+        <tr><th>Poderes del representante/apoderado</th><td class="cond">◐ (si actúa como apoderado)</td><td class="no">—</td><td class="yes">✓ (si no están en el acta)</td><td class="yes">✓ (si no están en el doc. de existencia)</td><td class="yes">✓ (o constancia de nombramiento)</td><td class="yes">✓ (o nombramiento)</td><td class="yes">✓ (si no están en el instrumento)</td></tr>
+        <tr><th>Declaración de actuar a nombre propio o de tercero</th><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+        <tr><th>Evidencia de entrevista personal</th><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="yes">✓</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note"><b>Patrón para memorizar:</b> los datos "biográficos" (género, fecha/país/entidad de nacimiento) son exclusivos de Personas Físicas; los "corporativos" (fecha de constitución, representante legal, estructura accionaria) son exclusivos de Personas Morales. Entre más alto el Grado de Riesgo o más "pública" la entidad, menos cosas quedan en naranja (condicional) y más se vuelven obligatorias.</div>
+  </section>
+
+</main>
+
+<footer>
+  Fuente: DCG Art. 115 LIC (Disposición 4ª, 4ª Bis y Anexo 1) + tu material de estudio de la certificación. Complementa a <b>16_Identificacion_Clientes_DCG115.html</b> (datos por tipo de Cliente, Fideicomisos como Usuarios, identificación no presencial y cuentas Nivel 1-4).
+</footer>
+
+</body>
+</html>
