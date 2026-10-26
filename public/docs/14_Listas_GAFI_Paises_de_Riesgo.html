@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Listas GAFI — Países de Riesgo</title>
+<style>
+  :root{
+    --navy:#12233d; --gold:#c99a3b; --paper:#faf8f4; --ink:#1c1c1c; --line:#dcd6c8;
+    --black-c:#1c1c1c; --grey-c:#8a7a3a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.55;}
+  header{background:var(--navy); color:#f3efe4; padding:40px 6vw 28px;}
+  header h1{font-size:clamp(24px,4vw,34px); margin:0 0 8px;}
+  header p{color:#c7d2e0; max-width:70ch; margin:0; font-size:14.5px;}
+  .datebar{
+    background:#8a1f1f; color:#fff; text-align:center; padding:8px 16px;
+    font-size:13px; font-weight:600;
+  }
+  main{max-width:1050px; margin:0 auto; padding:36px 5vw 80px;}
+  section{margin-bottom:42px;}
+  h2{font-size:19px; color:var(--navy); border-bottom:3px solid var(--c); padding-bottom:8px; margin-bottom:18px;}
+
+  .toplist{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:10px;
+  }
+  .big-card{
+    background:#fff; border:2px solid var(--c); border-radius:8px; padding:16px 18px; text-align:center;
+  }
+  .big-card .flag{font-size:36px;}
+  .big-card .name{font-weight:700; font-size:15px; margin-top:6px; color:var(--navy);}
+  .big-card .measure{font-size:12px; color:#5a5545; margin-top:4px;}
+
+  .region{margin-bottom:22px;}
+  .region h3{font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:#7a7362; margin:0 0 10px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    display:flex; align-items:center; gap:7px;
+    background:#fff; border:1px solid var(--line); border-radius:20px;
+    padding:6px 14px 6px 8px; font-size:13.5px;
+  }
+  .chip .flag{font-size:18px;}
+  .chip.new{border-color:var(--gold); background:#fbf3e2;}
+  .chip.new::after{content:"NUEVO"; font-size:9px; font-weight:700; color:var(--gold); margin-left:4px;}
+
+  table{width:100%; border-collapse:collapse; font-size:14px; background:#fff;}
+  th,td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--line);}
+  th{font-size:11.5px; text-transform:uppercase; color:var(--navy); background:#f0ece0;}
+
+  .note{font-size:13px; color:#5a5545; background:#f0ece0; border-left:4px solid var(--gold); padding:12px 16px; margin-top:16px; border-radius:3px;}
+  .trap{font-size:13px; color:#5c2418; background:#fbeae4; border-left:4px solid #b5432b; padding:12px 16px; margin-top:14px; border-radius:3px;}
+  .trap b{color:#b5432b;}
+  footer{text-align:center; font-size:12px; color:#8b8570; padding:26px;}
+</style>
+</head>
+<body>
+
+<div class="datebar">⚠ Estas listas cambian 3 veces al año (plenarias de febrero, junio y octubre). Datos de la actualización del 19 de junio de 2026 — verifica siempre fatf-gafi.org antes de tu examen por si ya hubo la plenaria de octubre.</div>
+
+<header>
+  <h1>Listas del GAFI — Países de Riesgo</h1>
+  <p>Las dos listas que publica el GAFI tras cada plenaria: la "lista negra" (llamado a la acción) y la "lista gris" (seguimiento reforzado). No las confundas — implican cosas distintas.</p>
+</header>
+
+<main>
+
+  <section style="--c:#1c1c1c">
+    <h2>🚫 Lista Negra — Jurisdicciones de Alto Riesgo sujetas a un Llamado a la Acción</h2>
+    <p style="font-size:14px; margin:0 0 14px;">Deficiencias estratégicas <b>graves</b>. El GAFI pide aplicar contramedidas o, como mínimo, debida diligencia reforzada.</p>
+    <div class="toplist" style="--c:#1c1c1c">
+      <div class="big-card" style="--c:#1c1c1c">
+        <div class="flag">🇰🇵</div>
+        <div class="name">Corea del Norte<br><span style="font-weight:400; font-size:11px;">(Rep. Popular Democrática de Corea)</span></div>
+        <div class="measure">Contramedidas</div>
+      </div>
+      <div class="big-card" style="--c:#1c1c1c">
+        <div class="flag">🇮🇷</div>
+        <div class="name">Irán<br><span style="font-weight:400; font-size:11px;">(República Islámica de Irán)</span></div>
+        <div class="measure">Contramedidas</div>
+      </div>
+      <div class="big-card" style="--c:#1c1c1c">
+        <div class="flag">🇲🇲</div>
+        <div class="name">Myanmar (Birmania)</div>
+        <div class="measure">Debida diligencia reforzada</div>
+      </div>
+    </div>
+    <div class="note">Solo <b>3 países</b> — es la lista más corta y más fácil de memorizar completa: Corea del Norte (Rep. Popular Democrática de Corea), Irán (República Islámica de Irán) y Myanmar (también conocido como Birmania).</div>
+  </section>
+
+  <section style="--c:#c99a3b">
+    <h2>🟡 Lista Gris — Jurisdicciones Bajo Mayor Vigilancia (Seguimiento Reforzado)</h2>
+    <p style="font-size:14px; margin:0 0 14px;">Deficiencias estratégicas, pero el país <b>se comprometió con el GAFI</b> a corregirlas en un plazo definido. <b>22 jurisdicciones</b> en total, organizadas por región:</p>
+
+    <div class="region">
+      <h3>América</h3>
+      <div class="chips">
+        <div class="chip"><span class="flag">🇧🇴</span>Bolivia</div>
+        <div class="chip"><span class="flag">🇭🇹</span>Haití</div>
+        <div class="chip"><span class="flag">🇻🇪</span>Venezuela</div>
+        <div class="chip"><span class="flag">🇻🇬</span>Islas Vírgenes Británicas</div>
+      </div>
+    </div>
+
+    <div class="region">
+      <h3>África</h3>
+      <div class="chips">
+        <div class="chip"><span class="flag">🇦🇴</span>Angola</div>
+        <div class="chip"><span class="flag">🇨🇲</span>Camerún</div>
+        <div class="chip"><span class="flag">🇨🇮</span>Costa de Marfil</div>
+        <div class="chip"><span class="flag">🇨🇩</span>República Democrática del Congo</div>
+        <div class="chip"><span class="flag">🇰🇪</span>Kenia</div>
+        <div class="chip"><span class="flag">🇸🇸</span>Sudán del Sur</div>
+      </div>
+    </div>
+
+    <div class="region">
+      <h3>Europa</h3>
+      <div class="chips">
+        <div class="chip new"><span class="flag">🇧🇦</span>Bosnia y Herzegovina</div>
+        <div class="chip"><span class="flag">🇧🇬</span>Bulgaria</div>
+        <div class="chip"><span class="flag">🇲🇨</span>Mónaco</div>
+      </div>
+    </div>
+
+    <div class="region">
+      <h3>Medio Oriente</h3>
+      <div class="chips">
+        <div class="chip new"><span class="flag">🇮🇶</span>Irak</div>
+        <div class="chip"><span class="flag">🇰🇼</span>Kuwait</div>
+        <div class="chip"><span class="flag">🇱🇧</span>Líbano</div>
+        <div class="chip"><span class="flag">🇸🇾</span>Siria</div>
+        <div class="chip"><span class="flag">🇾🇪</span>Yemen</div>
+      </div>
+    </div>
+
+    <div class="region">
+      <h3>Asia y Oceanía</h3>
+      <div class="chips">
+        <div class="chip"><span class="flag">🇱🇦</span>Laos</div>
+        <div class="chip"><span class="flag">🇳🇵</span>Nepal</div>
+        <div class="chip"><span class="flag">🇻🇳</span>Vietnam</div>
+        <div class="chip"><span class="flag">🇵🇬</span>Papúa Nueva Guinea</div>
+      </div>
+    </div>
+
+    <div class="note">Los chips marcados <b>NUEVO</b> (Bosnia y Herzegovina, Irak) se agregaron en la plenaria de junio de 2026. En esa misma sesión salieron Argelia y Namibia, tras completar sus planes de acción.</div>
+  </section>
+
+  <section>
+    <h2>La diferencia que más se pregunta en el examen</h2>
+    <table>
+      <tr><th>Concepto</th><th>Lista Negra</th><th>Lista Gris</th></tr>
+      <tr><td>Nombre oficial</td><td>Jurisdicciones de Alto Riesgo sujetas a un Llamado a la Acción</td><td>Jurisdicciones Bajo Mayor Vigilancia (Seguimiento Reforzado)</td></tr>
+      <tr><td>Gravedad</td><td>Deficiencias estratégicas graves</td><td>Deficiencias estratégicas, con compromiso de corregirlas</td></tr>
+      <tr><td>¿El país coopera con el GAFI?</td><td>No, o de forma insuficiente</td><td>Sí, activamente, con plan de acción y plazos</td></tr>
+      <tr><td>Medida que pide el GAFI</td><td>Contramedidas (o EDD proporcional, según el caso)</td><td>No exige EDD automática a toda la jurisdicción como clase</td></tr>
+    </table>
+    <div class="trap"><b>El error más común:</b> pensar que estar en la lista gris significa automáticamente "Alto Riesgo" para toda relación con ese país. El GAFI aclara expresamente que NO pide diligencia debida reforzada generalizada a las jurisdicciones grises — el riesgo geográfico es solo un factor más dentro de tu matriz de riesgo, no un disparador automático.</div>
+  </section>
+
+</main>
+
+<footer>
+  Fuente: Grupo de Acción Financiera Internacional (GAFI/FATF), declaraciones "Jurisdictions under Increased Monitoring" y "High-Risk Jurisdictions subject to a Call for Action", actualización del 19 de junio de 2026. Verifica siempre la versión más reciente en fatf-gafi.org antes de tu examen.
+</footer>
+
+</body>
+</html>

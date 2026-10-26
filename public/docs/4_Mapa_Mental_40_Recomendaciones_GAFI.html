@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mapa Mental — 40 Recomendaciones del GAFI</title>
+<style>
+  :root{
+    --navy:#12233d;
+    --paper:#faf8f4;
+    --ink:#1c1c1c;
+    --line:#dcd6c8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Helvetica Neue',Arial,sans-serif; line-height:1.6;}
+  header{background:var(--navy); color:#f3efe4; padding:44px 6vw 32px; text-align:center;}
+  header h1{font-size:clamp(26px,4vw,38px); margin:0 0 10px;}
+  header p{color:#c7d2e0; max-width:70ch; margin:0 auto; font-size:15px;}
+  main{max-width:1150px; margin:0 auto; padding:44px 4vw 90px;}
+
+  .blocks{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+  }
+  .block{
+    background:#fff;
+    border-radius:8px;
+    border:1px solid var(--line);
+    border-top:8px solid var(--c);
+    padding:22px 24px;
+  }
+  .block h2{
+    margin:0 0 4px;
+    font-size:16px;
+    color:var(--c);
+  }
+  .block .range{
+    font-size:12px;
+    color:#8b8570;
+    margin-bottom:14px;
+    font-weight:600;
+    letter-spacing:.03em;
+  }
+  .block p.desc{
+    font-size:13.5px;
+    color:#454133;
+    margin:0 0 14px;
+  }
+  .block ul{margin:0; padding-left:0; list-style:none;}
+  .block li{
+    font-size:13.5px;
+    padding:6px 0;
+    border-top:1px solid #f0ece0;
+    display:flex;
+    gap:8px;
+  }
+  .block li:first-child{border-top:none;}
+  .rnum{
+    font-weight:700;
+    color:var(--c);
+    min-width:26px;
+  }
+  .star{
+    display:inline-block;
+    background:var(--c);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    padding:1px 7px;
+    border-radius:10px;
+    margin-left:6px;
+  }
+  .callouts{
+    margin-top:44px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+  }
+  .callout{
+    background:#fff; border:1px solid var(--line); border-left:5px solid var(--navy);
+    border-radius:4px; padding:16px 18px; font-size:14px;
+  }
+  .callout h3{margin:0 0 6px; font-size:14.5px; color:var(--navy);}
+  footer{text-align:center; font-size:12px; color:#8b8570; padding:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mapa Mental — 40 Recomendaciones del GAFI</h1>
+  <p>Las 40 Recomendaciones se agrupan en 7 bloques temáticos. Memoriza los bloques primero — te dan contexto para ubicar cualquier recomendación aislada que te pregunten. Las marcadas con ⭐ son las que revisamos con detalle en el material de práctica que analizamos, por ser de las más citadas en general en este tema.</p>
+</header>
+
+<main>
+  <div class="blocks">
+
+    <div class="block" style="--c:#0f7d82">
+      <h2>A. Políticas y Coordinación ALD/CFT</h2>
+      <div class="range">Recomendaciones 1–2</div>
+      <p class="desc">La base de todo: entender el riesgo del país y coordinar a las autoridades entre sí.</p>
+      <ul>
+        <li><span class="rnum">R1</span> Evaluación de riesgos y aplicación de un Enfoque Basado en Riesgo</li>
+        <li><span class="rnum">R2</span> Cooperación y coordinación nacional entre autoridades</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#b5432b">
+      <h2>B. Lavado de Dinero y Decomiso</h2>
+      <div class="range">Recomendaciones 3–4</div>
+      <p class="desc">Cómo se tipifica el LD como delito y cómo se le quitan los bienes al delincuente.</p>
+      <ul>
+        <li><span class="rnum">R3</span> Delito de Lavado de Dinero</li>
+        <li><span class="rnum">R4</span> Decomiso y medidas provisionales</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#8a1f1f">
+      <h2>C. Financiamiento al Terrorismo y de la Proliferación</h2>
+      <div class="range">Recomendaciones 5–8</div>
+      <p class="desc">Equivalente al bloque B, pero para FT y financiamiento de armas de destrucción masiva.</p>
+      <ul>
+        <li><span class="rnum">R5</span> Delito de Financiamiento al Terrorismo</li>
+        <li><span class="rnum">R6</span> Sanciones financieras dirigidas — terrorismo</li>
+        <li><span class="rnum">R7</span> Sanciones financieras dirigidas — proliferación (armas)</li>
+        <li><span class="rnum">R8</span> Organizaciones sin fines de lucro (OSFL)</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#5c4a8a">
+      <h2>D. Medidas Preventivas</h2>
+      <div class="range">Recomendaciones 9–23 — el bloque más grande y más preguntado</div>
+      <p class="desc">Todo lo que debe hacer una institución financiera o un Sujeto Obligado día a día: identificar clientes, reportar, resguardar información.</p>
+      <ul>
+        <li><span class="rnum">R9</span> Leyes de secreto de las instituciones financieras <span class="star">⭐ visto en práctica</span></li>
+        <li style="flex-wrap:wrap"><span class="rnum">R10</span> Debida diligencia del cliente (DDC) <span class="star">⭐ visto en práctica</span>
+          <div style="flex-basis:100%;min-width:0;margin:6px 0 8px 0;padding:10px 14px;background:#fff;border:1px solid var(--line);border-left:4px solid #5c4a8a;border-radius:6px;font-size:14px;line-height:1.5">
+            <b>Nota Interpretativa de la Recomendación 10, párrafo 20: ejemplos de medidas intensificadas de DDC</b>
+            <ol style="margin:6px 0 4px 18px;padding:0">
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Obtención de información adicional sobre el cliente (por ejemplo, ocupación, volumen de activos, información de bases de datos públicas e internet) y actualización con más sistematicidad de los datos de identificación del cliente y del beneficiario final.</li>
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Obtención de información adicional sobre el carácter que se pretende dar a la relación comercial.</li>
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Obtención de información sobre la fuente de los fondos o la fuente de riqueza del cliente.</li>
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Obtención de información sobre las razones de las transacciones intentadas o efectuadas.</li>
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Obtención de la aprobación de la <b>alta gerencia</b> para comenzar o continuar la relación comercial.</li>
+              <li style="display:list-item;border-top:none;padding:0;margin-bottom:6px;font-size:14px">Monitoreo más intenso de la relación comercial, incrementando la cantidad y la duración de los controles aplicados, y selección de los patrones de transacciones que necesitan un mayor examen.</li>
+            </ol>
+            <span style="font-size:12.5px;color:#555">Trampa: reducir la frecuencia de actualizaciones o no recopilar información sobre el propósito de la relación son medidas simplificadas, no intensificadas.</span>
+          </div></li>
+        <li><span class="rnum">R11</span> Mantenimiento de registros</li>
+        <li><span class="rnum">R12</span> Personas Políticamente Expuestas (PEP) <span class="star">⭐ visto en práctica</span></li>
+        <li><span class="rnum">R13</span> Banca corresponsal</li>
+        <li><span class="rnum">R14</span> Servicios de transferencia de dinero o valores</li>
+        <li><span class="rnum">R15</span> Nuevas tecnologías</li>
+        <li><span class="rnum">R16</span> Transferencias electrónicas</li>
+        <li><span class="rnum">R17</span> Dependencia en terceros</li>
+        <li><span class="rnum">R18</span> Controles internos y sucursales/filiales extranjeras</li>
+        <li><span class="rnum">R19</span> Países de mayor riesgo</li>
+        <li><span class="rnum">R20</span> Reporte de operaciones sospechosas (ROS)</li>
+        <li><span class="rnum">R21</span> Revelación ("tipping-off") y confidencialidad</li>
+        <li><span class="rnum">R22</span> DDC para Actividades y Profesiones No Financieras Designadas (APNFD) <span class="star">⭐ visto en práctica</span></li>
+        <li><span class="rnum">R23</span> APNFD — otras medidas</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#2f6b4f">
+      <h2>E. Transparencia y Beneficiario Final</h2>
+      <div class="range">Recomendaciones 24–25</div>
+      <p class="desc">Saber quién es el verdadero dueño detrás de una persona moral o de un fideicomiso — la base del concepto "Propietario Real" que ya estudiamos.</p>
+      <ul>
+        <li><span class="rnum">R24</span> Transparencia y beneficiario final de personas jurídicas</li>
+        <li><span class="rnum">R25</span> Transparencia y beneficiario final de estructuras jurídicas (fideicomisos)</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#c99a3b">
+      <h2>F. Facultades de las Autoridades</h2>
+      <div class="range">Recomendaciones 26–35</div>
+      <p class="desc">Qué puede hacer cada autoridad: supervisar, sancionar, investigar. Aquí encaja todo lo que vimos de CNBV, UIF y FGR.</p>
+      <ul>
+        <li><span class="rnum">R26</span> Regulación y supervisión de instituciones financieras</li>
+        <li><span class="rnum">R27</span> Facultades de los supervisores</li>
+        <li><span class="rnum">R28</span> Regulación y supervisión de APNFD</li>
+        <li><span class="rnum">R29</span> Unidades de Inteligencia Financiera (UIF)</li>
+        <li><span class="rnum">R30</span> Responsabilidades de las autoridades de orden público e investigación</li>
+        <li><span class="rnum">R31</span> Facultades de las autoridades de orden público e investigación</li>
+        <li><span class="rnum">R32</span> Transporte de efectivo (correos físicos de dinero)</li>
+        <li><span class="rnum">R33</span> Estadísticas</li>
+        <li><span class="rnum">R34</span> Guía y retroalimentación</li>
+        <li><span class="rnum">R35</span> Sanciones</li>
+      </ul>
+    </div>
+
+    <div class="block" style="--c:#7a5230">
+      <h2>G. Cooperación Internacional</h2>
+      <div class="range">Recomendaciones 36–40</div>
+      <p class="desc">Cómo colaboran los países entre sí: tratados, extradición, asistencia legal e intercambio de información entre UIF (aquí conecta con Egmont y Grupo Wolfsberg).</p>
+      <ul>
+        <li><span class="rnum">R36</span> Instrumentos internacionales (convenciones)</li>
+        <li><span class="rnum">R37</span> Asistencia legal mutua</li>
+        <li><span class="rnum">R38</span> Asistencia legal mutua — congelamiento y decomiso</li>
+        <li><span class="rnum">R39</span> Extradición</li>
+        <li><span class="rnum">R40</span> Otras formas de cooperación internacional</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="callouts">
+    <div class="callout" style="border-left-color:#0f7d82">
+      <h3>Truco para no perderte</h3>
+      Si la pregunta habla de un <b>cliente, PEP, banca corresponsal o DDC</b> → Bloque D (9-23). Si habla de <b>CNBV, UIF o sanciones a la Entidad</b> → Bloque F (26-35). Si habla de <b>otro país, tratados o extradición</b> → Bloque G (36-40).
+    </div>
+    <div class="callout" style="border-left-color:#5c4a8a">
+      <h3>4 Recomendaciones ya verificadas contra fuentes oficiales</h3>
+      R9 (secreto bancario no debe frenar al GAFI), R10 (umbral de 15,000 USD/EUR para operaciones ocasionales), R12 (debida diligencia reforzada a PEP), R22 (umbral de 3,000 USD/EUR para casinos).
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Fuente: International Standards on Combating Money Laundering and the Financing of Terrorism & Proliferation (GAFI).
+</footer>
+
+</body>
+</html>
