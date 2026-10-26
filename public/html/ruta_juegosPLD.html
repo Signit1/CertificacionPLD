@@ -380,7 +380,17 @@ function crumbsHTML(){
 
 function render(){
   app.innerHTML =
-    '<header class="top"><div><h1>Juegos de Repaso PLD/FT</h1><div class="tag">Prevención de Lavado de Dinero y Financiamiento al Terrorismo — práctica ley por ley</div></div></header>'
+    '<header class="top">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2S6D5E2HRX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2S6D5E2HRX');
+</script>
+<div><h1>Juegos de Repaso PLD/FT</h1><div class="tag">Prevención de Lavado de Dinero y Financiamiento al Terrorismo — práctica ley por ley</div></div></header>'
     + crumbsHTML()
     + '<div id="screen"></div>'
     + '<footer class="foot">Contenido basado en tu checklist "Artículos para Imprimir y Estudiar" — 8 grupos de leyes, '+POOL.length+' artículos en total.</footer>';
