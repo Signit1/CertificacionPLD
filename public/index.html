@@ -86,7 +86,7 @@ summary{grid-template-columns:1fr auto}.num{grid-column:1/-1;justify-self:start}
  <div><b>828</b><span>Preguntas</span></div><div><b>32</b><span>Temas</span></div><div><b>3</b><span>Áreas del temario</span></div><div><b>40</b><span>Recomendaciones del GAFI</span></div>
 </section>
 <h2 id="temario">Temario</h2>
-<p class="sub">Abre un área para ver sus temas. Cada tema muestra cuántas preguntas tiene, un acceso a la Ruta de estudio y el material de apoyo (resúmenes y documentos Word) que le corresponde.</p>
+<p class="sub">Abre un área para ver sus temas. Cada tema muestra cuántas preguntas tiene, un acceso a la Ruta de estudio y el material de apoyo que le corresponde.</p>
 <div id="areas"></div>
 <h2>Cómo estudiar aquí</h2>
 <div class="how">
@@ -108,10 +108,10 @@ D.areas.forEach(function(a,ai){
  a.items.forEach(function(i){
   var x=document.createElement('details');x.className='tema';
   var hot=i.s?'<span class="pill hot">'+i.s+' de examen real</span>':'';
-  x.innerHTML='<summary><span class="ref">'+i.ref+'</span><span class="tt">'+i.t+'</span><span class="cnt">'+i.n+' preguntas</span><span class="chev"></span></summary><div class="body"><span class="pill">'+i.n+' preguntas</span>'+hot+'<a class="tbtn" href="'+RUTA+'">Estudiar este tema</a></div>'+(i.docs.length?'<div class="docs"><span class="dl">Material de apoyo</span>'+i.docs.map(function(d){return '<a class="doc" href="docs/'+d.f+'"'+(d.w?' download':' target="_blank" rel="noopener"')+'><b>'+(d.w?'WORD':'PÁGINA')+'</b>'+d.l+'</a>'}).join('')+'</div>':'');
+  x.innerHTML='<summary><span class="ref">'+i.ref+'</span><span class="tt">'+i.t+'</span><span class="cnt">'+i.n+' preguntas</span><span class="chev"></span></summary><div class="body"><span class="pill">'+i.n+' preguntas</span>'+hot+'<a class="tbtn" href="'+RUTA+'">Estudiar este tema</a></div>'+(i.docs.filter(function(d){return !d.w}).length?'<div class="docs"><span class="dl">Material de apoyo</span>'+i.docs.filter(function(d){return !d.w}).map(function(d){return '<a class="doc" href="docs/'+d.f+'"'+(d.w?' download':' target="_blank" rel="noopener"')+'><b>'+(d.w?'WORD':'PÁGINA')+'</b>'+d.l+'</a>'}).join('')+'</div>':'');
   t.appendChild(x);
  });
- d.appendChild(t);var ad=document.createElement('div');ad.className='adoc';ad.innerHTML='<a class="doc" href="docs/'+a.doc.f+'" download><b>WORD</b>'+a.doc.l+'</a>';d.appendChild(ad);host.appendChild(d);
+ d.appendChild(t);host.appendChild(d);
 });
 (function(){
  var c=document.getElementById('net'),g=c.getContext('2d'),W,H,P=[],still=matchMedia('(prefers-reduced-motion:reduce)').matches;
